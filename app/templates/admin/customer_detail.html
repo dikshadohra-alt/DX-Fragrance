@@ -1,0 +1,867 @@
+{% extends "base.html" %}
+
+{% block title %}
+DX Fragrance | Customer Details
+{% endblock %}
+
+{% block content %}
+
+<div class="customer-detail-page">
+
+    <!-- HEADER -->
+    <div class="customer-header">
+
+        <div>
+            <span class="admin-tag">DX FRAGRANCE ADMIN</span>
+
+            <h1>
+                Customer Details
+            </h1>
+
+            <p>
+                View customer profile, shipping information and order history.
+            </p>
+        </div>
+
+        <a href="{{ url_for('admin.customers') }}" class="back-btn">
+            <i class="fa-solid fa-arrow-left"></i>
+            Back to Customers
+        </a>
+
+    </div>
+
+
+    <!-- CUSTOMER PROFILE -->
+    <div class="profile-card">
+
+        <div class="profile-top">
+
+            <div class="avatar">
+                {{ customer["username"][0]|upper }}
+            </div>
+
+            <div class="profile-name">
+
+                <h2>
+                    {{ customer["username"] }}
+                </h2>
+
+                <p>
+                    Registered Customer
+                </p>
+
+                <span class="active-badge">
+                    <span></span>
+                    Active
+                </span>
+
+            </div>
+
+            <div class="customer-id">
+                <small>CUSTOMER ID</small>
+                <strong>#{{ customer["id"] }}</strong>
+            </div>
+
+        </div>
+
+
+        <div class="profile-divider"></div>
+
+
+        <div class="info-grid">
+
+            <div class="info-box">
+
+                <div class="info-icon">
+                    <i class="fa-solid fa-envelope"></i>
+                </div>
+
+                <div>
+                    <small>EMAIL ADDRESS</small>
+                    <strong>
+                        {{ customer["email"] }}
+                    </strong>
+                </div>
+
+            </div>
+
+
+            <div class="info-box">
+
+                <div class="info-icon">
+                    <i class="fa-solid fa-phone"></i>
+                </div>
+
+                <div>
+                    <small>PHONE NUMBER</small>
+                    <strong>
+                        {{ customer["phone"] if customer["phone"] else "Not provided" }}
+                    </strong>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- SHOPPING SUMMARY -->
+    <div class="summary-grid">
+
+        <div class="summary-card">
+
+            <div class="summary-icon orders-icon">
+                <i class="fa-solid fa-bag-shopping"></i>
+            </div>
+
+            <div>
+                <small>TOTAL ORDERS</small>
+                <strong>{{ total_orders }}</strong>
+            </div>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <div class="summary-icon money-icon">
+                <i class="fa-solid fa-indian-rupee-sign"></i>
+            </div>
+
+            <div>
+                <small>TOTAL SPENDING</small>
+                <strong>₹{{ "%.2f"|format(total_spending) }}</strong>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- SHIPPING INFORMATION -->
+    <div class="section-card">
+
+        <div class="section-heading">
+
+            <div class="heading-icon">
+                <i class="fa-solid fa-location-dot"></i>
+            </div>
+
+            <div>
+                <h2>Shipping Information</h2>
+                <p>Latest delivery information for this customer.</p>
+            </div>
+
+        </div>
+
+
+        {% if latest_order %}
+
+            <div class="shipping-grid">
+
+                <div class="shipping-item">
+                    <small>RECIPIENT NAME</small>
+                    <strong>
+                        {{ latest_order["shipping_name"] }}
+                    </strong>
+                </div>
+
+
+                <div class="shipping-item">
+                    <small>PHONE NUMBER</small>
+                    <strong>
+                        {{ latest_order["shipping_phone"] }}
+                    </strong>
+                </div>
+
+
+                <div class="shipping-item address-item">
+
+                    <small>SHIPPING ADDRESS</small>
+
+                    <strong>
+                        {{ latest_order["shipping_address"] }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+        {% else %}
+
+            <div class="no-data">
+                <i class="fa-solid fa-location-dot"></i>
+                <p>No shipping information available yet.</p>
+            </div>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- ORDER HISTORY -->
+    <div class="section-card">
+
+        <div class="section-heading">
+
+            <div class="heading-icon">
+                <i class="fa-solid fa-box-open"></i>
+            </div>
+
+            <div>
+                <h2>Order History</h2>
+                <p>All orders placed by this customer.</p>
+            </div>
+
+        </div>
+
+
+        {% if orders %}
+
+            <div class="orders-table-wrapper">
+
+                <table class="orders-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>ORDER</th>
+                            <th>AMOUNT</th>
+                            <th>STATUS</th>
+                            <th>DATE</th>
+                            <th>ACTION</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for order in orders %}
+
+                            <tr>
+
+                                <td>
+                                    <strong class="order-number">
+                                        #{{ order["id"] }}
+                                    </strong>
+                                </td>
+
+
+                                <td>
+
+                                    <strong class="amount">
+                                        ₹{{ "%.2f"|format(order["total_amount"]) }}
+                                    </strong>
+
+                                </td>
+
+
+                                <td>
+
+                                    {% set status = order["status"]|lower %}
+
+                                    <span class="status-badge {{ status }}">
+
+                                        <span></span>
+
+                                        {{ order["status"]|capitalize }}
+
+                                    </span>
+
+                                </td>
+
+
+                                <td>
+
+                                    <span class="order-date">
+                                        {{ order["created_at"] }}
+                                    </span>
+
+                                </td>
+
+
+                                <td>
+
+                                    <a
+                                        href="{{ url_for('admin.order_detail', order_id=order['id']) }}"
+                                        class="view-order-btn"
+                                    >
+                                        View
+                                        <i class="fa-solid fa-arrow-right"></i>
+                                    </a>
+
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        {% else %}
+
+            <div class="no-orders">
+
+                <div class="empty-order-icon">
+                    <i class="fa-solid fa-bag-shopping"></i>
+                </div>
+
+                <h3>No Orders Yet</h3>
+
+                <p>
+                    This customer has not placed any orders yet.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- BACK BUTTON -->
+    <div class="bottom-actions">
+
+        <a
+            href="{{ url_for('admin.customers') }}"
+            class="bottom-back-btn"
+        >
+            <i class="fa-solid fa-arrow-left"></i>
+            Back to Customers
+        </a>
+
+    </div>
+
+</div>
+
+
+<style>
+
+.customer-detail-page {
+    max-width: 1100px;
+    margin: 30px auto;
+    padding: 0 22px 50px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+
+/* HEADER */
+
+.customer-header {
+    background: linear-gradient(135deg, #2c221e, #4b3b32);
+    color: white;
+    padding: 30px 35px;
+    border-radius: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 25px;
+    box-shadow: 0 12px 30px rgba(44,34,30,0.12);
+}
+
+.admin-tag {
+    color: #d4af37;
+    font-size: 11px;
+    letter-spacing: 2.5px;
+    font-weight: 700;
+}
+
+.customer-header h1 {
+    margin: 7px 0 5px;
+    font-size: 28px;
+    color: #fff;
+}
+
+.customer-header p {
+    margin: 0;
+    color: #ded5cf;
+    font-size: 13px;
+}
+
+
+.back-btn {
+    border: 1px solid #d4af37;
+    color: #d4af37;
+    padding: 11px 18px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: 0.2s;
+}
+
+.back-btn:hover {
+    background: #d4af37;
+    color: white;
+}
+
+
+/* PROFILE */
+
+.profile-card,
+.section-card {
+    background: #fff;
+    border: 1px solid #e8e1da;
+    border-radius: 18px;
+    padding: 28px;
+    margin-bottom: 22px;
+    box-shadow: 0 5px 18px rgba(44,34,30,0.04);
+}
+
+
+.profile-top {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+
+.avatar {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: linear-gradient(135deg,#d4af37,#b88d45);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+
+.profile-name {
+    flex: 1;
+}
+
+
+.profile-name h2 {
+    margin: 0 0 4px;
+    font-size: 22px;
+    color: #2c221e;
+}
+
+
+.profile-name p {
+    margin: 0 0 8px;
+    color: #8b7b72;
+    font-size: 13px;
+}
+
+
+.active-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #edf8f0;
+    color: #4f8a5b;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+
+.active-badge span,
+.status-badge span {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+
+.customer-id {
+    text-align: right;
+}
+
+
+.customer-id small,
+.info-box small,
+.shipping-item small,
+.summary-card small {
+    display: block;
+    color: #a08f82;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+
+.customer-id strong {
+    color: #b89e6d;
+    font-size: 18px;
+}
+
+
+.profile-divider {
+    height: 1px;
+    background: #eee8e1;
+    margin: 25px 0;
+}
+
+
+.info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+}
+
+
+.info-box {
+    background: #faf8f5;
+    border: 1px solid #ebe3da;
+    border-radius: 12px;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+
+.info-icon,
+.heading-icon,
+.summary-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    background: #f5eadb;
+    color: #b89e6d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+
+.info-box strong {
+    color: #43372f;
+    font-size: 14px;
+    word-break: break-word;
+}
+
+
+/* SUMMARY */
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 22px;
+}
+
+
+.summary-card {
+    background: #fff;
+    border: 1px solid #e8e1da;
+    border-radius: 16px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+
+.summary-card strong {
+    color: #2c221e;
+    font-size: 22px;
+}
+
+
+.money-icon {
+    background: #f8edd9;
+}
+
+
+.orders-icon {
+    background: #eee9f7;
+}
+
+
+/* SECTION */
+
+.section-heading {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid #eee8e1;
+    margin-bottom: 20px;
+}
+
+
+.heading-icon {
+    width: 44px;
+    height: 44px;
+}
+
+
+.section-heading h2 {
+    margin: 0 0 4px;
+    color: #2c221e;
+    font-size: 19px;
+}
+
+
+.section-heading p {
+    margin: 0;
+    color: #8b7b72;
+    font-size: 12px;
+}
+
+
+/* SHIPPING */
+
+.shipping-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+
+.shipping-item {
+    background: #faf8f5;
+    border: 1px solid #ebe3da;
+    border-radius: 11px;
+    padding: 15px;
+}
+
+
+.shipping-item strong {
+    color: #4b3e36;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+
+.address-item {
+    grid-column: 1 / -1;
+}
+
+
+/* ORDERS TABLE */
+
+.orders-table-wrapper {
+    overflow-x: auto;
+}
+
+
+.orders-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 700px;
+}
+
+
+.orders-table th {
+    background: #faf7f1;
+    color: #8a796d;
+    font-size: 10px;
+    letter-spacing: 1.2px;
+    text-align: left;
+    padding: 13px;
+    border-bottom: 1px solid #e8e1da;
+}
+
+
+.orders-table td {
+    padding: 16px 13px;
+    border-bottom: 1px solid #eee8e1;
+    color: #5b4d44;
+    font-size: 13px;
+}
+
+
+.orders-table tr:last-child td {
+    border-bottom: none;
+}
+
+
+.order-number {
+    color: #2c221e;
+}
+
+
+.amount {
+    color: #b08a4d;
+}
+
+
+.order-date {
+    color: #8a7b72;
+    font-size: 12px;
+}
+
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+
+.status-badge.pending {
+    background: #fff5d9;
+    color: #a87a00;
+}
+
+
+.status-badge.confirmed {
+    background: #edf6ff;
+    color: #3d76a8;
+}
+
+
+.status-badge.shipped {
+    background: #f0edff;
+    color: #6958a8;
+}
+
+
+.status-badge.delivered {
+    background: #edf8f0;
+    color: #4f8a5b;
+}
+
+
+.status-badge.cancelled {
+    background: #fff0f0;
+    color: #b33a3a;
+}
+
+
+.view-order-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #2c221e;
+    color: white;
+    padding: 8px 13px;
+    border-radius: 7px;
+    text-decoration: none;
+    font-size: 11px;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+
+.view-order-btn:hover {
+    background: #b89e6d;
+}
+
+
+/* EMPTY */
+
+.no-data,
+.no-orders {
+    text-align: center;
+    padding: 35px 20px;
+    background: #faf8f5;
+    border: 1px dashed #e4d9cd;
+    border-radius: 12px;
+}
+
+
+.no-data i,
+.empty-order-icon {
+    color: #b89e6d;
+    font-size: 30px;
+}
+
+
+.no-data p,
+.no-orders p {
+    color: #8b7b72;
+    font-size: 13px;
+}
+
+
+.no-orders h3 {
+    color: #40352e;
+    margin: 10px 0 5px;
+}
+
+
+.empty-order-icon {
+    margin-bottom: 5px;
+}
+
+
+/* BOTTOM */
+
+.bottom-actions {
+    margin-top: 10px;
+}
+
+
+.bottom-back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid #dfd2c5;
+    background: white;
+    color: #4b3e36;
+    padding: 11px 17px;
+    border-radius: 9px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+
+.bottom-back-btn:hover {
+    border-color: #b89e6d;
+    color: #b08a4d;
+}
+
+
+/* RESPONSIVE */
+
+@media (max-width: 768px) {
+
+    .customer-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .profile-top {
+        flex-wrap: wrap;
+    }
+
+    .customer-id {
+        width: 100%;
+        text-align: left;
+    }
+
+    .info-grid,
+    .summary-grid,
+    .shipping-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .address-item {
+        grid-column: auto;
+    }
+
+}
+
+</style>
+
+{% endblock %}

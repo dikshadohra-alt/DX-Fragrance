@@ -1,0 +1,931 @@
+{% extends "base.html" %}
+
+{% block title %}
+DX Fragrance | Customer Management
+{% endblock %}
+
+{% block content %}
+
+<div class="dx-customers-page">
+
+    <!-- HEADER -->
+    <div class="dx-customers-header">
+
+        <div>
+            <span class="dx-page-tag">DX FRAGRANCE ADMIN</span>
+
+            <h1>Customer Management</h1>
+
+            <p>
+                View customer profiles, contact details and order history.
+            </p>
+        </div>
+
+        <a href="{{ url_for('admin.dashboard') }}" class="dx-back-btn">
+            <i class="fa-solid fa-arrow-left"></i>
+            Back to Dashboard
+        </a>
+
+    </div>
+
+
+    <!-- STATS -->
+    <div class="dx-customer-stats">
+
+        <div class="dx-stat-card">
+            <div class="dx-stat-icon">
+                <i class="fa-solid fa-users"></i>
+            </div>
+
+            <div>
+                <span>Total Customers</span>
+                <strong>{{ customers|length }}</strong>
+            </div>
+        </div>
+
+        <div class="dx-stat-card">
+            <div class="dx-stat-icon green">
+                <i class="fa-solid fa-user-check"></i>
+            </div>
+
+            <div>
+                <span>Active Customers</span>
+                <strong>{{ customers|length }}</strong>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- CUSTOMER TABLE -->
+    <div class="dx-customer-card">
+
+        <div class="dx-card-header">
+
+            <div>
+                <span class="dx-small-tag">CUSTOMER DIRECTORY</span>
+
+                <h2>All Customers</h2>
+
+                <p>
+                    Manage registered customers and view their complete details.
+                </p>
+            </div>
+
+            <div class="dx-customer-count">
+                {{ customers|length }}
+                <small>Customers</small>
+            </div>
+
+        </div>
+
+
+        {% if customers %}
+
+        <div class="dx-table-wrapper">
+
+            <table class="dx-customer-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>Customer</th>
+
+                        <th>Email</th>
+
+                        <th>Phone</th>
+
+                        <th>Customer ID</th>
+
+                        <th>Joined</th>
+
+                        <th>Status</th>
+
+                        <th>Action</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for customer in customers %}
+
+                    <tr>
+
+                        <!-- CUSTOMER -->
+                        <td>
+
+                            <div class="dx-customer-name">
+
+                                <div class="dx-avatar">
+                                    {{ customer["username"][0]|upper }}
+                                </div>
+
+                                <div>
+
+                                    <strong>
+                                        {{ customer["username"] }}
+                                    </strong>
+
+                                    <small>
+                                        Registered Customer
+                                    </small>
+
+                                </div>
+
+                            </div>
+
+                        </td>
+
+
+                        <!-- EMAIL -->
+                        <td>
+
+                            <span class="dx-email">
+                                {{ customer["email"] }}
+                            </span>
+
+                        </td>
+
+
+                        <!-- PHONE -->
+                        <td>
+
+                            {% if customer["phone"] %}
+
+                                <span class="dx-phone">
+                                    <i class="fa-solid fa-phone"></i>
+                                    {{ customer["phone"] }}
+                                </span>
+
+                            {% else %}
+
+                                <span class="dx-muted">
+                                    Not provided
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- CUSTOMER ID -->
+                        <td>
+
+                            <span class="dx-id">
+                                #{{ customer["id"] }}
+                            </span>
+
+                        </td>
+
+
+                        <!-- JOINED -->
+                        <td>
+
+                            {% if customer["created_at"] %}
+
+                                <span class="dx-date">
+                                    {{ customer["created_at"] }}
+                                </span>
+
+                            {% else %}
+
+                                <span class="dx-muted">
+                                    —
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- STATUS -->
+                        <td>
+
+                            <span class="dx-status active">
+                                <span></span>
+                                Active
+                            </span>
+
+                        </td>
+
+
+                        <!-- ACTION -->
+                        <td>
+
+                            <a
+                                href="{{ url_for('admin.customer_detail', customer_id=customer['id']) }}"
+                                class="dx-view-btn"
+                            >
+                                <i class="fa-solid fa-eye"></i>
+                                View
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        {% else %}
+
+        <!-- EMPTY -->
+        <div class="dx-empty-state">
+
+            <div class="dx-empty-icon">
+                <i class="fa-solid fa-users"></i>
+            </div>
+
+            <h3>No Customers Yet</h3>
+
+            <p>
+                Customers will appear here after they create an account.
+            </p>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+
+<style>
+
+.dx-customers-page {
+
+    max-width: 1450px;
+
+    margin: 0 auto;
+
+    padding: 35px 30px 70px;
+
+    font-family:
+        'Plus Jakarta Sans',
+        Arial,
+        sans-serif;
+
+    background: #faf8f5;
+
+    min-height: 85vh;
+
+}
+
+
+/* HEADER */
+
+.dx-customers-header {
+
+    background:
+        linear-gradient(
+            135deg,
+            #2c221e,
+            #4b3b32
+        );
+
+    color: white;
+
+    border-radius: 22px;
+
+    padding: 32px 38px;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-bottom: 25px;
+
+    box-shadow:
+        0 15px 35px
+        rgba(44,34,30,0.12);
+
+}
+
+.dx-page-tag {
+
+    color: #d4af37;
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    letter-spacing: 3px;
+
+}
+
+.dx-customers-header h1 {
+
+    margin: 7px 0;
+
+    font-family: Georgia, serif;
+
+    font-size: 31px;
+
+}
+
+.dx-customers-header p {
+
+    margin: 0;
+
+    color: #ddd5cf;
+
+    font-size: 14px;
+
+}
+
+.dx-back-btn {
+
+    text-decoration: none;
+
+    color: #d4af37;
+
+    border: 1px solid #d4af37;
+
+    padding: 11px 18px;
+
+    border-radius: 30px;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    transition: 0.25s;
+
+}
+
+.dx-back-btn:hover {
+
+    background: #d4af37;
+
+    color: white;
+
+}
+
+
+/* STATS */
+
+.dx-customer-stats {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(220px, 1fr));
+
+    gap: 18px;
+
+    margin-bottom: 22px;
+
+}
+
+.dx-stat-card {
+
+    background: white;
+
+    border: 1px solid #e8e0d7;
+
+    border-radius: 16px;
+
+    padding: 20px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+    box-shadow:
+        0 6px 20px
+        rgba(44,34,30,0.04);
+
+}
+
+.dx-stat-icon {
+
+    width: 52px;
+
+    height: 52px;
+
+    border-radius: 14px;
+
+    background: #f5e9dc;
+
+    color: #b58a4a;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    font-size: 20px;
+
+}
+
+.dx-stat-icon.green {
+
+    background: #eaf5ed;
+
+    color: #4d9561;
+
+}
+
+.dx-stat-card span {
+
+    display: block;
+
+    color: #8c7d73;
+
+    font-size: 12px;
+
+    margin-bottom: 4px;
+
+}
+
+.dx-stat-card strong {
+
+    color: #2c221e;
+
+    font-size: 24px;
+
+}
+
+
+/* MAIN CARD */
+
+.dx-customer-card {
+
+    background: white;
+
+    border: 1px solid #e8e0d7;
+
+    border-radius: 20px;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 8px 25px
+        rgba(44,34,30,0.04);
+
+}
+
+.dx-card-header {
+
+    padding: 28px 30px;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    border-bottom: 1px solid #eee7df;
+
+}
+
+.dx-small-tag {
+
+    color: #b58a4a;
+
+    font-size: 10px;
+
+    letter-spacing: 2px;
+
+    font-weight: 700;
+
+}
+
+.dx-card-header h2 {
+
+    margin: 5px 0;
+
+    color: #2c221e;
+
+    font-family: Georgia, serif;
+
+    font-size: 24px;
+
+}
+
+.dx-card-header p {
+
+    margin: 0;
+
+    color: #8c7d73;
+
+    font-size: 13px;
+
+}
+
+.dx-customer-count {
+
+    background: #faf6ef;
+
+    border: 1px solid #eadfce;
+
+    color: #a57b3e;
+
+    border-radius: 12px;
+
+    padding: 10px 18px;
+
+    text-align: center;
+
+    font-size: 20px;
+
+    font-weight: 700;
+
+}
+
+.dx-customer-count small {
+
+    display: block;
+
+    font-size: 10px;
+
+    letter-spacing: 1px;
+
+    font-weight: 600;
+
+}
+
+
+/* TABLE */
+
+.dx-table-wrapper {
+
+    width: 100%;
+
+    overflow-x: auto;
+
+}
+
+.dx-customer-table {
+
+    width: 100%;
+
+    min-width: 1100px;
+
+    border-collapse: collapse;
+
+}
+
+.dx-customer-table th {
+
+    background: #faf7f2;
+
+    color: #71645b;
+
+    text-align: left;
+
+    padding: 17px 20px;
+
+    font-size: 11px;
+
+    letter-spacing: 1.3px;
+
+    text-transform: uppercase;
+
+    border-bottom: 1px solid #e9e1d8;
+
+}
+
+.dx-customer-table td {
+
+    padding: 18px 20px;
+
+    border-bottom: 1px solid #f0ebe5;
+
+    color: #51463f;
+
+    font-size: 13px;
+
+    vertical-align: middle;
+
+}
+
+.dx-customer-table tbody tr {
+
+    transition: 0.2s;
+
+}
+
+.dx-customer-table tbody tr:hover {
+
+    background: #fdfbf8;
+
+}
+
+
+/* CUSTOMER NAME */
+
+.dx-customer-name {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+}
+
+.dx-avatar {
+
+    width: 43px;
+
+    height: 43px;
+
+    border-radius: 50%;
+
+    background:
+        linear-gradient(
+            135deg,
+            #e8d0a8,
+            #b78a4a
+        );
+
+    color: white;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-weight: 700;
+
+    font-size: 16px;
+
+}
+
+.dx-customer-name strong {
+
+    display: block;
+
+    color: #2c221e;
+
+    font-size: 14px;
+
+}
+
+.dx-customer-name small {
+
+    display: block;
+
+    color: #9b8d83;
+
+    margin-top: 3px;
+
+    font-size: 11px;
+
+}
+
+
+/* EMAIL */
+
+.dx-email {
+
+    color: #5f554e;
+
+}
+
+
+/* PHONE */
+
+.dx-phone {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    color: #5f554e;
+
+}
+
+.dx-phone i {
+
+    color: #b89e6d;
+
+}
+
+
+/* ID */
+
+.dx-id {
+
+    background: #faf6ef;
+
+    color: #9a7138;
+
+    border: 1px solid #eee1cd;
+
+    padding: 6px 10px;
+
+    border-radius: 8px;
+
+    font-weight: 700;
+
+    font-size: 12px;
+
+}
+
+
+/* DATE */
+
+.dx-date {
+
+    color: #7e736c;
+
+    white-space: nowrap;
+
+}
+
+.dx-muted {
+
+    color: #aaa19a;
+
+}
+
+
+/* STATUS */
+
+.dx-status {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    padding: 7px 11px;
+
+    border-radius: 20px;
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+}
+
+.dx-status span {
+
+    width: 7px;
+
+    height: 7px;
+
+    border-radius: 50%;
+
+    background: #4ca765;
+
+}
+
+.dx-status.active {
+
+    background: #edf7f0;
+
+    color: #438452;
+
+}
+
+
+/* VIEW BUTTON */
+
+.dx-view-btn {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 7px;
+
+    padding: 9px 15px;
+
+    border-radius: 8px;
+
+    background: #2c221e;
+
+    color: white;
+
+    text-decoration: none;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    transition: 0.25s;
+
+}
+
+.dx-view-btn:hover {
+
+    background: #b89e6d;
+
+    transform: translateY(-1px);
+
+}
+
+
+/* EMPTY */
+
+.dx-empty-state {
+
+    text-align: center;
+
+    padding: 80px 20px;
+
+}
+
+.dx-empty-icon {
+
+    width: 70px;
+
+    height: 70px;
+
+    margin: 0 auto 18px;
+
+    border-radius: 50%;
+
+    background: #f5eadc;
+
+    color: #b89e6d;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 28px;
+
+}
+
+.dx-empty-state h3 {
+
+    color: #2c221e;
+
+    margin-bottom: 7px;
+
+}
+
+.dx-empty-state p {
+
+    color: #91857c;
+
+    font-size: 13px;
+
+}
+
+
+/* RESPONSIVE */
+
+@media (max-width: 800px) {
+
+    .dx-customers-page {
+
+        padding: 20px 12px 50px;
+
+    }
+
+    .dx-customers-header {
+
+        flex-direction: column;
+
+        align-items: flex-start;
+
+        gap: 18px;
+
+    }
+
+    .dx-customer-stats {
+
+        grid-template-columns: 1fr;
+
+    }
+
+}
+
+</style>
+
+{% endblock %}

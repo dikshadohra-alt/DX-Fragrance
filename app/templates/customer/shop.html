@@ -1,0 +1,2035 @@
+{% extends "base.html" %}
+
+{% block title %}
+DX Fragrance | Shop
+{% endblock %}
+
+{% block content %}
+
+<section class="shop-page">
+
+    <!-- =====================================================
+         SHOP HEADER
+    ====================================================== -->
+
+    <div class="shop-intro">
+
+        <div>
+
+            <span class="shop-eyebrow">
+                THE DX COLLECTION
+            </span>
+
+            <h1>
+                Find Your Signature Scent
+            </h1>
+
+            <p>
+                Explore fragrances crafted to express
+                elegance, confidence and individuality.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         SEARCH
+    ====================================================== -->
+
+    <div class="shop-search-wrapper">
+
+        <div class="shop-search">
+
+            <span class="search-icon">
+                ⌕
+            </span>
+
+            <input
+                type="text"
+                id="productSearch"
+                placeholder="Search fragrances, names, categories..."
+                autocomplete="off"
+            >
+
+            <button
+                type="button"
+                id="clearSearch"
+                class="clear-search"
+            >
+                ×
+            </button>
+
+            <span class="search-arrow">
+                →
+            </span>
+
+        </div>
+
+
+        <!-- SEARCH SUGGESTIONS -->
+
+        <div
+            id="searchSuggestions"
+            class="search-suggestions"
+        ></div>
+
+    </div>
+
+
+    <!-- =====================================================
+         PRODUCTS
+    ====================================================== -->
+
+    {% if products %}
+
+    <div
+        class="products-grid"
+        id="productGrid"
+    >
+
+        {% for product in products %}
+
+        <article
+            class="product-card"
+
+            data-name="{{ product['name'] or '' }}"
+
+            data-category="{{ product['category'] or 'Premium Fragrance' }}"
+
+            data-description="{{ product['description'] or '' }}"
+        >
+
+
+            <!-- =================================================
+                 PRODUCT IMAGE
+            ================================================== -->
+
+            <div class="product-image-wrap">
+
+                <a
+                    href="{{ url_for(
+                        'products.product_detail',
+                        product_id=product['id']
+                    ) }}"
+                    class="product-image-link"
+                >
+
+                    {% if product["image"] %}
+
+                    <img
+                        src="{{ url_for(
+                            'static',
+                            filename='uploads/products/' + product['image']
+                        ) }}"
+                        alt="{{ product['name'] }}"
+                        class="product-image"
+                        loading="lazy"
+                    >
+
+                    {% else %}
+
+                    <div class="no-product-image">
+
+                        <span>
+                            DX
+                        </span>
+
+                        <small>
+                            FRAGRANCE
+                        </small>
+
+                    </div>
+
+                    {% endif %}
+
+                </a>
+
+
+                <!-- WISHLIST -->
+
+                {% if session.get("user_id") %}
+
+                <form
+                    method="POST"
+                    action="{{ url_for(
+                        'wishlist.toggle_wishlist',
+                        product_id=product['id']
+                    ) }}"
+                    class="wishlist-form"
+                >
+
+                    <button
+                        type="submit"
+                        class="wishlist-btn"
+                        title="Wishlist"
+                    >
+                        ♡
+                    </button>
+
+                </form>
+
+                {% else %}
+
+                <a
+                    href="{{ url_for('auth.login') }}"
+                    class="wishlist-btn wishlist-login"
+                    title="Login to add to wishlist"
+                >
+                    ♡
+                </a>
+
+                {% endif %}
+
+
+                <!-- STOCK -->
+
+                {% if (product["stock"] or 0)|int > 0 %}
+
+                <span class="stock-badge">
+
+                    <i></i>
+
+                    In Stock
+
+                </span>
+
+                {% else %}
+
+                <span class="stock-badge sold">
+
+                    Sold Out
+
+                </span>
+
+                {% endif %}
+
+
+                <!-- VIEW -->
+
+                <a
+                    href="{{ url_for(
+                        'products.product_detail',
+                        product_id=product['id']
+                    ) }}"
+                    class="image-view"
+                >
+                    View Fragrance
+                    <span>→</span>
+                </a>
+
+            </div>
+
+
+            <!-- =================================================
+                 PRODUCT INFO
+            ================================================== -->
+
+            <div class="product-details">
+
+                <div class="product-category">
+
+                    {{ product["category"] or "PREMIUM FRAGRANCE" }}
+
+                </div>
+
+
+                <h2>
+
+                    {{ product["name"] }}
+
+                </h2>
+
+
+                <p class="product-description">
+
+                    {{ product["description"] or
+                    "A refined fragrance crafted for your signature." }}
+
+                </p>
+
+
+                <div class="product-line">
+                    <span></span>
+                    <small>DX FRAGRANCE</small>
+                    <span></span>
+                </div>
+
+
+                <div class="product-bottom">
+
+
+                    <div class="price-box">
+
+                        <small>
+                            PRICE
+                        </small>
+
+                        <strong>
+                            ₹{{ product["price"] }}
+                        </strong>
+
+                    </div>
+
+
+                    <a
+                        href="{{ url_for(
+                            'products.product_detail',
+                            product_id=product['id']
+                        ) }}"
+                        class="view-product"
+                    >
+
+                        Explore
+
+                        <span>
+                            →
+                        </span>
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </article>
+
+        {% endfor %}
+
+    </div>
+
+
+    <!-- =====================================================
+         NO SEARCH RESULT
+    ====================================================== -->
+
+    <div
+        id="noSearchResult"
+        class="no-search-result"
+    >
+
+        <div>
+            ✦
+        </div>
+
+        <h3>
+            No Fragrance Found
+        </h3>
+
+        <p>
+            Try another fragrance name or category.
+        </p>
+
+        <button
+            type="button"
+            id="resetSearch"
+        >
+            View All Fragrances
+        </button>
+
+    </div>
+
+
+    {% else %}
+
+
+    <!-- =====================================================
+         EMPTY
+    ====================================================== -->
+
+    <div class="empty-shop">
+
+        <div class="empty-icon">
+            ✦
+        </div>
+
+        <span>
+            DX FRAGRANCE
+        </span>
+
+        <h2>
+            Our Collection is Coming Soon
+        </h2>
+
+        <p>
+            Beautiful signature fragrances are being prepared.
+        </p>
+
+    </div>
+
+    {% endif %}
+
+</section>
+
+
+<style>
+
+/* =========================================================
+   PAGE
+========================================================= */
+
+.shop-page {
+
+    min-height: 100vh;
+
+    padding:
+        42px
+        5%
+        75px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #fcfaf7 0%,
+            #ffffff 55%,
+            #faf7f2 100%
+        );
+
+    color: #292621;
+
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.shop-intro {
+
+    max-width: 1200px;
+
+    margin:
+        0 auto 28px;
+
+}
+
+
+.shop-eyebrow {
+
+    display: block;
+
+    margin-bottom: 9px;
+
+    color: #a27d47;
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    letter-spacing: 3px;
+
+    text-transform: uppercase;
+
+}
+
+
+.shop-intro h1 {
+
+    margin: 0;
+
+    color: #292621;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size: 40px;
+
+    font-weight: 400;
+
+    line-height: 1.15;
+
+}
+
+
+.shop-intro p {
+
+    margin:
+        9px 0 0;
+
+    color: #817a71;
+
+    font-size: 13px;
+
+    line-height: 1.6;
+
+}
+
+
+/* =========================================================
+   SEARCH WRAPPER
+========================================================= */
+
+.shop-search-wrapper {
+
+    position: relative;
+
+    z-index: 100;
+
+    max-width: 1200px;
+
+    margin:
+        0 auto 35px;
+
+}
+
+
+/* =========================================================
+   SEARCH BOX
+========================================================= */
+
+.shop-search {
+
+    height: 52px;
+
+    display: flex;
+
+    align-items: center;
+
+    background: #ffffff;
+
+    border:
+        1px solid
+        #ded6cc;
+
+    border-radius: 12px;
+
+    box-shadow:
+        0 5px 20px
+        rgba(45,35,25,.045);
+
+    transition:
+        .25s ease;
+
+}
+
+
+.shop-search:focus-within {
+
+    border-color: #b18b55;
+
+    box-shadow:
+        0 8px 25px
+        rgba(100,75,40,.08);
+
+}
+
+
+.search-icon {
+
+    margin-left: 17px;
+
+    color: #766e65;
+
+    font-size: 25px;
+
+}
+
+
+.shop-search input {
+
+    flex: 1;
+
+    height: 100%;
+
+    padding:
+        0 13px;
+
+    border: none;
+
+    outline: none;
+
+    background: transparent;
+
+    color: #302c27;
+
+    font-family: inherit;
+
+    font-size: 13px;
+
+}
+
+
+.shop-search input::placeholder {
+
+    color: #aaa39a;
+
+}
+
+
+.clear-search {
+
+    width: 28px;
+
+    height: 28px;
+
+    display: none;
+
+    align-items: center;
+
+    justify-content: center;
+
+    margin-right: 5px;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background: #f1ede7;
+
+    color: #6f675e;
+
+    font-size: 18px;
+
+    cursor: pointer;
+
+}
+
+
+.search-arrow {
+
+    width: 52px;
+
+    height: 52px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 0 12px 12px 0;
+
+    background: #292723;
+
+    color: #ffffff;
+
+    font-size: 19px;
+
+}
+
+
+/* =========================================================
+   SEARCH SUGGESTIONS
+========================================================= */
+
+.search-suggestions {
+
+    position: absolute;
+
+    top:
+        calc(100% + 8px);
+
+    left: 0;
+
+    right: 0;
+
+    display: none;
+
+    max-height: 310px;
+
+    overflow-y: auto;
+
+    background: #ffffff;
+
+    border:
+        1px solid
+        #e4dcd2;
+
+    border-radius: 13px;
+
+    box-shadow:
+        0 18px 45px
+        rgba(35,28,20,.13);
+
+}
+
+
+.search-suggestions.show {
+
+    display: block;
+
+}
+
+
+.search-heading {
+
+    padding:
+        12px 16px 9px;
+
+    border-bottom:
+        1px solid
+        #f0ebe5;
+
+    color: #a17d49;
+
+    font-size: 9px;
+
+    font-weight: 700;
+
+    letter-spacing: 2px;
+
+    text-transform: uppercase;
+
+}
+
+
+.search-item {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding:
+        10px 13px;
+
+    border-bottom:
+        1px solid
+        #f2ede7;
+
+    color: #28241f;
+
+    text-decoration: none;
+
+    transition:
+        background .2s ease;
+
+}
+
+
+.search-item:hover {
+
+    background: #faf7f2;
+
+}
+
+
+.search-item-image {
+
+    width: 48px;
+
+    height: 48px;
+
+    flex-shrink: 0;
+
+    overflow: hidden;
+
+    border-radius: 8px;
+
+    background: #f4ede3;
+
+}
+
+
+.search-item-image img {
+
+    width: 100%;
+
+    height: 100%;
+
+    object-fit: cover;
+
+}
+
+
+.search-item-info {
+
+    min-width: 0;
+
+    flex: 1;
+
+}
+
+
+.search-item-name {
+
+    margin: 0 0 4px;
+
+    overflow: hidden;
+
+    color: #292621;
+
+    font-family:
+        Georgia,
+        serif;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    white-space: nowrap;
+
+    text-overflow: ellipsis;
+
+}
+
+
+.search-item-meta {
+
+    display: flex;
+
+    gap: 7px;
+
+    color: #999;
+
+    font-size: 10px;
+
+}
+
+
+.search-item-category {
+
+    color: #a27d47;
+
+    font-weight: 700;
+
+    text-transform: uppercase;
+
+}
+
+
+.search-item-arrow {
+
+    color: #9d7947;
+
+    font-size: 17px;
+
+}
+
+
+/* =========================================================
+   PRODUCTS GRID
+========================================================= */
+
+.products-grid {
+
+    max-width: 1200px;
+
+    margin: 0 auto;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 24px;
+
+}
+
+
+/* =========================================================
+   CARD
+========================================================= */
+
+.product-card {
+
+    overflow: hidden;
+
+    background: #ffffff;
+
+    border:
+        1px solid
+        #e6ded4;
+
+    border-radius: 16px;
+
+    box-shadow:
+        0 7px 25px
+        rgba(40,30,20,.035);
+
+    transition:
+        transform .3s ease,
+        box-shadow .3s ease;
+
+}
+
+
+.product-card:hover {
+
+    transform:
+        translateY(-5px);
+
+    box-shadow:
+        0 18px 40px
+        rgba(40,30,20,.09);
+
+}
+
+
+/* =========================================================
+   IMAGE
+========================================================= */
+
+.product-image-wrap {
+
+    position: relative;
+
+    height: 350px;
+
+    overflow: hidden;
+
+    background:
+        linear-gradient(
+            145deg,
+            #f1e8dc,
+            #fbf9f5
+        );
+
+}
+
+
+.product-image-link {
+
+    width: 100%;
+
+    height: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+}
+
+
+.product-image {
+
+    width: 100%;
+
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+
+    object-position: center;
+
+    transition:
+        transform .55s ease;
+
+}
+
+
+.product-card:hover
+.product-image {
+
+    transform:
+        scale(1.035);
+
+}
+
+
+/* =========================================================
+   FALLBACK
+========================================================= */
+
+.no-product-image {
+
+    width: 100%;
+
+    height: 100%;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    color: #a17b45;
+
+}
+
+
+.no-product-image span {
+
+    font-family:
+        Georgia,
+        serif;
+
+    font-size: 60px;
+
+}
+
+
+.no-product-image small {
+
+    margin-top: 5px;
+
+    font-size: 8px;
+
+    letter-spacing: 4px;
+
+}
+
+
+/* =========================================================
+   WISHLIST
+========================================================= */
+
+.wishlist-form {
+
+    position: absolute;
+
+    top: 14px;
+
+    right: 14px;
+
+    z-index: 10;
+
+    margin: 0;
+
+}
+
+
+.wishlist-btn {
+
+    width: 43px;
+
+    height: 43px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border:
+        1px solid
+        rgba(225,216,205,.9);
+
+    border-radius: 50%;
+
+    background:
+        rgba(255,255,255,.95);
+
+    color: #554c42;
+
+    font-size: 25px;
+
+    text-decoration: none;
+
+    cursor: pointer;
+
+    transition: .25s ease;
+
+}
+
+
+.wishlist-btn:hover {
+
+    background: #292723;
+
+    color: #ffffff;
+
+    transform: scale(1.06);
+
+}
+
+
+/* =========================================================
+   STOCK
+========================================================= */
+
+.stock-badge {
+
+    position: absolute;
+
+    left: 14px;
+
+    bottom: 14px;
+
+    padding:
+        7px 11px;
+
+    border-radius: 20px;
+
+    background:
+        rgba(255,255,255,.94);
+
+    color: #39714c;
+
+    font-size: 9px;
+
+    font-weight: 700;
+
+    letter-spacing: 1px;
+
+    text-transform: uppercase;
+
+}
+
+
+.stock-badge i {
+
+    display: inline-block;
+
+    width: 6px;
+
+    height: 6px;
+
+    margin-right: 6px;
+
+    border-radius: 50%;
+
+    background: #39714c;
+
+}
+
+
+.stock-badge.sold {
+
+    color: #955048;
+
+}
+
+
+/* =========================================================
+   IMAGE VIEW
+========================================================= */
+
+.image-view {
+
+    position: absolute;
+
+    left: 50%;
+
+    bottom: 15px;
+
+    transform:
+        translate(-50%, 15px);
+
+    opacity: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    padding:
+        9px 15px;
+
+    border-radius: 30px;
+
+    background:
+        rgba(255,255,255,.96);
+
+    color: #292621;
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    text-decoration: none;
+
+    white-space: nowrap;
+
+    transition: .3s ease;
+
+}
+
+
+.product-card:hover
+.image-view {
+
+    opacity: 1;
+
+    transform:
+        translate(-50%, 0);
+
+}
+
+
+.image-view span {
+
+    color: #9f7945;
+
+    font-size: 14px;
+
+}
+
+
+/* =========================================================
+   DETAILS
+========================================================= */
+
+.product-details {
+
+    padding:
+        19px 20px 20px;
+
+}
+
+
+.product-category {
+
+    color: #a27d47;
+
+    font-size: 9px;
+
+    font-weight: 700;
+
+    letter-spacing: 1.8px;
+
+    text-transform: uppercase;
+
+}
+
+
+.product-details h2 {
+
+    margin:
+        8px 0 7px;
+
+    color: #292621;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size: 23px;
+
+    font-weight: 500;
+
+    line-height: 1.2;
+
+}
+
+
+.product-description {
+
+    height: 38px;
+
+    margin: 0;
+
+    overflow: hidden;
+
+    color: #817a72;
+
+    font-size: 12px;
+
+    line-height: 1.6;
+
+}
+
+
+/* =========================================================
+   LINE
+========================================================= */
+
+.product-line {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    margin:
+        14px 0;
+
+}
+
+
+.product-line span {
+
+    width: 22px;
+
+    height: 1px;
+
+    background: #d8c8b1;
+
+}
+
+
+.product-line small {
+
+    color: #aa8a5d;
+
+    font-size: 7px;
+
+    font-weight: 700;
+
+    letter-spacing: 1.4px;
+
+}
+
+
+/* =========================================================
+   BOTTOM
+========================================================= */
+
+.product-bottom {
+
+    display: flex;
+
+    align-items: flex-end;
+
+    justify-content: space-between;
+
+    padding-top: 13px;
+
+    border-top:
+        1px solid
+        #eee8e0;
+
+    gap: 10px;
+
+}
+
+
+.price-box small {
+
+    display: block;
+
+    margin-bottom: 3px;
+
+    color: #aaa199;
+
+    font-size: 7px;
+
+    font-weight: 700;
+
+    letter-spacing: 1px;
+
+}
+
+
+.price-box strong {
+
+    color: #25221e;
+
+    font-size: 19px;
+
+    font-weight: 600;
+
+}
+
+
+.view-product {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 5px;
+
+    color: #987345;
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    text-decoration: none;
+
+}
+
+
+.view-product:hover {
+
+    color: #292621;
+
+}
+
+
+.view-product span {
+
+    font-size: 15px;
+
+}
+
+
+/* =========================================================
+   NO RESULT
+========================================================= */
+
+.no-search-result {
+
+    display: none;
+
+    max-width: 500px;
+
+    margin: 45px auto;
+
+    padding: 45px 25px;
+
+    text-align: center;
+
+    background: #ffffff;
+
+    border:
+        1px solid
+        #e6ded4;
+
+    border-radius: 15px;
+
+}
+
+
+.no-search-result > div {
+
+    color: #a17d49;
+
+    font-size: 30px;
+
+}
+
+
+.no-search-result h3 {
+
+    margin:
+        10px 0 7px;
+
+    font-family:
+        Georgia,
+        serif;
+
+    font-size: 24px;
+
+    font-weight: 500;
+
+}
+
+
+.no-search-result p {
+
+    margin:
+        0 0 18px;
+
+    color: #888;
+
+    font-size: 12px;
+
+}
+
+
+.no-search-result button {
+
+    padding:
+        10px 17px;
+
+    border: none;
+
+    border-radius: 7px;
+
+    background: #292723;
+
+    color: white;
+
+    cursor: pointer;
+
+}
+
+
+/* =========================================================
+   EMPTY
+========================================================= */
+
+.empty-shop {
+
+    max-width: 580px;
+
+    margin: 50px auto;
+
+    padding: 55px 25px;
+
+    text-align: center;
+
+    background: #ffffff;
+
+    border:
+        1px solid
+        #e6ded4;
+
+    border-radius: 16px;
+
+}
+
+
+.empty-icon {
+
+    color: #a27d47;
+
+    font-size: 35px;
+
+}
+
+
+.empty-shop > span {
+
+    color: #a27d47;
+
+    font-size: 9px;
+
+    letter-spacing: 3px;
+
+}
+
+
+.empty-shop h2 {
+
+    margin:
+        10px 0;
+
+    font-family:
+        Georgia,
+        serif;
+
+    font-size: 27px;
+
+    font-weight: 500;
+
+}
+
+
+.empty-shop p {
+
+    color: #888;
+
+    font-size: 13px;
+
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 950px) {
+
+    .products-grid {
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+    }
+
+}
+
+
+@media (max-width: 650px) {
+
+    .shop-page {
+
+        padding:
+            32px 16px 55px;
+
+    }
+
+
+    .shop-intro h1 {
+
+        font-size: 32px;
+
+    }
+
+
+    .shop-intro p {
+
+        font-size: 12px;
+
+    }
+
+
+    .products-grid {
+
+        grid-template-columns: 1fr;
+
+        gap: 18px;
+
+    }
+
+
+    .product-image-wrap {
+
+        height: 340px;
+
+    }
+
+
+    .image-view {
+
+        opacity: 1;
+
+        transform:
+            translate(-50%, 0);
+
+    }
+
+}
+
+</style>
+
+
+<!-- =========================================================
+     SEARCH JAVASCRIPT
+========================================================= -->
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const input =
+            document.getElementById(
+                "productSearch"
+            );
+
+        const clear =
+            document.getElementById(
+                "clearSearch"
+            );
+
+        const suggestions =
+            document.getElementById(
+                "searchSuggestions"
+            );
+
+        const grid =
+            document.getElementById(
+                "productGrid"
+            );
+
+        const noResult =
+            document.getElementById(
+                "noSearchResult"
+            );
+
+        const reset =
+            document.getElementById(
+                "resetSearch"
+            );
+
+
+        if (!input || !grid) {
+            return;
+        }
+
+
+        const cards =
+            Array.from(
+                grid.querySelectorAll(
+                    ".product-card"
+                )
+            );
+
+
+        /* ==========================================
+           PRODUCT DATA
+        ========================================== */
+
+        const productData =
+            cards.map(function (card) {
+
+                const image =
+                    card.querySelector(
+                        ".product-image"
+                    );
+
+                const link =
+                    card.querySelector(
+                        ".product-image-link"
+                    );
+
+                return {
+
+                    card: card,
+
+                    name:
+                        card.dataset.name || "",
+
+                    category:
+                        card.dataset.category || "",
+
+                    description:
+                        card.dataset.description || "",
+
+                    image:
+                        image
+                            ? image.src
+                            : "",
+
+                    url:
+                        link
+                            ? link.href
+                            : "#"
+
+                };
+
+            });
+
+
+        /* ==========================================
+           SEARCH PRODUCTS
+        ========================================== */
+
+        function searchProducts(value) {
+
+            const query =
+                value
+                    .trim()
+                    .toLowerCase();
+
+
+            let count = 0;
+
+
+            productData.forEach(
+                function (product) {
+
+                    const text =
+                        (
+                            product.name +
+                            " " +
+                            product.category +
+                            " " +
+                            product.description
+                        )
+                        .toLowerCase();
+
+
+                    const match =
+                        !query ||
+                        text.includes(query);
+
+
+                    if (match) {
+
+                        product.card.style.display =
+                            "";
+
+                        count++;
+
+                    } else {
+
+                        product.card.style.display =
+                            "none";
+
+                    }
+
+                }
+            );
+
+
+            if (noResult) {
+
+                noResult.style.display =
+                    query && count === 0
+                        ? "block"
+                        : "none";
+
+            }
+
+
+            if (clear) {
+
+                clear.style.display =
+                    query
+                        ? "flex"
+                        : "none";
+
+            }
+
+        }
+
+
+        /* ==========================================
+           SUGGESTIONS
+        ========================================== */
+
+        function showSuggestions(value) {
+
+            const query =
+                value
+                    .trim()
+                    .toLowerCase();
+
+
+            suggestions.innerHTML = "";
+
+
+            if (!query) {
+
+                suggestions.classList.remove(
+                    "show"
+                );
+
+                return;
+
+            }
+
+
+            const matches =
+                productData
+                    .filter(
+                        function (product) {
+
+                            const text =
+                                (
+                                    product.name +
+                                    " " +
+                                    product.category +
+                                    " " +
+                                    product.description
+                                )
+                                .toLowerCase();
+
+                            return text.includes(
+                                query
+                            );
+
+                        }
+                    )
+                    .slice(0, 6);
+
+
+            if (!matches.length) {
+
+                suggestions.innerHTML = `
+
+                    <div class="search-heading">
+                        SEARCH
+                    </div>
+
+                    <div
+                        style="
+                            padding:18px;
+                            text-align:center;
+                            color:#888;
+                            font-size:12px;
+                        "
+                    >
+                        No matching fragrance found.
+                    </div>
+
+                `;
+
+                suggestions.classList.add(
+                    "show"
+                );
+
+                return;
+
+            }
+
+
+            const heading =
+                document.createElement(
+                    "div"
+                );
+
+            heading.className =
+                "search-heading";
+
+            heading.textContent =
+                "Matching Fragrances";
+
+            suggestions.appendChild(
+                heading
+            );
+
+
+            matches.forEach(
+                function (product) {
+
+                    const item =
+                        document.createElement(
+                            "a"
+                        );
+
+                    item.className =
+                        "search-item";
+
+                    item.href =
+                        product.url;
+
+
+                    item.innerHTML = `
+
+                        <div class="search-item-image">
+
+                            ${
+                                product.image
+
+                                ? `
+                                    <img
+                                        src="${product.image}"
+                                        alt="${product.name}"
+                                    >
+                                  `
+
+                                : ""
+                            }
+
+                        </div>
+
+
+                        <div class="search-item-info">
+
+                            <p class="search-item-name">
+                                ${product.name}
+                            </p>
+
+                            <div class="search-item-meta">
+
+                                <span class="search-item-category">
+                                    ${product.category}
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <span class="search-item-arrow">
+                            →
+                        </span>
+
+                    `;
+
+
+                    suggestions.appendChild(
+                        item
+                    );
+
+                }
+            );
+
+
+            suggestions.classList.add(
+                "show"
+            );
+
+        }
+
+
+        /* ==========================================
+           INPUT
+        ========================================== */
+
+        input.addEventListener(
+            "input",
+            function () {
+
+                searchProducts(
+                    this.value
+                );
+
+                showSuggestions(
+                    this.value
+                );
+
+            }
+        );
+
+
+        /* ==========================================
+           CLEAR
+        ========================================== */
+
+        if (clear) {
+
+            clear.addEventListener(
+                "click",
+                function () {
+
+                    input.value = "";
+
+                    searchProducts("");
+
+                    suggestions.classList.remove(
+                        "show"
+                    );
+
+                    input.focus();
+
+                }
+            );
+
+        }
+
+
+        /* ==========================================
+           RESET
+        ========================================== */
+
+        if (reset) {
+
+            reset.addEventListener(
+                "click",
+                function () {
+
+                    input.value = "";
+
+                    searchProducts("");
+
+                    suggestions.classList.remove(
+                        "show"
+                    );
+
+                }
+            );
+
+        }
+
+
+        /* ==========================================
+           CLICK OUTSIDE
+        ========================================== */
+
+        document.addEventListener(
+            "click",
+            function (event) {
+
+                if (
+                    !event.target.closest(
+                        ".shop-search-wrapper"
+                    )
+                ) {
+
+                    suggestions.classList.remove(
+                        "show"
+                    );
+
+                }
+
+            }
+        );
+
+
+        /* ==========================================
+           ESC
+        ========================================== */
+
+        input.addEventListener(
+            "keydown",
+            function (event) {
+
+                if (
+                    event.key === "Escape"
+                ) {
+
+                    suggestions.classList.remove(
+                        "show"
+                    );
+
+                }
+
+            }
+        );
+
+    }
+);
+
+</script>
+
+{% endblock %}

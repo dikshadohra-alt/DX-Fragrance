@@ -1,0 +1,1256 @@
+{% extends "base.html" %}
+
+{% block title %}
+DX Fragrance | Login
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+/* =========================================================
+   DX FRAGRANCE — LOGIN PAGE
+   ========================================================= */
+
+.login-page {
+
+    min-height: calc(100vh - 150px);
+
+    padding: 70px 7%;
+
+    background:
+        radial-gradient(
+            circle at 15% 20%,
+            rgba(243, 161, 181, 0.10),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 90% 80%,
+            rgba(184, 158, 109, 0.12),
+            transparent 30%
+        ),
+        #faf8f4;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+/* =========================================================
+   MAIN LOGIN CARD
+   ========================================================= */
+
+.login-container {
+
+    width: 100%;
+    max-width: 1050px;
+    min-height: 580px;
+
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+
+    background: rgba(255,255,255,0.94);
+
+    border: 1px solid #e8e0d4;
+
+    border-radius: 24px;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 25px 70px rgba(40,30,20,0.10);
+}
+
+
+/* =========================================================
+   LEFT BRAND SECTION
+   ========================================================= */
+
+.login-visual {
+
+    position: relative;
+
+    min-height: 580px;
+
+    overflow: hidden;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background:
+        linear-gradient(
+            145deg,
+            #211b18 0%,
+            #30251f 45%,
+            #171312 100%
+        );
+}
+
+
+/* GOLD GLOW */
+
+.login-visual::before {
+
+    content: "";
+
+    position: absolute;
+
+    width: 360px;
+    height: 360px;
+
+    border-radius: 50%;
+
+    background:
+        rgba(184,158,109,0.16);
+
+    filter: blur(70px);
+}
+
+
+/* PINK GLOW */
+
+.login-visual::after {
+
+    content: "";
+
+    position: absolute;
+
+    width: 240px;
+    height: 240px;
+
+    border-radius: 50%;
+
+    background:
+        rgba(243,161,181,0.12);
+
+    right: -70px;
+    bottom: -50px;
+
+    filter: blur(55px);
+}
+
+
+/* =========================================================
+   BRAND CONTENT
+   ========================================================= */
+
+.perfume-display {
+
+    position: relative;
+    z-index: 2;
+
+    width: 100%;
+
+    padding: 45px 30px;
+
+    text-align: center;
+}
+
+
+/* =========================================================
+   DX LOGO
+   ========================================================= */
+
+.login-logo-mark {
+
+    width: 72px;
+    height: 72px;
+
+    margin: 0 auto 24px;
+
+    border: 1px solid rgba(216,181,111,0.8);
+
+    transform: rotate(45deg);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.login-logo-mark span {
+
+    transform: rotate(-45deg);
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size: 25px;
+
+    color: #d8b56f;
+
+    letter-spacing: 2px;
+}
+
+
+/* =========================================================
+   BRAND NAME
+   ========================================================= */
+
+.login-brand {
+
+    color: #f5e6c8;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size: 31px;
+
+    letter-spacing: 5px;
+
+    margin-bottom: 8px;
+}
+
+
+.login-tagline {
+
+    color: #c9ad78;
+
+    font-size: 10px;
+
+    letter-spacing: 4px;
+
+    text-transform: uppercase;
+
+    margin-bottom: 45px;
+}
+
+
+/* =========================================================
+   PERFUME BOTTLE
+   ========================================================= */
+
+.perfume-bottle {
+
+    position: relative;
+
+    width: 155px;
+    height: 205px;
+
+    margin: 0 auto 35px;
+
+    border-radius:
+        18px
+        18px
+        25px
+        25px;
+
+    border:
+        2px solid
+        rgba(216,181,111,0.7);
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255,255,255,0.30),
+            rgba(211,171,92,0.18),
+            rgba(255,255,255,0.08)
+        );
+
+    box-shadow:
+        inset 0 0 25px rgba(255,255,255,0.08),
+        0 20px 40px rgba(0,0,0,0.35);
+}
+
+
+/* PERFUME LIQUID */
+
+.perfume-bottle::before {
+
+    content: "";
+
+    position: absolute;
+
+    left: 8px;
+    right: 8px;
+    bottom: 8px;
+
+    height: 125px;
+
+    border-radius:
+        12px
+        12px
+        18px
+        18px;
+
+    background:
+        linear-gradient(
+            to top,
+            rgba(185,133,44,0.65),
+            rgba(236,197,120,0.18)
+        );
+}
+
+
+/* BOTTLE NECK */
+
+.perfume-neck {
+
+    position: absolute;
+
+    width: 66px;
+    height: 38px;
+
+    left: 50%;
+    top: -28px;
+
+    transform:
+        translateX(-50%);
+
+    border:
+        2px solid
+        rgba(216,181,111,0.8);
+
+    border-bottom: none;
+
+    background: #29201b;
+}
+
+
+/* BOTTLE CAP */
+
+.perfume-cap {
+
+    position: absolute;
+
+    width: 78px;
+    height: 30px;
+
+    left: 50%;
+    top: -55px;
+
+    transform:
+        translateX(-50%);
+
+    border-radius:
+        8px
+        8px
+        4px
+        4px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #9b6e26,
+            #e5bd68,
+            #8c6222
+        );
+
+    box-shadow:
+        0 7px 12px rgba(0,0,0,0.35);
+}
+
+
+/* BOTTLE LABEL */
+
+.perfume-label {
+
+    position: absolute;
+
+    z-index: 2;
+
+    width: 105px;
+
+    left: 50%;
+    top: 65px;
+
+    transform:
+        translateX(-50%);
+
+    padding: 13px 5px;
+
+    border:
+        1px solid #caa45d;
+
+    background:
+        rgba(25,20,17,0.92);
+}
+
+
+.perfume-label strong {
+
+    display: block;
+
+    color: #dcb66d;
+
+    font-family:
+        Georgia,
+        serif;
+
+    font-size: 23px;
+
+    letter-spacing: 3px;
+}
+
+
+.perfume-label small {
+
+    display: block;
+
+    color: #d9c6a2;
+
+    font-size: 7px;
+
+    letter-spacing: 2px;
+
+    margin-top: 5px;
+}
+
+
+/* =========================================================
+   LEFT TEXT
+   ========================================================= */
+
+.login-visual-text {
+
+    color: #e8dfd2;
+
+    font-family:
+        Georgia,
+        serif;
+
+    font-size: 20px;
+
+    font-style: italic;
+
+    margin-top: 10px;
+}
+
+
+.login-visual-subtext {
+
+    color: #a99b8c;
+
+    font-size: 12px;
+
+    letter-spacing: 1px;
+
+    margin-top: 10px;
+}
+
+
+/* =========================================================
+   RIGHT LOGIN FORM
+   ========================================================= */
+
+.login-form-area {
+
+    padding: 70px 65px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    background: #fffdf9;
+}
+
+
+/* SMALL HEADING */
+
+.login-eyebrow {
+
+    color: #b89e6d;
+
+    font-size: 11px;
+
+    letter-spacing: 3px;
+
+    text-transform: uppercase;
+
+    margin-bottom: 14px;
+}
+
+
+/* MAIN HEADING */
+
+.login-form-area h1 {
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size: 45px;
+
+    font-weight: 500;
+
+    line-height: 1.1;
+
+    color: #171513;
+
+    margin:
+        0 0 14px;
+}
+
+
+/* DESCRIPTION */
+
+.login-description {
+
+    color: #777;
+
+    font-size: 14px;
+
+    line-height: 1.7;
+
+    margin-bottom: 35px;
+}
+
+
+/* =========================================================
+   FORM
+   ========================================================= */
+
+.login-form {
+
+    width: 100%;
+}
+
+
+/* LABEL */
+
+.login-form label {
+
+    display: block;
+
+    color: #333;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    margin-bottom: 8px;
+}
+
+
+/* INPUT GROUP */
+
+.input-group {
+
+    position: relative;
+
+    margin-bottom: 22px;
+}
+
+
+/* INPUT ICON */
+
+.input-icon {
+
+    position: absolute;
+
+    left: 16px;
+
+    top: 50%;
+
+    transform:
+        translateY(-50%);
+
+    color: #b89e6d;
+
+    font-size: 16px;
+
+    pointer-events: none;
+
+    z-index: 2;
+}
+
+
+/* INPUT */
+
+.login-form input {
+
+    width: 100%;
+
+    height: 52px;
+
+    box-sizing: border-box;
+
+    padding:
+        0
+        52px
+        0
+        45px;
+
+    border:
+        1px solid #ded7cc;
+
+    border-radius: 10px;
+
+    background: #ffffff;
+
+    color: #222;
+
+    font-size: 14px;
+
+    outline: none;
+
+    transition:
+        all 0.25s ease;
+}
+
+
+.login-form input::placeholder {
+
+    color: #aaa;
+}
+
+
+.login-form input:focus {
+
+    border-color: #c7a96b;
+
+    box-shadow:
+        0 0 0 4px
+        rgba(199,169,107,0.10);
+}
+
+
+/* =========================================================
+   PASSWORD
+   ========================================================= */
+
+.password-row {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-bottom: 8px;
+}
+
+
+.password-row label {
+
+    margin: 0;
+}
+
+
+/* =========================================================
+   PASSWORD EYE BUTTON
+   ========================================================= */
+
+.password-eye {
+
+    position: absolute;
+
+    right: 10px;
+
+    top: 50%;
+
+    transform:
+        translateY(-50%);
+
+    width: 38px;
+
+    height: 38px;
+
+    border: none;
+
+    background: transparent;
+
+    color: #b89e6d;
+
+    font-size: 17px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    cursor: pointer;
+
+    border-radius: 50%;
+
+    transition:
+        all 0.25s ease;
+
+    z-index: 3;
+}
+
+
+.password-eye:hover {
+
+    background: #fff2f6;
+
+    color: #d889a0;
+
+    transform:
+        translateY(-50%)
+        scale(1.08);
+}
+
+
+/* =========================================================
+   LOGIN BUTTON
+   ========================================================= */
+
+.login-button {
+
+    width: 100%;
+
+    height: 54px;
+
+    margin-top: 8px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    cursor: pointer;
+
+    background:
+        linear-gradient(
+            135deg,
+            #181614,
+            #302821
+        );
+
+    color: #ffffff;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    letter-spacing: 1.2px;
+
+    transition:
+        all 0.3s ease;
+
+    box-shadow:
+        0 10px 25px
+        rgba(30,25,20,0.16);
+}
+
+
+.login-button:hover {
+
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+        0 14px 30px
+        rgba(30,25,20,0.22);
+}
+
+
+.login-button span {
+
+    color: #e2bd70;
+
+    font-size: 17px;
+}
+
+
+/* =========================================================
+   DIVIDER
+   ========================================================= */
+
+.login-divider {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    margin:
+        27px 0 20px;
+}
+
+
+.login-divider::before,
+.login-divider::after {
+
+    content: "";
+
+    height: 1px;
+
+    flex: 1;
+
+    background: #e7dfd4;
+}
+
+
+.login-divider span {
+
+    color: #b89e6d;
+
+    font-size: 10px;
+
+    letter-spacing: 2px;
+}
+
+
+/* =========================================================
+   CREATE ACCOUNT
+   ========================================================= */
+
+.create-account {
+
+    text-align: center;
+
+    margin-top: 5px;
+
+    color: #777;
+
+    font-size: 13px;
+}
+
+
+.create-account a {
+
+    color: #d889a0;
+
+    font-weight: 600;
+
+    text-decoration: none;
+
+    transition:
+        color 0.2s ease;
+}
+
+
+.create-account a:hover {
+
+    color: #b9677e;
+
+    text-decoration: underline;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 850px) {
+
+    .login-page {
+
+        padding:
+            45px
+            20px;
+    }
+
+
+    .login-container {
+
+        grid-template-columns: 1fr;
+
+        max-width: 560px;
+    }
+
+
+    .login-visual {
+
+        min-height: 390px;
+    }
+
+
+    .login-form-area {
+
+        padding:
+            50px
+            35px;
+    }
+
+
+    .perfume-bottle {
+
+        transform: scale(0.82);
+
+        margin-bottom: 5px;
+    }
+
+
+    .login-tagline {
+
+        margin-bottom: 15px;
+    }
+
+}
+
+
+@media (max-width: 500px) {
+
+    .login-page {
+
+        padding:
+            25px
+            14px;
+    }
+
+
+    .login-container {
+
+        border-radius: 18px;
+    }
+
+
+    .login-visual {
+
+        min-height: 350px;
+    }
+
+
+    .login-form-area {
+
+        padding:
+            40px
+            24px;
+    }
+
+
+    .login-form-area h1 {
+
+        font-size: 36px;
+    }
+
+
+    .login-brand {
+
+        font-size: 25px;
+
+        letter-spacing: 3px;
+    }
+
+}
+
+</style>
+
+
+<!-- =========================================================
+     LOGIN PAGE
+     ========================================================= -->
+
+<section class="login-page">
+
+    <div class="login-container">
+
+
+        <!-- =================================================
+             LEFT BRAND / PERFUME SIDE
+             ================================================= -->
+
+        <div class="login-visual">
+
+            <div class="perfume-display">
+
+
+                <!-- DX LOGO -->
+
+                <div class="login-logo-mark">
+
+                    <span>
+                        DX
+                    </span>
+
+                </div>
+
+
+                <!-- BRAND -->
+
+                <div class="login-brand">
+                    DX FRAGRANCE
+                </div>
+
+
+                <div class="login-tagline">
+                    YOUR SCENT · YOUR SIGNATURE
+                </div>
+
+
+                <!-- PERFUME BOTTLE -->
+
+                <div class="perfume-bottle">
+
+                    <div class="perfume-neck"></div>
+
+                    <div class="perfume-cap"></div>
+
+
+                    <div class="perfume-label">
+
+                        <strong>
+                            DX
+                        </strong>
+
+                        <small>
+                            FRAGRANCE
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <div class="login-visual-text">
+                    "A scent that speaks for you."
+                </div>
+
+
+                <div class="login-visual-subtext">
+                    DISCOVER YOUR SIGNATURE
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             RIGHT LOGIN SIDE
+             ================================================= -->
+
+        <div class="login-form-area">
+
+
+            <p class="login-eyebrow">
+                WELCOME TO DX FRAGRANCE
+            </p>
+
+
+            <h1>
+                Welcome Back.
+            </h1>
+
+
+            <p class="login-description">
+                Login to continue your fragrance journey
+                and discover scents made for you.
+            </p>
+
+
+            <!-- =================================================
+                 LOGIN FORM
+                 ================================================= -->
+
+            <form
+                method="POST"
+                action="{{ url_for('auth.login') }}"
+                class="login-form"
+            >
+
+
+                <!-- EMAIL -->
+
+                <label for="email">
+                    Email Address
+                </label>
+
+
+                <div class="input-group">
+
+                    <span class="input-icon">
+                        ✉
+                    </span>
+
+
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="Enter your email address"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- PASSWORD -->
+
+                <div class="password-row">
+
+                    <label for="password">
+                        Password
+                    </label>
+
+                </div>
+
+
+                <div class="input-group">
+
+                    <span class="input-icon">
+                        🔒
+                    </span>
+
+
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Enter your password"
+                        required
+                    >
+
+
+                    <!-- EYE BUTTON -->
+
+                    <button
+                        type="button"
+                        class="password-eye"
+                        id="togglePassword"
+                        aria-label="Show password"
+                        title="Show password"
+                    >
+                        👁️
+                    </button>
+
+                </div>
+
+
+                <!-- LOGIN BUTTON -->
+
+                <button
+                    type="submit"
+                    class="login-button"
+                >
+
+                    Login to DX Fragrance
+
+                    <span>
+                        →
+                    </span>
+
+                </button>
+
+
+            </form>
+
+
+            <!-- DIVIDER -->
+
+            <div class="login-divider">
+
+                <span>
+                    OR
+                </span>
+
+            </div>
+
+
+            <!-- REGISTER -->
+
+            <div class="create-account">
+
+                Don't have an account?
+
+                <a
+                    href="{{ url_for('auth.register') }}"
+                >
+                    Create Account
+                </a>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     PASSWORD SHOW / HIDE
+     ========================================================= -->
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+
+        const passwordInput =
+            document.getElementById("password");
+
+
+        const togglePassword =
+            document.getElementById("togglePassword");
+
+
+        if (
+            !passwordInput ||
+            !togglePassword
+        ) {
+
+            return;
+
+        }
+
+
+        togglePassword.addEventListener(
+            "click",
+            function () {
+
+
+                if (
+                    passwordInput.type === "password"
+                ) {
+
+
+                    passwordInput.type = "text";
+
+
+                    togglePassword.textContent =
+                        "🙈";
+
+
+                    togglePassword.setAttribute(
+                        "aria-label",
+                        "Hide password"
+                    );
+
+
+                    togglePassword.setAttribute(
+                        "title",
+                        "Hide password"
+                    );
+
+
+                } else {
+
+
+                    passwordInput.type =
+                        "password";
+
+
+                    togglePassword.textContent =
+                        "👁️";
+
+
+                    togglePassword.setAttribute(
+                        "aria-label",
+                        "Show password"
+                    );
+
+
+                    togglePassword.setAttribute(
+                        "title",
+                        "Show password"
+                    );
+
+                }
+
+            }
+        );
+
+    }
+);
+
+</script>
+
+{% endblock %}

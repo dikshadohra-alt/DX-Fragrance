@@ -1,0 +1,1185 @@
+{% extends "base.html" %}
+
+{% block title %}
+DX Fragrance | Shopping Cart
+{% endblock %}
+
+
+{% block content %}
+
+<section class="dx-cart-page">
+
+
+    <!-- =========================================
+         PAGE HEADER
+    ========================================== -->
+
+    <div class="cart-header">
+
+        <span class="cart-label">
+            DX FRAGRANCE
+        </span>
+
+        <h1>
+            Your Shopping Cart
+        </h1>
+
+        <p>
+            Review your selected fragrances before checkout.
+        </p>
+
+    </div>
+
+
+
+    <!-- =========================================
+         CART HAS PRODUCTS
+    ========================================== -->
+
+    {% if cart_items %}
+
+    <div class="cart-container">
+
+
+        <!-- =====================================
+             PRODUCTS
+        ====================================== -->
+
+        <div class="cart-products">
+
+            {% for item in cart_items %}
+
+            <div class="cart-item">
+
+
+                <!-- PRODUCT IMAGE -->
+
+                <div class="cart-image">
+
+                    {% if item["product"]["image"] %}
+
+                    <img
+                        src="{{ url_for(
+                            'static',
+                            filename='uploads/products/' + item['product']['image']
+                        ) }}"
+                        alt="{{ item['product']['name'] }}"
+                    >
+
+                    {% else %}
+
+                    <div class="no-image">
+                        DX
+                    </div>
+
+                    {% endif %}
+
+                </div>
+
+
+
+                <!-- PRODUCT DETAILS -->
+
+                <div class="cart-item-info">
+
+
+                    <span class="product-category">
+                        {{ item["product"]["category"] }}
+                    </span>
+
+
+                    <h2>
+                        {{ item["product"]["name"] }}
+                    </h2>
+
+
+                    <strong class="product-price">
+                        ₹{{ item["product"]["price"] }}
+                    </strong>
+
+
+
+                    <!-- QUANTITY -->
+
+                    <form
+                        method="POST"
+                        action="{{ url_for(
+                            'cart.update_cart',
+                            product_id=item['product']['id']
+                        ) }}"
+                        class="quantity-form"
+                    >
+
+                        <label>
+                            Quantity
+                        </label>
+
+                        <div class="quantity-box">
+
+                            <input
+                                type="number"
+                                name="quantity"
+                                value="{{ item['quantity'] }}"
+                                min="1"
+                                max="{{ item['product']['stock'] }}"
+                            >
+
+                            <button type="submit">
+                                Update
+                            </button>
+
+                        </div>
+
+                    </form>
+
+
+
+                    <!-- REMOVE -->
+
+                    <form
+                        method="POST"
+                        action="{{ url_for(
+                            'cart.remove_from_cart',
+                            product_id=item['product']['id']
+                        ) }}"
+                    >
+
+                        <button
+                            type="submit"
+                            class="remove-btn"
+                        >
+                            Remove item
+                        </button>
+
+                    </form>
+
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+
+
+        <!-- =====================================
+             ORDER SUMMARY
+        ====================================== -->
+
+        <aside class="cart-summary">
+
+
+            <span class="summary-label">
+                YOUR ORDER
+            </span>
+
+
+            <h2>
+                Order Summary
+            </h2>
+
+
+            <div class="summary-row">
+
+                <span>
+                    Subtotal
+                </span>
+
+                <strong>
+                    ₹{{ total }}
+                </strong>
+
+            </div>
+
+
+            <div class="summary-line"></div>
+
+
+            <div class="summary-row total-row">
+
+                <span>
+                    Total
+                </span>
+
+                <strong>
+                    ₹{{ total }}
+                </strong>
+
+            </div>
+
+
+
+            <a
+                href="{{ url_for('checkout.checkout') }}"
+                class="checkout-btn"
+            >
+                Proceed to Checkout
+                <span>→</span>
+            </a>
+
+
+
+            <a
+                href="{{ url_for('products.products') }}"
+                class="continue-shopping"
+            >
+                ← Continue Shopping
+            </a>
+
+
+        </aside>
+
+
+    </div>
+
+
+    <!-- =========================================
+         EMPTY CART
+    ========================================== -->
+
+    {% else %}
+
+    <div class="empty-cart">
+
+
+        <div class="empty-cart-icon">
+            🛒
+        </div>
+
+
+        <span class="empty-label">
+            YOUR CART
+        </span>
+
+
+        <h2>
+            Your Cart is Empty
+        </h2>
+
+
+        <p>
+            Looks like you haven't added any fragrance yet.
+            Discover a scent that feels uniquely yours.
+        </p>
+
+
+        <a
+            href="{{ url_for('products.products') }}"
+            class="explore-btn"
+        >
+            Explore Fragrances
+            <span>→</span>
+        </a>
+
+
+    </div>
+
+    {% endif %}
+
+
+
+</section>
+
+
+
+<style>
+
+/* =====================================================
+   MAIN PAGE
+===================================================== */
+
+.dx-cart-page {
+
+    min-height: 100vh;
+
+    padding-bottom: 55px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #fffdf9 0%,
+            #faf8f4 55%,
+            #ffffff 100%
+        );
+
+    color: #292622;
+
+}
+
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.cart-header {
+
+    text-align: center;
+
+    padding: 38px 20px 28px;
+
+    border-bottom:
+        1px solid #eee7de;
+
+}
+
+
+.cart-label {
+
+    display: block;
+
+    margin-bottom: 9px;
+
+    color: #b08a50;
+
+    font-size: 8px;
+
+    font-weight: 700;
+
+    letter-spacing: 3.5px;
+
+}
+
+
+.cart-header h1 {
+
+    margin: 0;
+
+    color: #292622;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size: 39px;
+
+    font-weight: 400;
+
+}
+
+
+.cart-header p {
+
+    margin: 8px 0 0;
+
+    color: #817b74;
+
+    font-size: 11px;
+
+}
+
+
+/* =====================================================
+   CART CONTAINER
+===================================================== */
+
+.cart-container {
+
+    width:
+        min(
+            1050px,
+            calc(100% - 32px)
+        );
+
+    margin: 30px auto 0;
+
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1fr)
+        310px;
+
+    gap: 25px;
+
+    align-items: start;
+
+}
+
+
+/* =====================================================
+   PRODUCT LIST
+===================================================== */
+
+.cart-products {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 15px;
+
+}
+
+
+/* =====================================================
+   CART ITEM
+===================================================== */
+
+.cart-item {
+
+    display: flex;
+
+    gap: 18px;
+
+    padding: 17px;
+
+    background: #fff;
+
+    border:
+        1px solid #e7dfd4;
+
+    border-radius: 3px;
+
+    box-shadow:
+        0 7px 22px
+        rgba(45,35,25,.035);
+
+    transition:
+        transform .25s ease,
+        box-shadow .25s ease;
+
+}
+
+
+.cart-item:hover {
+
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+        0 12px 28px
+        rgba(45,35,25,.06);
+
+}
+
+
+/* =====================================================
+   IMAGE
+===================================================== */
+
+.cart-image {
+
+    width: 125px;
+
+    height: 145px;
+
+    flex-shrink: 0;
+
+    overflow: hidden;
+
+    background: #f8f3ea;
+
+    border:
+        1px solid #e8dece;
+
+}
+
+
+.cart-image img {
+
+    width: 100%;
+
+    height: 100%;
+
+    object-fit: cover;
+
+    display: block;
+
+}
+
+
+.no-image {
+
+    width: 100%;
+
+    height: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    color: #b08a50;
+
+    font-family:
+        Georgia,
+        serif;
+
+    font-size: 30px;
+
+}
+
+
+/* =====================================================
+   PRODUCT DETAILS
+===================================================== */
+
+.cart-item-info {
+
+    flex: 1;
+
+    min-width: 0;
+
+}
+
+
+.product-category {
+
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: #b08a50;
+
+    font-size: 7px;
+
+    font-weight: 700;
+
+    letter-spacing: 1.7px;
+
+    text-transform: uppercase;
+
+}
+
+
+.cart-item-info h2 {
+
+    margin: 0 0 8px;
+
+    color: #2c2925;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size: 22px;
+
+    font-weight: 400;
+
+}
+
+
+.product-price {
+
+    display: block;
+
+    margin-bottom: 15px;
+
+    color: #3b352e;
+
+    font-size: 14px;
+
+}
+
+
+/* =====================================================
+   QUANTITY
+===================================================== */
+
+.quantity-form {
+
+    margin-bottom: 9px;
+
+}
+
+
+.quantity-form label {
+
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: #898178;
+
+    font-size: 8px;
+
+    font-weight: 700;
+
+    letter-spacing: 1px;
+
+    text-transform: uppercase;
+
+}
+
+
+.quantity-box {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+}
+
+
+.quantity-box input {
+
+    width: 55px;
+
+    height: 32px;
+
+    box-sizing: border-box;
+
+    padding: 5px 8px;
+
+    border:
+        1px solid #ddd3c5;
+
+    border-radius: 2px;
+
+    background: #fffdf9;
+
+    color: #3a352f;
+
+    font-size: 11px;
+
+    outline: none;
+
+}
+
+
+.quantity-box input:focus {
+
+    border-color: #b08a50;
+
+}
+
+
+.quantity-box button {
+
+    height: 32px;
+
+    padding: 0 13px;
+
+    border: none;
+
+    border-radius: 2px;
+
+    background: #292622;
+
+    color: #fff;
+
+    cursor: pointer;
+
+    font-size: 9px;
+
+    font-weight: 700;
+
+    transition: .2s ease;
+
+}
+
+
+.quantity-box button:hover {
+
+    background: #3c362f;
+
+}
+
+
+/* =====================================================
+   REMOVE
+===================================================== */
+
+.remove-btn {
+
+    padding: 0;
+
+    border: none;
+
+    background: transparent;
+
+    color: #8d8175;
+
+    cursor: pointer;
+
+    font-size: 8px;
+
+    text-decoration: underline;
+
+    text-underline-offset: 3px;
+
+}
+
+
+.remove-btn:hover {
+
+    color: #665b50;
+
+}
+
+
+/* =====================================================
+   ORDER SUMMARY
+===================================================== */
+
+.cart-summary {
+
+    position: sticky;
+
+    top: 20px;
+
+    padding: 22px;
+
+    background: #fff;
+
+    border:
+        1px solid #e7dfd4;
+
+    border-radius: 3px;
+
+    box-shadow:
+        0 8px 24px
+        rgba(45,35,25,.04);
+
+}
+
+
+.summary-label {
+
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: #b08a50;
+
+    font-size: 7px;
+
+    font-weight: 700;
+
+    letter-spacing: 2px;
+
+}
+
+
+.cart-summary h2 {
+
+    margin: 0 0 21px;
+
+    color: #2c2925;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size: 23px;
+
+    font-weight: 400;
+
+}
+
+
+.summary-row {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    color: #817a72;
+
+    font-size: 10px;
+
+}
+
+
+.summary-row strong {
+
+    color: #36312b;
+
+    font-size: 12px;
+
+}
+
+
+.summary-line {
+
+    height: 1px;
+
+    margin: 15px 0;
+
+    background: #eee7de;
+
+}
+
+
+.total-row span {
+
+    color: #39342e;
+
+    font-weight: 600;
+
+}
+
+
+.total-row strong {
+
+    color: #2b2824;
+
+    font-size: 16px;
+
+}
+
+
+/* =====================================================
+   CHECKOUT BUTTON
+===================================================== */
+
+.checkout-btn {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    margin-top: 22px;
+
+    padding: 12px 15px;
+
+    border-radius: 2px;
+
+    background: #292622;
+
+    color: #fff;
+
+    text-decoration: none;
+
+    font-size: 9px;
+
+    font-weight: 700;
+
+    transition:
+        background .2s ease,
+        transform .2s ease;
+
+}
+
+
+.checkout-btn span {
+
+    color: #c5a36d;
+
+    font-size: 14px;
+
+}
+
+
+.checkout-btn:hover {
+
+    background: #3b352e;
+
+    transform:
+        translateY(-1px);
+
+}
+
+
+/* =====================================================
+   CONTINUE SHOPPING
+===================================================== */
+
+.continue-shopping {
+
+    display: block;
+
+    margin-top: 15px;
+
+    color: #817a72;
+
+    text-align: center;
+
+    text-decoration: none;
+
+    font-size: 8px;
+
+    font-weight: 600;
+
+}
+
+
+.continue-shopping:hover {
+
+    color: #8f7041;
+
+}
+
+
+/* =====================================================
+   EMPTY CART
+===================================================== */
+
+.empty-cart {
+
+    width:
+        min(
+            560px,
+            calc(100% - 32px)
+        );
+
+    margin: 30px auto 0;
+
+    padding: 38px 25px 34px;
+
+    box-sizing: border-box;
+
+    text-align: center;
+
+    background: #fff;
+
+    border:
+        1px solid #e7dfd4;
+
+    border-radius: 3px;
+
+    box-shadow:
+        0 10px 30px
+        rgba(45,35,25,.035);
+
+}
+
+
+/* ICON */
+
+.empty-cart-icon {
+
+    width: 52px;
+
+    height: 52px;
+
+    margin: 0 auto 15px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border:
+        1px solid #d8c09a;
+
+    border-radius: 50%;
+
+    background: #faf6ee;
+
+    font-size: 22px;
+
+}
+
+
+/* LABEL */
+
+.empty-label {
+
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: #b08a50;
+
+    font-size: 7px;
+
+    font-weight: 700;
+
+    letter-spacing: 2.5px;
+
+}
+
+
+/* TITLE */
+
+.empty-cart h2 {
+
+    margin: 0;
+
+    color: #2d2925;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size: 25px;
+
+    font-weight: 400;
+
+}
+
+
+/* DESCRIPTION */
+
+.empty-cart p {
+
+    max-width: 390px;
+
+    margin: 8px auto 20px;
+
+    color: #817b74;
+
+    font-size: 10px;
+
+    line-height: 1.6;
+
+}
+
+
+/* =====================================================
+   EXPLORE BUTTON
+===================================================== */
+
+.explore-btn {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 10px;
+
+    min-width: 155px;
+
+    padding: 11px 17px;
+
+    border-radius: 2px;
+
+    background: #292622;
+
+    color: #fff;
+
+    text-decoration: none;
+
+    font-size: 9px;
+
+    font-weight: 700;
+
+    transition:
+        background .2s ease,
+        transform .2s ease;
+
+}
+
+
+.explore-btn span {
+
+    color: #c5a36d;
+
+    font-size: 13px;
+
+}
+
+
+.explore-btn:hover {
+
+    background: #3b352e;
+
+    transform:
+        translateY(-2px);
+
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 800px) {
+
+    .cart-container {
+
+        grid-template-columns: 1fr;
+
+    }
+
+
+    .cart-summary {
+
+        position: static;
+
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .cart-header {
+
+        padding:
+            30px 15px 24px;
+
+    }
+
+
+    .cart-header h1 {
+
+        font-size: 32px;
+
+    }
+
+
+    .cart-container {
+
+        width:
+            calc(100% - 22px);
+
+        margin-top: 22px;
+
+    }
+
+
+    .cart-item {
+
+        padding: 13px;
+
+        gap: 13px;
+
+    }
+
+
+    .cart-image {
+
+        width: 95px;
+
+        height: 115px;
+
+    }
+
+
+    .cart-item-info h2 {
+
+        font-size: 18px;
+
+    }
+
+
+    .empty-cart {
+
+        width:
+            calc(100% - 22px);
+
+        padding:
+            32px 18px 28px;
+
+    }
+
+
+    .empty-cart h2 {
+
+        font-size: 22px;
+
+    }
+
+}
+
+</style>
+
+
+{% endblock %}

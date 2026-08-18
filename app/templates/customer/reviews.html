@@ -1,0 +1,1278 @@
+{% extends "base.html" %}
+
+{% block title %}
+DX Fragrance | Customer Reviews
+{% endblock %}
+
+{% block content %}
+
+<section class="reviews-page">
+
+    <!-- =====================================================
+         PAGE HEADER
+    ====================================================== -->
+
+    <div class="reviews-header">
+
+        <span class="eyebrow">
+            DX FRAGRANCE
+        </span>
+
+        <h1>
+            Customer Reviews
+        </h1>
+
+        <p>
+            Real experiences from people who discovered their signature scent.
+        </p>
+
+    </div>
+
+
+    <div class="reviews-container">
+
+
+        <!-- =====================================================
+             WRITE REVIEW
+        ====================================================== -->
+
+        {% if session.get("user_id") %}
+
+        <div class="luxury-review-card write-review-card">
+
+            <div class="review-card-header">
+
+                <div>
+
+                    <span>
+                        SHARE YOUR EXPERIENCE
+                    </span>
+
+                    <h2>
+                        Write a Review
+                    </h2>
+
+                </div>
+
+                <div class="header-icon">
+                    ✦
+                </div>
+
+            </div>
+
+
+            <form
+                method="POST"
+                enctype="multipart/form-data"
+                action="{{ url_for(
+                    'reviews.add_review',
+                    product_id=product_id
+                ) }}"
+                class="review-form"
+            >
+
+
+                <!-- RATING -->
+
+                <div class="form-group">
+
+                    <label>
+                        Your Rating
+                    </label>
+
+                    <div class="rating-options">
+
+                        <label class="rating-option">
+                            <input
+                                type="radio"
+                                name="rating"
+                                value="1"
+                                required
+                            >
+                            <span>★</span>
+                        </label>
+
+                        <label class="rating-option">
+                            <input
+                                type="radio"
+                                name="rating"
+                                value="2"
+                            >
+                            <span>★★</span>
+                        </label>
+
+                        <label class="rating-option">
+                            <input
+                                type="radio"
+                                name="rating"
+                                value="3"
+                            >
+                            <span>★★★</span>
+                        </label>
+
+                        <label class="rating-option">
+                            <input
+                                type="radio"
+                                name="rating"
+                                value="4"
+                            >
+                            <span>★★★★</span>
+                        </label>
+
+                        <label class="rating-option">
+                            <input
+                                type="radio"
+                                name="rating"
+                                value="5"
+                            >
+                            <span>★★★★★</span>
+                        </label>
+
+                    </div>
+
+                </div>
+
+
+                <!-- REVIEW -->
+
+                <div class="form-group">
+
+                    <label for="review_text">
+                        Your Review
+                    </label>
+
+                    <textarea
+                        id="review_text"
+                        name="review_text"
+                        rows="6"
+                        placeholder="Tell us about your fragrance experience..."
+                        required
+                    ></textarea>
+
+                </div>
+
+
+                <!-- PHOTO -->
+
+                <div class="form-group">
+
+                    <label for="review_image">
+                        Purchased Item Photo
+                    </label>
+
+                    <div class="upload-area">
+
+                        <div class="upload-icon">
+                            📷
+                        </div>
+
+                        <div class="upload-content">
+
+                            <strong>
+                                Add a photo
+                            </strong>
+
+                            <small>
+                                JPG, PNG or WEBP
+                            </small>
+
+                            <input
+                                type="file"
+                                id="review_image"
+                                name="review_image"
+                                accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+                            >
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- SUBMIT -->
+
+                <button
+                    type="submit"
+                    class="submit-review-button"
+                >
+                    <span>★</span>
+                    Submit Review
+                    <b>→</b>
+                </button>
+
+            </form>
+
+        </div>
+
+        {% endif %}
+
+
+
+        <!-- =====================================================
+             EXISTING REVIEWS
+        ====================================================== -->
+
+        <div class="luxury-review-card customer-reviews-card">
+
+            <div class="review-card-header">
+
+                <div>
+
+                    <span>
+                        CUSTOMER FEEDBACK
+                    </span>
+
+                    <h2>
+                        What Customers Say
+                    </h2>
+
+                </div>
+
+                <div class="review-star-icon">
+                    ★
+                </div>
+
+            </div>
+
+
+            {% if reviews %}
+
+                <div class="reviews-list">
+
+                    {% for review in reviews %}
+
+                    <div class="single-review">
+
+
+                        <!-- REVIEW TOP -->
+
+                        <div class="review-top">
+
+                            <div class="customer-info">
+
+                                <div class="customer-avatar">
+                                    {{ review["customer_name"][0]|upper }}
+                                </div>
+
+                                <div>
+
+                                    <strong>
+                                        {{ review["customer_name"] }}
+                                    </strong>
+
+                                    <div class="stars">
+
+                                        {% for i in range(review["rating"]) %}
+                                            ★
+                                        {% endfor %}
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <span class="review-date">
+                                {{ review["created_at"] }}
+                            </span>
+
+                        </div>
+
+
+                        <!-- REVIEW TEXT -->
+
+                        <p class="review-text">
+                            {{ review["comment"] }}
+                        </p>
+
+
+                        <!-- PURCHASED PHOTO -->
+
+                        {% if review["review_image"] %}
+
+                            <div class="review-image-wrapper">
+
+                                <img
+                                    src="{{ url_for(
+                                        'static',
+                                        filename='uploads/reviews/' + review['review_image']
+                                    ) }}"
+                                    alt="Customer purchased item"
+                                    class="review-item-image"
+                                >
+
+                            </div>
+
+                        {% endif %}
+
+
+                    </div>
+
+                    {% endfor %}
+
+                </div>
+
+
+            {% else %}
+
+                <div class="no-reviews">
+
+                    <div class="empty-star">
+                        ★
+                    </div>
+
+                    <h3>
+                        No Reviews Yet
+                    </h3>
+
+                    <p>
+                        Be the first customer to share your fragrance experience.
+                    </p>
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+
+<style>
+
+/* =========================================================
+   PAGE
+========================================================= */
+
+.reviews-page {
+
+    min-height: 100vh;
+
+    padding:
+        65px 25px
+        90px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #faf8f4 0%,
+            #ffffff 50%,
+            #faf6ef 100%
+        );
+
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.reviews-header {
+
+    max-width: 900px;
+
+    margin:
+        0 auto 42px;
+
+    text-align: center;
+
+}
+
+
+.reviews-header .eyebrow {
+
+    display: block;
+
+    color: #b18a4d;
+
+    font-size: 10px;
+
+    font-weight: 600;
+
+    letter-spacing: 4px;
+
+    margin-bottom: 12px;
+
+}
+
+
+.reviews-header h1 {
+
+    margin: 0;
+
+    color: #211f1c;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size: 43px;
+
+    font-weight: 500;
+
+}
+
+
+.reviews-header p {
+
+    margin: 13px 0 0;
+
+    color: #898178;
+
+    font-size: 14px;
+
+}
+
+
+/* =========================================================
+   CONTAINER
+========================================================= */
+
+.reviews-container {
+
+    max-width: 900px;
+
+    margin: 0 auto;
+
+}
+
+
+/* =========================================================
+   CARD
+========================================================= */
+
+.luxury-review-card {
+
+    position: relative;
+
+    background:
+        rgba(255,255,255,0.97);
+
+    border:
+        1px solid #e8dfd2;
+
+    border-radius: 20px;
+
+    padding: 32px;
+
+    margin-bottom: 24px;
+
+    box-shadow:
+        0 12px 35px
+        rgba(42,31,20,0.045);
+
+}
+
+
+.luxury-review-card::before {
+
+    content: "";
+
+    position: absolute;
+
+    left: 34px;
+
+    right: 34px;
+
+    top: 0;
+
+    height: 1px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            #d5b77f,
+            transparent
+        );
+
+}
+
+
+/* =========================================================
+   CARD HEADER
+========================================================= */
+
+.review-card-header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 20px;
+
+    padding-bottom: 22px;
+
+    margin-bottom: 25px;
+
+    border-bottom:
+        1px solid #eee8df;
+
+}
+
+
+.review-card-header > div:first-child > span {
+
+    color: #b18a4d;
+
+    font-size: 9px;
+
+    font-weight: 600;
+
+    letter-spacing: 2px;
+
+}
+
+
+.review-card-header h2 {
+
+    margin: 7px 0 0;
+
+    color: #25221f;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size: 23px;
+
+    font-weight: 500;
+
+}
+
+
+.header-icon,
+.review-star-icon {
+
+    width: 45px;
+
+    height: 45px;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: #faf5eb;
+
+    color: #b18a4d;
+
+    font-size: 21px;
+
+}
+
+
+/* =========================================================
+   FORM
+========================================================= */
+
+.review-form {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 22px;
+
+}
+
+
+.form-group {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 9px;
+
+}
+
+
+.form-group > label {
+
+    color: #39352f;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+}
+
+
+/* =========================================================
+   RATING
+========================================================= */
+
+.rating-options {
+
+    display: flex;
+
+    gap: 9px;
+
+    flex-wrap: wrap;
+
+}
+
+
+.rating-option {
+
+    position: relative;
+
+    cursor: pointer;
+
+}
+
+
+.rating-option input {
+
+    position: absolute;
+
+    opacity: 0;
+
+}
+
+
+.rating-option span {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    min-width: 75px;
+
+    height: 42px;
+
+    padding: 0 10px;
+
+    box-sizing: border-box;
+
+    border:
+        1px solid #e5dccf;
+
+    border-radius: 9px;
+
+    background: #fff;
+
+    color: #d0c3b0;
+
+    font-size: 13px;
+
+    letter-spacing: 1px;
+
+    transition: 0.2s ease;
+
+}
+
+
+.rating-option:hover span {
+
+    border-color: #c6a66d;
+
+    background: #faf7f1;
+
+}
+
+
+.rating-option input:checked + span {
+
+    color: #b18a4d;
+
+    border-color: #b18a4d;
+
+    background: #fbf6ec;
+
+    box-shadow:
+        0 4px 12px
+        rgba(177,138,77,0.12);
+
+}
+
+
+/* =========================================================
+   TEXTAREA
+========================================================= */
+
+.review-form textarea {
+
+    width: 100%;
+
+    box-sizing: border-box;
+
+    min-height: 145px;
+
+    resize: vertical;
+
+    padding: 15px 16px;
+
+    border:
+        1px solid #e4dbce;
+
+    border-radius: 11px;
+
+    outline: none;
+
+    background: #fff;
+
+    color: #332f2a;
+
+    font-family: inherit;
+
+    font-size: 13px;
+
+    line-height: 1.6;
+
+    transition: 0.2s ease;
+
+}
+
+
+.review-form textarea::placeholder {
+
+    color: #aaa39b;
+
+}
+
+
+.review-form textarea:focus {
+
+    border-color: #b18a4d;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(177,138,77,0.08);
+
+}
+
+
+/* =========================================================
+   UPLOAD
+========================================================= */
+
+.upload-area {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+    padding: 16px;
+
+    border:
+        1px dashed #d7c8b4;
+
+    border-radius: 12px;
+
+    background: #fcfaf7;
+
+}
+
+
+.upload-icon {
+
+    width: 42px;
+
+    height: 42px;
+
+    flex-shrink: 0;
+
+    border-radius: 10px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: #f3ebde;
+
+    font-size: 19px;
+
+}
+
+
+.upload-content {
+
+    flex: 1;
+
+}
+
+
+.upload-content strong {
+
+    display: block;
+
+    color: #454039;
+
+    font-size: 12px;
+
+    margin-bottom: 4px;
+
+}
+
+
+.upload-content small {
+
+    display: block;
+
+    color: #999187;
+
+    font-size: 10px;
+
+    margin-bottom: 8px;
+
+}
+
+
+.upload-content input[type="file"] {
+
+    width: 100%;
+
+    color: #777;
+
+    font-size: 11px;
+
+    cursor: pointer;
+
+}
+
+
+/* =========================================================
+   SUBMIT BUTTON
+========================================================= */
+
+.submit-review-button {
+
+    width: 100%;
+
+    min-height: 52px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: #1d1b19;
+
+    color: #fff;
+
+    font-family: inherit;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 10px;
+
+    transition: 0.25s ease;
+
+}
+
+
+.submit-review-button span {
+
+    color: #d5b46e;
+
+}
+
+
+.submit-review-button b {
+
+    color: #d5b46e;
+
+    font-size: 18px;
+
+    margin-left: 5px;
+
+}
+
+
+.submit-review-button:hover {
+
+    background: #332f2a;
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 8px 20px
+        rgba(0,0,0,0.12);
+
+}
+
+
+/* =========================================================
+   REVIEWS LIST
+========================================================= */
+
+.reviews-list {
+
+    display: flex;
+
+    flex-direction: column;
+
+}
+
+
+.single-review {
+
+    padding: 24px 0;
+
+    border-bottom:
+        1px solid #eee9e1;
+
+}
+
+
+.single-review:last-child {
+
+    border-bottom: none;
+
+    padding-bottom: 5px;
+
+}
+
+
+/* =========================================================
+   REVIEW TOP
+========================================================= */
+
+.review-top {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: flex-start;
+
+    gap: 20px;
+
+    margin-bottom: 13px;
+
+}
+
+
+.customer-info {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 11px;
+
+}
+
+
+.customer-avatar {
+
+    width: 38px;
+
+    height: 38px;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: #f4ecdf;
+
+    color: #9c783f;
+
+    font-family:
+        Georgia,
+        serif;
+
+    font-size: 15px;
+
+    font-weight: 600;
+
+}
+
+
+.customer-info strong {
+
+    color: #302d29;
+
+    font-size: 13px;
+
+}
+
+
+.stars {
+
+    margin-top: 4px;
+
+    color: #c29b55;
+
+    font-size: 11px;
+
+    letter-spacing: 1px;
+
+}
+
+
+.review-date {
+
+    color: #aaa39b;
+
+    font-size: 10px;
+
+}
+
+
+/* =========================================================
+   REVIEW TEXT
+========================================================= */
+
+.review-text {
+
+    margin:
+        0 0 15px 49px;
+
+    color: #6f6961;
+
+    font-size: 13px;
+
+    line-height: 1.75;
+
+}
+
+
+/* =========================================================
+   REVIEW IMAGE
+========================================================= */
+
+.review-image-wrapper {
+
+    margin-left: 49px;
+
+}
+
+
+.review-item-image {
+
+    width: 170px;
+
+    height: 170px;
+
+    object-fit: cover;
+
+    display: block;
+
+    border-radius: 13px;
+
+    border:
+        1px solid #e6ddd0;
+
+    cursor: pointer;
+
+    transition: 0.25s ease;
+
+}
+
+
+.review-item-image:hover {
+
+    transform: scale(1.025);
+
+    box-shadow:
+        0 10px 25px
+        rgba(0,0,0,0.10);
+
+}
+
+
+/* =========================================================
+   EMPTY REVIEWS
+========================================================= */
+
+.no-reviews {
+
+    text-align: center;
+
+    padding:
+        55px 20px 45px;
+
+}
+
+
+.empty-star {
+
+    width: 62px;
+
+    height: 62px;
+
+    margin: 0 auto 17px;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: #faf4e9;
+
+    color: #c09a57;
+
+    font-size: 28px;
+
+}
+
+
+.no-reviews h3 {
+
+    margin: 0 0 8px;
+
+    color: #302d29;
+
+    font-family:
+        Georgia,
+        serif;
+
+    font-size: 20px;
+
+    font-weight: 500;
+
+}
+
+
+.no-reviews p {
+
+    margin: 0;
+
+    color: #999187;
+
+    font-size: 12px;
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 650px) {
+
+    .reviews-page {
+
+        padding:
+            45px 15px 70px;
+
+    }
+
+
+    .reviews-header h1 {
+
+        font-size: 34px;
+
+    }
+
+
+    .luxury-review-card {
+
+        padding: 22px;
+
+        border-radius: 16px;
+
+    }
+
+
+    .review-card-header {
+
+        align-items: flex-start;
+
+    }
+
+
+    .review-card-header h2 {
+
+        font-size: 20px;
+
+    }
+
+
+    .rating-option span {
+
+        min-width: 58px;
+
+        font-size: 11px;
+
+    }
+
+
+    .review-top {
+
+        flex-direction: column;
+
+        gap: 8px;
+
+    }
+
+
+    .review-date {
+
+        margin-left: 49px;
+
+    }
+
+
+    .review-text {
+
+        margin-left: 0;
+
+    }
+
+
+    .review-image-wrapper {
+
+        margin-left: 0;
+
+    }
+
+
+    .review-item-image {
+
+        width: 145px;
+
+        height: 145px;
+
+    }
+
+
+    .upload-area {
+
+        align-items: flex-start;
+
+    }
+
+}
+
+</style>
+
+{% endblock %}

@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}
+DX Fragrance | Admin Login
+{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: center; align-items: center; min-height: 85vh; background: linear-gradient(135deg, #FAF8F5 0%, #F3ECE1 100%); padding: 20px; font-family: sans-serif;">
+    
+    <!-- Login Card Container with Soft Glass/Glow Effect -->
+    <div style="background: rgba(255, 253, 249, 0.95); border: 1px solid #EAE4D9; padding: 45px 35px; border-radius: 16px; width: 100%; max-width: 420px; box-shadow: 0 15px 35px rgba(184,158,109,0.08); text-align: center; backdrop-filter: blur(10px);">
+        
+        <!-- Brand / Logo Area -->
+        <div style="font-size: 24px; font-weight: bold; color: #222; letter-spacing: 1.5px; margin-bottom: 6px;">
+            DX <span style="color: #B89E6D;">FRAGRANCE</span>
+        </div>
+        <p style="font-size: 13px; color: #777; margin-bottom: 30px; font-weight: 400;">
+            Admin Portal — Sign in to manage your store
+        </p>
+
+        
+
+        <!-- Login Form -->
+        <form method="POST" style="text-align: left;">
+            
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; font-size: 13px; font-weight: 500; color: #444; margin-bottom: 6px;">Email Address</label>
+                <input type="email" name="email" placeholder="admin@dxfragrance.com" required style="width: 100%; padding: 12px 14px; border: 1px solid #EAE4D9; border-radius: 8px; font-size: 14px; background: #FFF; outline: none; box-sizing: border-box; transition: border-color 0.2s;">
+            </div>
+
+            <div style="margin-bottom: 25px;">
+                <label style="display: block; font-size: 13px; font-weight: 500; color: #444; margin-bottom: 6px;">Password</label>
+                
+                <!-- Password Input Wrapper with Eye Button -->
+                <div style="position: relative; display: flex; align-items: center;">
+                    <input type="password" id="passwordField" name="password" placeholder="••••••••••••" required style="width: 100%; padding: 12px 40px 12px 14px; border: 1px solid #EAE4D9; border-radius: 8px; font-size: 14px; background: #FFF; outline: none; box-sizing: border-box;">
+                    
+                    <!-- Eye Button Icon -->
+                    <span onclick="togglePassword()" style="position: absolute; right: 12px; cursor: pointer; color: #888; display: flex; align-items: center;" title="Show/Hide Password">
+                        <!-- Eye Open Icon -->
+                        <svg id="eyeOpen" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                        <!-- Eye Closed Icon -->
+                        <svg id="eyeClosed" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+                            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                            <line x1="1" y1="1" x2="23" y2="23"></line>
+                        </svg>
+                    </span>
+                </div>
+            </div>
+
+            <button type="submit" style="width: 100%; background: #B89E6D; color: #FFF; border: none; padding: 13px; border-radius: 8px; font-size: 15px; font-weight: 500; cursor: pointer; box-shadow: 0 4px 15px rgba(184,158,109,0.35); transition: background 0.2s;">
+                Sign In
+            </button>
+
+        </form>
+
+        <!-- Footer Note inside Card -->
+        <div style="margin-top: 30px; border-top: 1px solid #F0ECE6; padding-top: 15px; font-size: 11px; color: #888; letter-spacing: 0.5px;">
+            Crafted for Excellence. Worn for Impression.
+        </div>
+
+    </div>
+</div>
+
+<!-- JavaScript for Password Toggle -->
+<script>
+function togglePassword() {
+    const passwordField = document.getElementById("passwordField");
+    const eyeOpen = document.getElementById("eyeOpen");
+    const eyeClosed = document.getElementById("eyeClosed");
+
+    if (passwordField.type === "password") {
+        passwordField.type = "text";
+        eyeOpen.style.display = "none";
+        eyeClosed.style.display = "block";
+    } else {
+        passwordField.type = "password";
+        eyeOpen.style.display = "block";
+        eyeClosed.style.display = "none";
+    }
+}
+</script>
+{% endblock %}

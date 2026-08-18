@@ -1,0 +1,2033 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+DX Fragrance | Premium Perfumes
+{% endblock %}
+
+
+
+{% block content %}
+
+
+<style>
+
+/* =========================================================
+   HOME PAGE
+========================================================= */
+
+:root {
+
+    --home-black: #181614;
+
+    --home-gold: #b7965d;
+
+    --home-gold-light: #d9c39e;
+
+    --home-cream: #faf7f1;
+
+    --home-beige: #eee4d7;
+
+    --home-text: #292622;
+
+    --home-muted: #77716a;
+
+    --home-border: #e8e0d6;
+
+    --home-pink: #ed8fa8;
+
+}
+
+
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.hero {
+
+    min-height: 690px;
+
+    padding: 80px 8%;
+
+    display: grid;
+
+    grid-template-columns:
+        1fr
+        1fr;
+
+    align-items: center;
+
+    gap: 70px;
+
+    position: relative;
+
+    overflow: hidden;
+
+    background:
+
+        radial-gradient(
+            circle at 15% 20%,
+            rgba(231,213,185,0.40),
+            transparent 35%
+        ),
+
+        linear-gradient(
+            135deg,
+            #fffdf9,
+            #f7f0e6
+        );
+
+}
+
+
+.hero::before {
+
+    content: "";
+
+    position: absolute;
+
+    width: 420px;
+
+    height: 420px;
+
+    border-radius: 50%;
+
+    background:
+        rgba(183,150,93,0.08);
+
+    top: -170px;
+
+    right: -100px;
+
+}
+
+
+.hero-content {
+
+    max-width: 650px;
+
+    position: relative;
+
+    z-index: 2;
+
+}
+
+
+.hero-label {
+
+    color: var(--home-gold);
+
+    font-size: 11px;
+
+    letter-spacing: 5px;
+
+    font-weight: 600;
+
+    margin-bottom: 25px;
+
+}
+
+
+.hero h1 {
+
+    font-family:
+        "Playfair Display",
+        Georgia,
+        serif;
+
+    font-size:
+        clamp(55px, 6vw, 88px);
+
+    line-height: 0.98;
+
+    font-weight: 500;
+
+    color: var(--home-black);
+
+    letter-spacing: -2px;
+
+    margin-bottom: 28px;
+
+}
+
+
+.hero-description {
+
+    max-width: 510px;
+
+    color: var(--home-muted);
+
+    font-size: 15px;
+
+    line-height: 1.9;
+
+    margin-bottom: 35px;
+
+}
+
+
+.hero-buttons {
+
+    display: flex;
+
+    gap: 14px;
+
+    flex-wrap: wrap;
+
+}
+
+
+
+/* =========================================================
+   BUTTONS
+========================================================= */
+
+.btn {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    min-height: 48px;
+
+    padding: 0 25px;
+
+    text-decoration: none;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    letter-spacing: 0.5px;
+
+    transition:
+        all 0.3s ease;
+
+}
+
+
+.btn-primary {
+
+    background: var(--home-black);
+
+    color: white;
+
+    border: 1px solid var(--home-black);
+
+}
+
+
+.btn-primary:hover {
+
+    background: var(--home-gold);
+
+    border-color: var(--home-gold);
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 10px 25px rgba(183,150,93,0.25);
+
+}
+
+
+.btn-secondary {
+
+    color: var(--home-black);
+
+    background: transparent;
+
+    border: 1px solid #cfc5b8;
+
+}
+
+
+.btn-secondary:hover {
+
+    background: white;
+
+    border-color: var(--home-gold);
+
+    color: var(--home-gold);
+
+    transform: translateY(-2px);
+
+}
+
+
+
+/* =========================================================
+   HERO VISUAL
+========================================================= */
+
+.hero-visual {
+
+    min-height: 530px;
+
+    position: relative;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+}
+
+
+.perfume-placeholder {
+
+    width: min(430px, 90%);
+
+    height: 510px;
+
+    position: relative;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background:
+
+        linear-gradient(
+            145deg,
+            #efe2cf,
+            #fffaf3
+        );
+
+    border:
+        1px solid rgba(183,150,93,0.25);
+
+    box-shadow:
+        0 30px 70px rgba(62,45,27,0.12);
+
+    overflow: hidden;
+
+}
+
+
+.perfume-placeholder::before {
+
+    content: "";
+
+    position: absolute;
+
+    width: 280px;
+
+    height: 280px;
+
+    border-radius: 50%;
+
+    background:
+        rgba(183,150,93,0.12);
+
+    filter: blur(10px);
+
+}
+
+
+.perfume-placeholder::after {
+
+    content: "";
+
+    position: absolute;
+
+    inset: 18px;
+
+    border:
+        1px solid rgba(183,150,93,0.28);
+
+}
+
+
+.perfume-placeholder span {
+
+    position: relative;
+
+    z-index: 2;
+
+    font-family:
+        "Playfair Display",
+        Georgia,
+        serif;
+
+    font-size: 80px;
+
+    letter-spacing: 7px;
+
+    color: #8f713d;
+
+}
+
+
+.perfume-placeholder small {
+
+    position: relative;
+
+    z-index: 2;
+
+    margin-top: -5px;
+
+    letter-spacing: 8px;
+
+    font-size: 10px;
+
+    color: #92764a;
+
+}
+
+
+
+/* =========================================================
+   SECTION HEADING
+========================================================= */
+
+.section-heading {
+
+    text-align: center;
+
+    max-width: 800px;
+
+    margin: 0 auto 50px;
+
+}
+
+
+.section-heading > p {
+
+    color: var(--home-gold);
+
+    font-size: 10px;
+
+    letter-spacing: 5px;
+
+    font-weight: 600;
+
+    margin-bottom: 14px;
+
+}
+
+
+.section-heading h2 {
+
+    font-family:
+        "Playfair Display",
+        Georgia,
+        serif;
+
+    font-size:
+        clamp(38px, 4vw, 54px);
+
+    line-height: 1.1;
+
+    font-weight: 500;
+
+    color: var(--home-black);
+
+    margin-bottom: 15px;
+
+}
+
+
+.section-heading span {
+
+    color: var(--home-muted);
+
+    font-size: 14px;
+
+}
+
+
+
+/* =========================================================
+   FEATURED
+========================================================= */
+
+.featured-section {
+
+    padding: 105px 8%;
+
+    background: #fff;
+
+}
+
+
+.product-grid {
+
+    max-width: 1200px;
+
+    margin: auto;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 45px 25px;
+
+}
+
+
+.product-card {
+
+    position: relative;
+
+    background: white;
+
+    overflow: hidden;
+
+    transition:
+        transform 0.3s ease;
+
+}
+
+
+.product-card:hover {
+
+    transform: translateY(-6px);
+
+}
+
+
+
+/* =========================================================
+   PRODUCT IMAGE
+========================================================= */
+
+.product-image {
+
+    position: relative !important;
+
+    width: 100%;
+
+    height: 390px;
+
+    overflow: hidden;
+
+    background: #f6f1ea;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+}
+
+
+.product-image-link {
+
+    display: block;
+
+    width: 100%;
+
+    height: 100%;
+
+    text-decoration: none;
+
+    color: inherit;
+
+}
+
+
+.product-image img {
+
+    width: 100%;
+
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+
+    transition:
+        transform 0.6s ease;
+
+}
+
+
+.product-card:hover
+.product-image img {
+
+    transform: scale(1.045);
+
+}
+
+
+
+/* =========================================================
+   WISHLIST
+========================================================= */
+
+.product-wishlist-form {
+
+    position: absolute !important;
+
+    top: 15px !important;
+
+    right: 15px !important;
+
+    z-index: 20 !important;
+
+    margin: 0 !important;
+
+    padding: 0 !important;
+
+}
+
+
+.product-wishlist-heart {
+
+    width: 45px !important;
+
+    height: 45px !important;
+
+    padding: 0 !important;
+
+    margin: 0 !important;
+
+    border: none !important;
+
+    border-radius: 50% !important;
+
+    background: rgba(255,255,255,0.96) !important;
+
+    color: var(--home-pink) !important;
+
+    font-size: 28px !important;
+
+    font-weight: 400 !important;
+
+    line-height: 1 !important;
+
+    display: flex !important;
+
+    align-items: center !important;
+
+    justify-content: center !important;
+
+    cursor: pointer !important;
+
+    box-shadow:
+        0 5px 18px rgba(0,0,0,0.12) !important;
+
+    transition:
+        all 0.25s ease !important;
+
+}
+
+
+.product-wishlist-heart:hover {
+
+    background: #fff1f5 !important;
+
+    color: #df718f !important;
+
+    transform: scale(1.1) !important;
+
+}
+
+
+.product-wishlist-heart.active {
+
+    color: #e97996 !important;
+
+}
+
+
+
+/* =========================================================
+   PRODUCT INFO
+========================================================= */
+
+.product-info {
+
+    padding: 20px 3px 5px;
+
+}
+
+
+.product-category {
+
+    color: var(--home-gold) !important;
+
+    font-size: 10px !important;
+
+    letter-spacing: 2px;
+
+    text-transform: uppercase;
+
+    margin-bottom: 7px;
+
+}
+
+
+.product-info h3 {
+
+    font-family:
+        "Playfair Display",
+        Georgia,
+        serif;
+
+    font-size: 22px;
+
+    font-weight: 500;
+
+    color: var(--home-black);
+
+    margin: 5px 0 8px;
+
+}
+
+
+.product-info > p:not(.product-category) {
+
+    color: var(--home-muted);
+
+    font-size: 12px;
+
+    line-height: 1.7;
+
+}
+
+
+.product-bottom {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-top: 16px;
+
+    padding-top: 14px;
+
+    border-top:
+        1px solid #eee8df;
+
+}
+
+
+.product-bottom strong {
+
+    font-size: 16px;
+
+    color: var(--home-black);
+
+}
+
+
+.view-product {
+
+    color: var(--home-gold) !important;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    text-decoration: none;
+
+    transition:
+        color 0.2s ease;
+
+}
+
+
+.view-product:hover {
+
+    color: var(--home-black) !important;
+
+}
+
+
+
+/* =========================================================
+   VIEW ALL
+========================================================= */
+
+.home-shop-button {
+
+    text-align: center;
+
+    margin-top: 60px;
+
+}
+
+
+
+/* =========================================================
+   EMPTY PRODUCTS
+========================================================= */
+
+.empty-products {
+
+    max-width: 700px;
+
+    margin: auto;
+
+    padding: 65px 20px;
+
+    text-align: center;
+
+    border:
+        1px dashed #dfd6ca;
+
+    background: var(--home-cream);
+
+}
+
+
+.empty-products div {
+
+    font-size: 42px;
+
+    margin-bottom: 15px;
+
+}
+
+
+.empty-products h3 {
+
+    font-family:
+        "Playfair Display",
+        Georgia,
+        serif;
+
+    font-size: 27px;
+
+    font-weight: 500;
+
+    margin-bottom: 8px;
+
+}
+
+
+.empty-products p {
+
+    color: var(--home-muted);
+
+    font-size: 13px;
+
+}
+
+
+
+/* =========================================================
+   COLLECTION
+========================================================= */
+
+.collection-section {
+
+    padding: 115px 8%;
+
+    text-align: center;
+
+    background:
+
+        linear-gradient(
+            135deg,
+            #eee4d7,
+            #f6eee4
+        );
+
+    position: relative;
+
+    overflow: hidden;
+
+}
+
+
+.collection-section::before {
+
+    content: "DX";
+
+    position: absolute;
+
+    font-family:
+        "Playfair Display",
+        Georgia,
+        serif;
+
+    font-size: 300px;
+
+    color:
+        rgba(183,150,93,0.06);
+
+    left: -50px;
+
+    bottom: -150px;
+
+}
+
+
+.collection-content {
+
+    max-width: 750px;
+
+    margin: auto;
+
+    position: relative;
+
+    z-index: 2;
+
+}
+
+
+.collection-content > p {
+
+    color: var(--home-gold);
+
+    letter-spacing: 5px;
+
+    font-size: 10px;
+
+    font-weight: 600;
+
+}
+
+
+.collection-content h2 {
+
+    font-family:
+        "Playfair Display",
+        Georgia,
+        serif;
+
+    font-size:
+        clamp(42px, 5vw, 62px);
+
+    font-weight: 500;
+
+    margin: 15px 0;
+
+}
+
+
+.collection-content span {
+
+    display: block;
+
+    max-width: 600px;
+
+    margin: auto auto 32px;
+
+    color: #6d665f;
+
+    font-size: 14px;
+
+    line-height: 1.8;
+
+}
+
+
+
+/* =========================================================
+   WHY
+========================================================= */
+
+.why-section {
+
+    padding: 110px 8%;
+
+    background: #fbf9f5;
+
+}
+
+
+.why-grid {
+
+    max-width: 1150px;
+
+    margin: 50px auto 0;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 25px;
+
+}
+
+
+.why-card {
+
+    background: white;
+
+    border:
+        1px solid #e9e1d6;
+
+    padding: 42px 30px;
+
+    text-align: center;
+
+    transition:
+        all 0.3s ease;
+
+}
+
+
+.why-card:hover {
+
+    transform: translateY(-6px);
+
+    box-shadow:
+        0 15px 35px rgba(40,30,20,0.07);
+
+}
+
+
+.why-icon {
+
+    width: 50px;
+
+    height: 50px;
+
+    margin: 0 auto 20px;
+
+    border: 1px solid #d9c5a2;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    color: var(--home-gold);
+
+    font-size: 20px;
+
+}
+
+
+.why-card h3 {
+
+    font-family:
+        "Playfair Display",
+        Georgia,
+        serif;
+
+    font-size: 22px;
+
+    font-weight: 500;
+
+    margin-bottom: 12px;
+
+}
+
+
+.why-card p {
+
+    color: var(--home-muted);
+
+    font-size: 13px;
+
+    line-height: 1.8;
+
+}
+
+
+
+/* =========================================================
+   ABOUT
+========================================================= */
+
+.about-section {
+
+    padding: 115px 8%;
+
+    background: #fffdf9;
+
+    text-align: center;
+
+}
+
+
+.about-content {
+
+    max-width: 850px;
+
+    margin: auto;
+
+}
+
+
+.about-content > p {
+
+    color: var(--home-gold);
+
+    letter-spacing: 5px;
+
+    font-size: 10px;
+
+    font-weight: 600;
+
+}
+
+
+.about-content h2 {
+
+    font-family:
+        "Playfair Display",
+        Georgia,
+        serif;
+
+    font-size:
+        clamp(40px, 5vw, 58px);
+
+    font-weight: 500;
+
+    margin: 18px 0;
+
+}
+
+
+.about-content span {
+
+    color: var(--home-muted);
+
+    font-size: 14px;
+
+    line-height: 1.9;
+
+    display: block;
+
+    max-width: 680px;
+
+    margin: auto;
+
+}
+
+
+
+/* =========================================================
+   REVIEWS
+========================================================= */
+
+.home-review-section {
+
+    padding: 105px 8%;
+
+    background: #f8f5f0;
+
+}
+
+
+.review-home-card {
+
+    max-width: 760px;
+
+    margin: 45px auto 0;
+
+    padding: 50px 45px;
+
+    background: white;
+
+    border:
+        1px solid #e7ded2;
+
+    text-align: center;
+
+    position: relative;
+
+}
+
+
+.review-home-card::before {
+
+    content: "“";
+
+    position: absolute;
+
+    top: 15px;
+
+    left: 35px;
+
+    font-family:
+        "Playfair Display",
+        Georgia,
+        serif;
+
+    font-size: 65px;
+
+    color: #d9c5a3;
+
+}
+
+
+.home-stars {
+
+    color: #d9a83e;
+
+    font-size: 17px;
+
+    letter-spacing: 4px;
+
+    margin-bottom: 20px;
+
+}
+
+
+.review-home-card p {
+
+    color: #5d5750;
+
+    font-family:
+        "Playfair Display",
+        Georgia,
+        serif;
+
+    font-size: 17px;
+
+    line-height: 1.8;
+
+    font-style: italic;
+
+}
+
+
+.review-home-card strong {
+
+    display: block;
+
+    margin-top: 20px;
+
+    font-size: 12px;
+
+    letter-spacing: 1px;
+
+    color: var(--home-black);
+
+}
+
+
+
+/* =========================================================
+   FINAL CTA
+========================================================= */
+
+.home-cta {
+
+    padding: 110px 20px;
+
+    text-align: center;
+
+    background:
+
+        linear-gradient(
+            135deg,
+            #e9ddcf,
+            #f4ebe1
+        );
+
+}
+
+
+.home-cta > p {
+
+    color: var(--home-gold);
+
+    letter-spacing: 5px;
+
+    font-size: 10px;
+
+    font-weight: 600;
+
+}
+
+
+.home-cta h2 {
+
+    max-width: 800px;
+
+    margin: 18px auto 32px;
+
+    font-family:
+        "Playfair Display",
+        Georgia,
+        serif;
+
+    font-size:
+        clamp(38px, 5vw, 58px);
+
+    font-weight: 500;
+
+    line-height: 1.15;
+
+}
+
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .hero {
+
+        grid-template-columns: 1fr;
+
+        padding-top: 70px;
+
+        text-align: center;
+
+    }
+
+
+    .hero-content {
+
+        margin: auto;
+
+    }
+
+
+    .hero-description {
+
+        margin-left: auto;
+
+        margin-right: auto;
+
+    }
+
+
+    .hero-buttons {
+
+        justify-content: center;
+
+    }
+
+
+    .hero-visual {
+
+        min-height: 450px;
+
+    }
+
+
+    .product-grid {
+
+        grid-template-columns:
+            repeat(2, 1fr);
+
+    }
+
+
+    .why-grid {
+
+        grid-template-columns:
+            1fr;
+
+        max-width: 600px;
+
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .hero {
+
+        padding:
+            60px 6%;
+
+    }
+
+
+    .hero h1 {
+
+        font-size: 50px;
+
+    }
+
+
+    .hero-visual {
+
+        min-height: 390px;
+
+    }
+
+
+    .perfume-placeholder {
+
+        height: 380px;
+
+    }
+
+
+    .perfume-placeholder span {
+
+        font-size: 60px;
+
+    }
+
+
+    .featured-section,
+    .why-section,
+    .about-section,
+    .home-review-section {
+
+        padding-left: 6%;
+
+        padding-right: 6%;
+
+    }
+
+
+    .product-grid {
+
+        grid-template-columns: 1fr;
+
+        max-width: 430px;
+
+    }
+
+
+    .product-image {
+
+        height: 420px;
+
+    }
+
+
+    .collection-section {
+
+        padding-left: 6%;
+
+        padding-right: 6%;
+
+    }
+
+
+    .review-home-card {
+
+        padding: 40px 25px;
+
+    }
+
+}
+
+</style>
+
+
+
+<!-- =========================================================
+     HERO
+========================================================= -->
+
+<section class="hero">
+
+
+    <div class="hero-content">
+
+
+        <p class="hero-label">
+            THE ART OF FRAGRANCE
+        </p>
+
+
+        <h1>
+            Your Scent.
+            <br>
+            Your Signature.
+        </h1>
+
+
+        <p class="hero-description">
+            Discover refined fragrances crafted to express
+            confidence, elegance and individuality.
+        </p>
+
+
+        <div class="hero-buttons">
+
+            <a
+                href="{{ url_for('products.products') }}"
+                class="btn btn-primary"
+            >
+                Shop Now →
+            </a>
+
+
+            <a
+                href="#collections"
+                class="btn btn-secondary"
+            >
+                Explore Collection
+            </a>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- HERO VISUAL -->
+
+    <div class="hero-visual">
+
+        <div class="perfume-placeholder">
+
+            <span>
+                DX
+            </span>
+
+            <small>
+                FRAGRANCE
+            </small>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================================================
+     FEATURED PRODUCTS
+========================================================= -->
+
+<section
+    id="shop"
+    class="featured-section"
+>
+
+
+    <div class="section-heading">
+
+        <p>
+            DISCOVER
+        </p>
+
+
+        <h2>
+            Featured Fragrances
+        </h2>
+
+
+        <span>
+            Signature scents designed for unforgettable moments.
+        </span>
+
+    </div>
+
+
+
+    {% if products %}
+
+
+        <div class="product-grid">
+
+
+            {% for product in products[:6] %}
+
+
+                <div class="product-card">
+
+
+                    <div class="product-image">
+
+
+                        <a
+                            href="{{ url_for(
+                                'products.product_detail',
+                                product_id=product['id']
+                            ) }}"
+                            class="product-image-link"
+                        >
+
+
+                            {% if product["image"] %}
+
+                                <img
+                                    src="{{ url_for(
+                                        'static',
+                                        filename='uploads/products/' + product['image']
+                                    ) }}"
+                                    alt="{{ product['name'] }}"
+                                >
+
+                            {% else %}
+
+                                <span>
+                                    DX
+                                </span>
+
+                            {% endif %}
+
+
+                        </a>
+
+
+
+                        <!-- WISHLIST -->
+
+                        <form
+                            method="POST"
+                            action="{{ url_for(
+                                'wishlist.toggle_wishlist',
+                                product_id=product['id']
+                            ) }}"
+                            class="product-wishlist-form"
+                            onsubmit="
+                                sessionStorage.setItem(
+                                    'wishlistScroll',
+                                    window.scrollY
+                                );
+                            "
+                        >
+
+                            <button
+                                type="submit"
+                                class="
+                                    product-wishlist-heart
+                                    {% if product['id'] in wishlist_product_ids %}
+                                        active
+                                    {% endif %}
+                                "
+                                title="Wishlist"
+                                aria-label="Wishlist"
+                            >
+
+                                {% if product['id'] in wishlist_product_ids %}
+
+                                    ♥
+                                    
+                                {% else %}
+
+                                    ♡
+
+                                {% endif %}
+
+                            </button>
+
+                        </form>
+
+                    </div>
+
+
+
+                    <!-- PRODUCT INFORMATION -->
+
+                    <div class="product-info">
+
+
+                        <p class="product-category">
+
+                            {{ product["category"] or "Premium Fragrance" }}
+
+                        </p>
+
+
+                        <h3>
+
+                            {{ product["name"] }}
+
+                        </h3>
+
+
+                        <p>
+
+                            {{
+                                product["description"]
+                                or
+                                "Premium fragrance crafted for your signature."
+                            }}
+
+                        </p>
+
+
+                        <div class="product-bottom">
+
+
+                            <strong>
+                                ₹{{ product["price"] }}
+                            </strong>
+
+
+                            <a
+                                href="{{ url_for(
+                                    'products.product_detail',
+                                    product_id=product['id']
+                                ) }}"
+                                class="view-product"
+                            >
+                                View →
+                            </a>
+
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+            {% endfor %}
+
+
+        </div>
+
+
+
+        <!-- VIEW ALL -->
+
+        <div class="home-shop-button">
+
+            <a
+                href="{{ url_for('products.products') }}"
+                class="btn btn-primary"
+            >
+                View All Fragrances →
+            </a>
+
+        </div>
+
+
+    {% else %}
+
+
+        <div class="empty-products">
+
+            <div>
+                🧴
+            </div>
+
+
+            <h3>
+                Fragrances Coming Soon
+            </h3>
+
+
+            <p>
+                Our signature collection is being prepared.
+            </p>
+
+        </div>
+
+
+    {% endif %}
+
+
+</section>
+
+
+
+<!-- =========================================================
+     COLLECTIONS
+========================================================= -->
+
+<section
+    id="collections"
+    class="collection-section"
+>
+
+
+    <div class="collection-content">
+
+
+        <p>
+            DX FRAGRANCE COLLECTION
+        </p>
+
+
+        <h2>
+            Find Your Signature
+        </h2>
+
+
+        <span>
+            Explore fragrances created for every personality,
+            mood and occasion.
+        </span>
+
+
+        <a
+            href="{{ url_for('products.products') }}"
+            class="btn btn-primary"
+        >
+            Explore Collection →
+        </a>
+
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================================================
+     WHY DX FRAGRANCE
+========================================================= -->
+
+<section class="why-section">
+
+
+    <div class="section-heading">
+
+
+        <p>
+            WHY DX FRAGRANCE
+        </p>
+
+
+        <h2>
+            Made to Leave an Impression
+        </h2>
+
+    </div>
+
+
+
+    <div class="why-grid">
+
+
+        <div class="why-card">
+
+            <div class="why-icon">
+                ✦
+            </div>
+
+
+            <h3>
+                Premium Fragrance
+            </h3>
+
+
+            <p>
+                Carefully selected fragrance notes
+                designed for a refined experience.
+            </p>
+
+        </div>
+
+
+
+        <div class="why-card">
+
+            <div class="why-icon">
+                ♡
+            </div>
+
+
+            <h3>
+                Made for You
+            </h3>
+
+
+            <p>
+                Scents created to match your personality,
+                mood and individual style.
+            </p>
+
+        </div>
+
+
+
+        <div class="why-card">
+
+            <div class="why-icon">
+                ✧
+            </div>
+
+
+            <h3>
+                Signature Quality
+            </h3>
+
+
+            <p>
+                Elegant fragrances made to stay memorable
+                long after you leave the room.
+            </p>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================================================
+     ABOUT
+========================================================= -->
+
+<section
+    id="about"
+    class="about-section"
+>
+
+
+    <div class="about-content">
+
+
+        <p>
+            OUR STORY
+        </p>
+
+
+        <h2>
+            Fragrance is more than a scent.
+        </h2>
+
+
+        <span>
+            DX Fragrance is built around the belief that
+            every person deserves a signature scent that
+            feels uniquely theirs.
+        </span>
+
+
+        <br>
+        <br>
+
+
+        <a
+            href="{{ url_for('products.products') }}"
+            class="btn btn-secondary"
+        >
+            Discover DX Fragrance
+        </a>
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================================================
+     CUSTOMER REVIEWS
+========================================================= -->
+
+<section class="home-review-section">
+
+
+    <div class="section-heading">
+
+
+        <p>
+            CUSTOMER LOVE
+        </p>
+
+
+        <h2>
+            Loved by Fragrance Lovers
+        </h2>
+
+
+        <span>
+            Discover what our customers think about their DX fragrance.
+        </span>
+
+    </div>
+
+
+
+    <div class="review-home-card">
+
+
+        <div class="home-stars">
+            ★★★★★
+        </div>
+
+
+        <p>
+            "A beautiful fragrance with an elegant and
+            long-lasting scent. Definitely one of my favourites."
+        </p>
+
+
+        <strong>
+            — DX Fragrance Customer
+        </strong>
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================================================
+     FINAL CTA
+========================================================= -->
+
+<section
+    class="home-cta"
+    id="contact"
+>
+
+
+    <p>
+        FIND YOUR SIGNATURE
+    </p>
+
+
+    <h2>
+        Your next favourite fragrance is waiting.
+    </h2>
+
+
+    <a
+        href="{{ url_for('products.products') }}"
+        class="btn btn-primary"
+    >
+        Shop Fragrances →
+    </a>
+
+</section>
+
+
+
+<!-- =========================================================
+     WISHLIST SCROLL
+========================================================= -->
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+
+        const savedScroll =
+            sessionStorage.getItem(
+                "wishlistScroll"
+            );
+
+
+        if (savedScroll !== null) {
+
+            window.scrollTo(
+                0,
+                parseInt(savedScroll)
+            );
+
+
+            sessionStorage.removeItem(
+                "wishlistScroll"
+            );
+
+        }
+
+    }
+
+);
+
+</script>
+
+
+{% endblock %}

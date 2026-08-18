@@ -1,0 +1,1024 @@
+{% extends "base.html" %}
+
+{% block title %}
+DX Fragrance | Checkout
+{% endblock %}
+
+{% block content %}
+
+<section class="luxury-checkout">
+
+    <!-- PAGE HEADER -->
+
+    <div class="checkout-header">
+
+        <span>
+            DX FRAGRANCE
+        </span>
+
+        <h1>
+            Complete Your Order
+        </h1>
+
+        <p>
+            A signature fragrance, delivered to your door.
+        </p>
+
+    </div>
+
+
+    <!-- CHECKOUT CONTENT -->
+
+    <div class="checkout-layout">
+
+
+        <!-- ==========================================
+             SHIPPING DETAILS
+        =========================================== -->
+
+        <div class="checkout-card shipping-card">
+
+            <div class="checkout-card-heading">
+
+                <div class="step-number">
+                    01
+                </div>
+
+                <div>
+
+                    <span>
+                        DELIVERY
+                    </span>
+
+                    <h2>
+                        Shipping Details
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            <form
+                method="POST"
+                class="luxury-checkout-form"
+            >
+
+
+                <!-- FULL NAME -->
+
+                <div class="form-group">
+
+                    <label for="shipping_name">
+                        Full Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="shipping_name"
+                        name="shipping_name"
+                        placeholder="Enter your full name"
+                        autocomplete="name"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- PHONE -->
+
+                <div class="form-group">
+
+                    <label for="shipping_phone">
+                        Phone Number
+                    </label>
+
+                    <input
+                        type="tel"
+                        id="shipping_phone"
+                        name="shipping_phone"
+                        placeholder="Enter your phone number"
+                        autocomplete="tel"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- ADDRESS -->
+
+                <div class="form-group">
+
+                    <label for="shipping_address">
+                        Delivery Address
+                    </label>
+
+                    <textarea
+                        id="shipping_address"
+                        name="shipping_address"
+                        rows="5"
+                        placeholder="House / Flat No., Street, Area, City, State, PIN Code"
+                        autocomplete="street-address"
+                        required
+                    ></textarea>
+
+                </div>
+
+
+                <!-- PLACE ORDER -->
+
+                <button
+                    type="submit"
+                    class="place-order-button"
+                >
+
+                    <span>
+                        Place Order
+                    </span>
+
+                    <span class="order-arrow">
+                        →
+                    </span>
+
+                </button>
+
+
+                <p class="secure-note">
+                    🔒 Your order details are securely processed.
+                </p>
+
+            </form>
+
+        </div>
+
+
+
+        <!-- ==========================================
+             ORDER SUMMARY
+        =========================================== -->
+
+        <div class="checkout-card summary-card">
+
+            <div class="checkout-card-heading">
+
+                <div class="step-number">
+                    02
+                </div>
+
+                <div>
+
+                    <span>
+                        YOUR SELECTION
+                    </span>
+
+                    <h2>
+                        Order Summary
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            <div class="checkout-products">
+
+
+                {% for item in products %}
+
+                    <div class="checkout-product">
+
+                        <!-- PRODUCT IMAGE -->
+
+                        <div class="checkout-product-image">
+
+                            {% if item["product"]["image"] %}
+
+                                <img
+                                    src="{{ url_for(
+                                        'static',
+                                        filename='uploads/products/' + item['product']['image']
+                                    ) }}"
+                                    alt="{{ item['product']['name'] }}"
+                                >
+
+                            {% else %}
+
+                                <div class="no-product-image">
+                                    DX
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- PRODUCT INFO -->
+
+                        <div class="checkout-product-info">
+
+                            <h3>
+                                {{ item["product"]["name"] }}
+                            </h3>
+
+                            <p>
+                                Premium Fragrance
+                            </p>
+
+                            <span>
+                                Quantity · {{ item["quantity"] }}
+                            </span>
+
+                        </div>
+
+
+                        <!-- PRICE -->
+
+                        <div class="checkout-product-price">
+
+                            ₹{{ item["item_total"] }}
+
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+
+            <!-- SUMMARY TOTALS -->
+
+            <div class="summary-divider"></div>
+
+
+            <div class="summary-row">
+
+                <span>
+                    Subtotal
+                </span>
+
+                <span>
+                    ₹{{ total }}
+                </span>
+
+            </div>
+
+
+            <div class="summary-row">
+
+                <span>
+                    Delivery
+                </span>
+
+                <span class="free-text">
+                    FREE
+                </span>
+
+            </div>
+
+
+            <div class="summary-divider"></div>
+
+
+            <div class="grand-total">
+
+                <span>
+                    Total
+                </span>
+
+                <strong>
+                    ₹{{ total }}
+                </strong>
+
+            </div>
+
+
+            <div class="checkout-message">
+
+                <span class="message-icon">
+                    ✦
+                </span>
+
+                <p>
+                    Your signature fragrance is almost yours.
+                </p>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+
+<!-- ================================================
+     CHECKOUT PAGE CSS
+================================================ -->
+
+<style>
+
+    .luxury-checkout {
+
+        max-width: 1250px;
+
+        margin: 0 auto;
+
+        padding: 70px 30px 90px;
+
+    }
+
+
+    /* ================================================
+       HEADER
+    ================================================ */
+
+    .checkout-header {
+
+        text-align: center;
+
+        margin-bottom: 55px;
+
+    }
+
+
+    .checkout-header span {
+
+        color: #b8975a;
+
+        font-size: 11px;
+
+        font-weight: 600;
+
+        letter-spacing: 4px;
+
+    }
+
+
+    .checkout-header h1 {
+
+        margin: 12px 0 10px;
+
+        font-family:
+            Georgia,
+            "Times New Roman",
+            serif;
+
+        font-size: 44px;
+
+        font-weight: 500;
+
+        letter-spacing: -0.5px;
+
+        color: #181716;
+
+    }
+
+
+    .checkout-header p {
+
+        margin: 0;
+
+        color: #817a70;
+
+        font-size: 14px;
+
+    }
+
+
+    /* ================================================
+       LAYOUT
+    ================================================ */
+
+    .checkout-layout {
+
+        display: grid;
+
+        grid-template-columns:
+            minmax(0, 1.25fr)
+            minmax(360px, 0.75fr);
+
+        gap: 30px;
+
+        align-items: start;
+
+    }
+
+
+    /* ================================================
+       CARDS
+    ================================================ */
+
+    .checkout-card {
+
+        background: #ffffff;
+
+        border: 1px solid #e8e0d4;
+
+        border-radius: 18px;
+
+        padding: 34px;
+
+        box-shadow:
+            0 12px 35px rgba(35, 28, 20, 0.045);
+
+    }
+
+
+    .checkout-card-heading {
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 16px;
+
+        padding-bottom: 25px;
+
+        margin-bottom: 28px;
+
+        border-bottom: 1px solid #eee7dc;
+
+    }
+
+
+    .step-number {
+
+        width: 42px;
+
+        height: 42px;
+
+        border-radius: 50%;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        background: #f7f0e5;
+
+        color: #a17c43;
+
+        font-size: 11px;
+
+        font-weight: 600;
+
+        letter-spacing: 1px;
+
+        flex-shrink: 0;
+
+    }
+
+
+    .checkout-card-heading span {
+
+        display: block;
+
+        color: #b8975a;
+
+        font-size: 9px;
+
+        font-weight: 600;
+
+        letter-spacing: 2.5px;
+
+        margin-bottom: 5px;
+
+    }
+
+
+    .checkout-card-heading h2 {
+
+        margin: 0;
+
+        color: #202020;
+
+        font-size: 23px;
+
+        font-weight: 600;
+
+    }
+
+
+    /* ================================================
+       FORM
+    ================================================ */
+
+    .luxury-checkout-form {
+
+        display: flex;
+
+        flex-direction: column;
+
+        gap: 20px;
+
+    }
+
+
+    .form-group {
+
+        display: flex;
+
+        flex-direction: column;
+
+        gap: 8px;
+
+    }
+
+
+    .form-group label {
+
+        color: #302e2a;
+
+        font-size: 13px;
+
+        font-weight: 600;
+
+    }
+
+
+    .form-group input,
+
+    .form-group textarea {
+
+        width: 100%;
+
+        box-sizing: border-box;
+
+        border: 1px solid #ded6ca;
+
+        background: #fcfbf9;
+
+        border-radius: 10px;
+
+        padding: 14px 15px;
+
+        color: #222;
+
+        font-family: inherit;
+
+        font-size: 14px;
+
+        outline: none;
+
+        transition:
+            border-color 0.2s ease,
+            box-shadow 0.2s ease,
+            background 0.2s ease;
+
+    }
+
+
+    .form-group input {
+
+        height: 50px;
+
+    }
+
+
+    .form-group textarea {
+
+        resize: vertical;
+
+        min-height: 125px;
+
+    }
+
+
+    .form-group input::placeholder,
+
+    .form-group textarea::placeholder {
+
+        color: #aaa39a;
+
+    }
+
+
+    .form-group input:focus,
+
+    .form-group textarea:focus {
+
+        border-color: #b8975a;
+
+        background: #ffffff;
+
+        box-shadow:
+            0 0 0 3px rgba(184, 151, 90, 0.09);
+
+    }
+
+
+    /* ================================================
+       PLACE ORDER
+    ================================================ */
+
+    .place-order-button {
+
+        width: 100%;
+
+        min-height: 56px;
+
+        border: none;
+
+        border-radius: 10px;
+
+        background: #1c1b19;
+
+        color: #ffffff;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: space-between;
+
+        padding: 0 20px;
+
+        font-family: inherit;
+
+        font-size: 14px;
+
+        font-weight: 600;
+
+        letter-spacing: 0.4px;
+
+        cursor: pointer;
+
+        transition:
+            background 0.2s ease,
+            transform 0.2s ease;
+
+    }
+
+
+    .place-order-button:hover {
+
+        background: #302d28;
+
+        transform: translateY(-1px);
+
+    }
+
+
+    .order-arrow {
+
+        font-size: 23px;
+
+        color: #d0ad70;
+
+    }
+
+
+    .secure-note {
+
+        margin: -4px 0 0;
+
+        text-align: center;
+
+        color: #989187;
+
+        font-size: 11px;
+
+    }
+
+
+    /* ================================================
+       ORDER PRODUCTS
+    ================================================ */
+
+    .checkout-products {
+
+        display: flex;
+
+        flex-direction: column;
+
+        gap: 18px;
+
+    }
+
+
+    .checkout-product {
+
+        display: grid;
+
+        grid-template-columns: 70px 1fr auto;
+
+        align-items: center;
+
+        gap: 14px;
+
+    }
+
+
+    .checkout-product-image {
+
+        width: 70px;
+
+        height: 78px;
+
+        border-radius: 10px;
+
+        overflow: hidden;
+
+        background: #f5f0e8;
+
+        border: 1px solid #ebe2d5;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+    }
+
+
+    .checkout-product-image img {
+
+        width: 100%;
+
+        height: 100%;
+
+        object-fit: cover;
+
+    }
+
+
+    .no-product-image {
+
+        color: #b8975a;
+
+        font-family: Georgia, serif;
+
+        font-size: 20px;
+
+    }
+
+
+    .checkout-product-info {
+
+        min-width: 0;
+
+    }
+
+
+    .checkout-product-info h3 {
+
+        margin: 0 0 5px;
+
+        color: #252321;
+
+        font-size: 14px;
+
+        font-weight: 600;
+
+    }
+
+
+    .checkout-product-info p {
+
+        margin: 0 0 6px;
+
+        color: #a17c43;
+
+        font-size: 10px;
+
+        letter-spacing: 0.8px;
+
+        text-transform: uppercase;
+
+    }
+
+
+    .checkout-product-info span {
+
+        color: #89837b;
+
+        font-size: 11px;
+
+    }
+
+
+    .checkout-product-price {
+
+        color: #24211e;
+
+        font-size: 14px;
+
+        font-weight: 600;
+
+        white-space: nowrap;
+
+    }
+
+
+    /* ================================================
+       TOTAL
+    ================================================ */
+
+    .summary-divider {
+
+        height: 1px;
+
+        background: #eee7dc;
+
+        margin: 25px 0 18px;
+
+    }
+
+
+    .summary-row {
+
+        display: flex;
+
+        justify-content: space-between;
+
+        align-items: center;
+
+        margin: 11px 0;
+
+        color: #746e65;
+
+        font-size: 13px;
+
+    }
+
+
+    .free-text {
+
+        color: #4a9a68;
+
+        font-size: 11px;
+
+        font-weight: 600;
+
+        letter-spacing: 1px;
+
+    }
+
+
+    .grand-total {
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: space-between;
+
+    }
+
+
+    .grand-total span {
+
+        color: #262421;
+
+        font-size: 15px;
+
+        font-weight: 600;
+
+    }
+
+
+    .grand-total strong {
+
+        color: #1b1a18;
+
+        font-family: Georgia, serif;
+
+        font-size: 25px;
+
+        font-weight: 500;
+
+    }
+
+
+    /* ================================================
+       MESSAGE
+    ================================================ */
+
+    .checkout-message {
+
+        margin-top: 28px;
+
+        padding: 15px;
+
+        background: #faf6ee;
+
+        border: 1px solid #eee3d2;
+
+        border-radius: 10px;
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 10px;
+
+    }
+
+
+    .message-icon {
+
+        color: #b8975a;
+
+        font-size: 18px;
+
+    }
+
+
+    .checkout-message p {
+
+        margin: 0;
+
+        color: #766f65;
+
+        font-size: 11px;
+
+        line-height: 1.5;
+
+    }
+
+
+    /* ================================================
+       RESPONSIVE
+    ================================================ */
+
+    @media (max-width: 900px) {
+
+        .checkout-layout {
+
+            grid-template-columns: 1fr;
+
+        }
+
+        .summary-card {
+
+            order: -1;
+
+        }
+
+    }
+
+
+    @media (max-width: 600px) {
+
+        .luxury-checkout {
+
+            padding: 45px 16px 65px;
+
+        }
+
+
+        .checkout-header {
+
+            margin-bottom: 35px;
+
+        }
+
+
+        .checkout-header h1 {
+
+            font-size: 34px;
+
+        }
+
+
+        .checkout-card {
+
+            padding: 22px;
+
+            border-radius: 14px;
+
+        }
+
+
+        .checkout-product {
+
+            grid-template-columns: 58px 1fr;
+
+        }
+
+
+        .checkout-product-image {
+
+            width: 58px;
+
+            height: 68px;
+
+        }
+
+
+        .checkout-product-price {
+
+            grid-column: 2;
+
+        }
+
+    }
+
+</style>
+
+{% endblock %}

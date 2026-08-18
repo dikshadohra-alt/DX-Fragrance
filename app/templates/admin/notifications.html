@@ -1,0 +1,891 @@
+{% extends "base.html" %}
+
+{% block title %}
+DX Fragrance | Notifications
+{% endblock %}
+
+{% block content %}
+
+<section class="dx-notifications-page">
+
+    <!-- HERO -->
+    <div class="dx-notifications-hero">
+
+        <div class="dx-notifications-hero-content">
+
+            <span class="dx-admin-label">
+                DX FRAGRANCE • ADMIN
+            </span>
+
+            <h1>
+                Notifications
+            </h1>
+
+            <p>
+                Stay updated with recent orders, stock alerts and
+                important store activity.
+            </p>
+
+        </div>
+
+        <div class="dx-notification-icon-box">
+            🔔
+        </div>
+
+    </div>
+
+
+    <!-- MAIN CARD -->
+    <div class="dx-notifications-card">
+
+        <!-- CARD HEADER -->
+        <div class="dx-notifications-card-header">
+
+            <div>
+
+                <span class="dx-section-label">
+                    STORE ACTIVITY
+                </span>
+
+                <h2>
+                    Recent Notifications
+                </h2>
+
+                <p>
+                    Important updates from your DX Fragrance store.
+                </p>
+
+            </div>
+
+
+            {% if notifications %}
+
+                <div class="dx-notification-count">
+
+                    <strong>
+                        {{ notifications|length }}
+                    </strong>
+
+                    <span>
+                        Updates
+                    </span>
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- NOTIFICATIONS -->
+        {% if notifications %}
+
+            <div class="dx-notification-list">
+
+                {% for notif in notifications %}
+
+                    {% set notification_type = notif.get("type", "info") %}
+                    {% set notification_message = notif.get("message", "You have a new store update.") %}
+
+                    <div class="dx-notification-item">
+
+                        <!-- ICON -->
+                        <div class="dx-notification-item-icon">
+
+                            {% if notification_type == "order" %}
+                                🛒
+
+                            {% elif notification_type == "success" %}
+                                📦
+
+                            {% elif notification_type == "stock" %}
+                                ⚠️
+
+                            {% elif notification_type == "review" %}
+                                ⭐
+
+                            {% elif notification_type == "customer" %}
+                                👤
+
+                            {% else %}
+                                🔔
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- CONTENT -->
+                        <div class="dx-notification-content">
+
+                            <span class="dx-notification-title">
+
+                                {% if notification_type == "order" %}
+                                    New Order
+
+                                {% elif notification_type == "success" %}
+                                    Order Update
+
+                                {% elif notification_type == "stock" %}
+                                    Stock Alert
+
+                                {% elif notification_type == "review" %}
+                                    New Review
+
+                                {% elif notification_type == "customer" %}
+                                    New Customer
+
+                                {% else %}
+                                    Store Notification
+                                {% endif %}
+
+                            </span>
+
+
+                            <p>
+                                {{ notification_message }}
+                            </p>
+
+                        </div>
+
+
+                        <!-- STATUS -->
+                        <div class="dx-notification-status">
+
+                            {% if notification_type == "order" %}
+                                New
+
+                            {% elif notification_type == "success" %}
+                                Done
+
+                            {% elif notification_type == "stock" %}
+                                Alert
+
+                            {% elif notification_type == "review" %}
+                                Review
+
+                            {% elif notification_type == "customer" %}
+                                New
+
+                            {% else %}
+                                Update
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- ARROW -->
+                        <div class="dx-notification-arrow">
+                            →
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+
+        {% else %}
+
+            <!-- EMPTY STATE -->
+            <div class="dx-empty-notifications">
+
+                <div class="dx-empty-notification-icon">
+                    🔔
+                </div>
+
+                <h3>
+                    No New Notifications
+                </h3>
+
+                <p>
+                    You're all caught up! New orders, stock alerts
+                    and store activity will appear here.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- BACK TO DASHBOARD -->
+    <div class="dx-notifications-footer">
+
+        <a
+            href="{{ url_for('admin.dashboard') }}"
+            class="dx-back-dashboard"
+        >
+            <span>←</span>
+            Back to Dashboard
+        </a>
+
+    </div>
+
+</section>
+
+
+<style>
+
+/* =========================================================
+   DX FRAGRANCE ADMIN NOTIFICATIONS
+========================================================= */
+
+.dx-notifications-page {
+
+    max-width: 1100px;
+
+    margin: 0 auto;
+
+    padding: 42px 30px 70px;
+
+    color: #29221e;
+
+}
+
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.dx-notifications-hero {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 30px;
+
+    padding: 34px 40px;
+
+    margin-bottom: 28px;
+
+    border-radius: 22px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #29201c 0%,
+            #46362e 55%,
+            #59463a 100%
+        );
+
+    box-shadow:
+        0 18px 45px rgba(48, 36, 29, 0.12);
+
+}
+
+
+.dx-admin-label {
+
+    display: inline-block;
+
+    margin-bottom: 9px;
+
+    color: #d8b878;
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    letter-spacing: 3px;
+
+}
+
+
+.dx-notifications-hero h1 {
+
+    margin: 0 0 8px;
+
+    color: #ffffff;
+
+    font-size: 32px;
+
+    font-weight: 700;
+
+    letter-spacing: -0.5px;
+
+}
+
+
+.dx-notifications-hero p {
+
+    max-width: 600px;
+
+    margin: 0;
+
+    color: #dfd6d0;
+
+    font-size: 14px;
+
+    line-height: 1.6;
+
+}
+
+
+/* =========================================================
+   HERO ICON
+========================================================= */
+
+.dx-notification-icon-box {
+
+    width: 72px;
+
+    height: 72px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border: 1px solid rgba(216, 184, 120, 0.45);
+
+    border-radius: 18px;
+
+    background: rgba(255,255,255,0.08);
+
+    font-size: 32px;
+
+}
+
+
+/* =========================================================
+   MAIN CARD
+========================================================= */
+
+.dx-notifications-card {
+
+    background: #ffffff;
+
+    border: 1px solid #e8dfd5;
+
+    border-radius: 20px;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 8px 30px rgba(48, 36, 29, 0.05);
+
+}
+
+
+/* =========================================================
+   CARD HEADER
+========================================================= */
+
+.dx-notifications-card-header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 20px;
+
+    padding: 30px 32px;
+
+    border-bottom: 1px solid #eee7df;
+
+    background: #fffdfa;
+
+}
+
+
+.dx-section-label {
+
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: #b89455;
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    letter-spacing: 2.5px;
+
+}
+
+
+.dx-notifications-card-header h2 {
+
+    margin: 0 0 6px;
+
+    color: #29221e;
+
+    font-size: 23px;
+
+}
+
+
+.dx-notifications-card-header p {
+
+    margin: 0;
+
+    color: #8b8179;
+
+    font-size: 13px;
+
+}
+
+
+/* =========================================================
+   COUNT
+========================================================= */
+
+.dx-notification-count {
+
+    min-width: 82px;
+
+    padding: 10px 15px;
+
+    text-align: center;
+
+    border: 1px solid #eadcc6;
+
+    border-radius: 12px;
+
+    background: #fffaf2;
+
+}
+
+
+.dx-notification-count strong {
+
+    display: block;
+
+    color: #3b2e25;
+
+    font-size: 21px;
+
+    line-height: 1.2;
+
+}
+
+
+.dx-notification-count span {
+
+    display: block;
+
+    margin-top: 3px;
+
+    color: #ad9064;
+
+    font-size: 9px;
+
+    font-weight: 700;
+
+    letter-spacing: 1px;
+
+    text-transform: uppercase;
+
+}
+
+
+/* =========================================================
+   NOTIFICATION LIST
+========================================================= */
+
+.dx-notification-list {
+
+    padding: 8px 22px 20px;
+
+}
+
+
+.dx-notification-item {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 16px;
+
+    min-height: 76px;
+
+    padding: 17px 15px;
+
+    border-bottom: 1px solid #eee9e3;
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease;
+
+}
+
+
+.dx-notification-item:last-child {
+
+    border-bottom: none;
+
+}
+
+
+.dx-notification-item:hover {
+
+    background: #fffdf9;
+
+    transform: translateX(3px);
+
+}
+
+
+/* =========================================================
+   ICON
+========================================================= */
+
+.dx-notification-item-icon {
+
+    width: 48px;
+
+    height: 48px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 14px;
+
+    background: #fff5df;
+
+    border: 1px solid #efdfc3;
+
+    font-size: 21px;
+
+}
+
+
+/* =========================================================
+   CONTENT
+========================================================= */
+
+.dx-notification-content {
+
+    flex: 1;
+
+    min-width: 0;
+
+}
+
+
+.dx-notification-title {
+
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: #ad9064;
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    letter-spacing: 1.5px;
+
+    text-transform: uppercase;
+
+}
+
+
+.dx-notification-content p {
+
+    margin: 0;
+
+    color: #514840;
+
+    font-size: 14px;
+
+    line-height: 1.55;
+
+    word-break: break-word;
+
+}
+
+
+/* =========================================================
+   STATUS BADGE
+========================================================= */
+
+.dx-notification-status {
+
+    flex-shrink: 0;
+
+    padding: 6px 10px;
+
+    border: 1px solid #eadcc6;
+
+    border-radius: 20px;
+
+    background: #fffaf2;
+
+    color: #9d7c4c;
+
+    font-size: 9px;
+
+    font-weight: 700;
+
+    letter-spacing: 0.8px;
+
+    text-transform: uppercase;
+
+}
+
+
+/* =========================================================
+   ARROW
+========================================================= */
+
+.dx-notification-arrow {
+
+    width: 36px;
+
+    height: 36px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    background: #faf6f0;
+
+    color: #a38b68;
+
+    font-size: 17px;
+
+    transition: all 0.2s ease;
+
+}
+
+
+.dx-notification-item:hover .dx-notification-arrow {
+
+    background: #30251f;
+
+    color: #ffffff;
+
+}
+
+
+/* =========================================================
+   EMPTY STATE
+========================================================= */
+
+.dx-empty-notifications {
+
+    padding: 85px 25px;
+
+    text-align: center;
+
+    background: #fffdfa;
+
+}
+
+
+.dx-empty-notification-icon {
+
+    width: 76px;
+
+    height: 76px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    margin: 0 auto 20px;
+
+    border-radius: 50%;
+
+    background: #fff5df;
+
+    border: 1px solid #efdfc3;
+
+    font-size: 32px;
+
+}
+
+
+.dx-empty-notifications h3 {
+
+    margin: 0 0 8px;
+
+    color: #302720;
+
+    font-size: 20px;
+
+}
+
+
+.dx-empty-notifications p {
+
+    max-width: 470px;
+
+    margin: 0 auto;
+
+    color: #92877e;
+
+    font-size: 13px;
+
+    line-height: 1.7;
+
+}
+
+
+/* =========================================================
+   BACK BUTTON
+========================================================= */
+
+.dx-notifications-footer {
+
+    margin-top: 22px;
+
+}
+
+
+.dx-back-dashboard {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 11px 18px;
+
+    border: 1px solid #dfd3c5;
+
+    border-radius: 10px;
+
+    background: #ffffff;
+
+    color: #40342c;
+
+    text-decoration: none;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    transition: all 0.2s ease;
+
+}
+
+
+.dx-back-dashboard:hover {
+
+    background: #30251f;
+
+    border-color: #30251f;
+
+    color: #ffffff;
+
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 700px) {
+
+    .dx-notifications-page {
+
+        padding: 25px 15px 50px;
+
+    }
+
+
+    .dx-notifications-hero {
+
+        flex-direction: column;
+
+        align-items: flex-start;
+
+        padding: 26px;
+
+    }
+
+
+    .dx-notification-icon-box {
+
+        width: 58px;
+
+        height: 58px;
+
+        font-size: 26px;
+
+    }
+
+
+    .dx-notifications-card-header {
+
+        flex-direction: column;
+
+        align-items: flex-start;
+
+        padding: 24px;
+
+    }
+
+
+    .dx-notification-count {
+
+        width: 100%;
+
+        box-sizing: border-box;
+
+    }
+
+
+    .dx-notification-list {
+
+        padding: 8px 14px 15px;
+
+    }
+
+
+    .dx-notification-item {
+
+        align-items: flex-start;
+
+        padding: 17px 8px;
+
+    }
+
+
+    .dx-notification-status {
+
+        display: none;
+
+    }
+
+
+    .dx-notification-arrow {
+
+        display: none;
+
+    }
+
+}
+
+</style>
+
+{% endblock %}

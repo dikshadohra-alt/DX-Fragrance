@@ -1,0 +1,1046 @@
+{% extends "base.html" %}
+
+{% block title %}
+DX Fragrance | Edit Profile
+{% endblock %}
+
+
+{% block content %}
+
+<section class="dx-edit-page">
+
+
+    <!-- =====================================================
+         PAGE HEADER
+    ====================================================== -->
+
+    <section class="edit-header">
+
+        <div class="edit-header-content">
+
+            <span class="edit-label">
+                DX FRAGRANCE
+            </span>
+
+            <h1>
+                Edit Your Profile
+            </h1>
+
+            <p>
+                Keep your account information up to date.
+            </p>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+    ====================================================== -->
+
+    <main class="edit-main">
+
+
+        <!-- BACK TO ACCOUNT -->
+
+        <a
+            href="{{ url_for('auth.account') }}"
+            class="back-account"
+        >
+            <span>←</span>
+            Back to Account
+        </a>
+
+
+
+        <!-- =================================================
+             PROFILE FORM CARD
+        ================================================== -->
+
+        <div class="edit-card">
+
+
+            <!-- CARD HEADER -->
+
+            <div class="edit-card-header">
+
+                <div class="edit-profile-icon">
+                    ✦
+                </div>
+
+                <div>
+
+                    <span>
+                        PERSONAL DETAILS
+                    </span>
+
+                    <h2>
+                        Personal Information
+                    </h2>
+
+                    <p>
+                        Update the details associated with your
+                        DX Fragrance account.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 FORM
+            ================================================== -->
+
+            <form
+                method="POST"
+                class="profile-form"
+            >
+
+
+                <!-- FULL NAME -->
+
+                <div class="form-group">
+
+                    <label for="username">
+                        Full Name
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <span class="input-icon">
+                            ♡
+                        </span>
+
+                        <input
+                            type="text"
+                            id="username"
+                            name="username"
+                            value="{{ user['username'] }}"
+                            placeholder="Enter your full name"
+                            autocomplete="name"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- EMAIL -->
+
+                <div class="form-group">
+
+                    <label for="email">
+                        Email Address
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <span class="input-icon">
+                            ✉
+                        </span>
+
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            value="{{ user['email'] }}"
+                            placeholder="Enter your email address"
+                            autocomplete="email"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- SAVE BUTTON -->
+
+                <button
+                    type="submit"
+                    class="save-profile-button"
+                >
+
+                    <span>
+                        Save Changes
+                    </span>
+
+                    <strong>
+                        →
+                    </strong>
+
+                </button>
+
+            </form>
+
+
+
+            <!-- =================================================
+                 SECURITY NOTE
+            ================================================== -->
+
+            <div class="profile-note">
+
+                <span>
+                    ✦
+                </span>
+
+                <p>
+                    Your account information is kept private
+                    and is only used to manage your DX Fragrance
+                    account.
+                </p>
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- =================================================
+             SMALL ACCOUNT INFO
+        ================================================== -->
+
+        <div class="account-info-strip">
+
+            <div>
+
+                <span>
+                    ACCOUNT
+                </span>
+
+                <strong>
+                    {{ user['username'] }}
+                </strong>
+
+            </div>
+
+
+            <div>
+
+                <span>
+                    EMAIL
+                </span>
+
+                <strong>
+                    {{ user['email'] }}
+                </strong>
+
+            </div>
+
+
+            <a
+                href="{{ url_for('auth.account') }}"
+            >
+                View Account
+                <span>→</span>
+            </a>
+
+        </div>
+
+
+    </main>
+
+</section>
+
+
+
+<style>
+
+/* =========================================================
+   MAIN PAGE
+========================================================= */
+
+.dx-edit-page {
+
+    min-height: 100vh;
+
+    background:
+        linear-gradient(
+            180deg,
+            #fffdf9 0%,
+            #faf8f4 50%,
+            #ffffff 100%
+        );
+
+    color: #292622;
+
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.edit-header {
+
+    position: relative;
+
+    overflow: hidden;
+
+    padding: 48px 20px 42px;
+
+    text-align: center;
+
+    background:
+
+        radial-gradient(
+            circle at 15% 50%,
+            rgba(220,195,155,.13),
+            transparent 28%
+        ),
+
+        radial-gradient(
+            circle at 85% 40%,
+            rgba(220,210,190,.16),
+            transparent 30%
+        ),
+
+        #faf8f4;
+
+    border-bottom:
+        1px solid #eee7de;
+
+}
+
+
+/* decorative circles */
+
+.edit-header::before {
+
+    content: "";
+
+    position: absolute;
+
+    width: 330px;
+
+    height: 330px;
+
+    left: -170px;
+
+    top: -235px;
+
+    border:
+        1px solid
+        rgba(183,145,88,.11);
+
+    border-radius: 50%;
+
+}
+
+
+.edit-header::after {
+
+    content: "";
+
+    position: absolute;
+
+    width: 280px;
+
+    height: 280px;
+
+    right: -130px;
+
+    bottom: -210px;
+
+    border:
+        1px solid
+        rgba(183,145,88,.09);
+
+    border-radius: 50%;
+
+}
+
+
+.edit-header-content {
+
+    position: relative;
+
+    z-index: 2;
+
+}
+
+
+.edit-label {
+
+    display: block;
+
+    margin-bottom: 12px;
+
+    color: #b08a50;
+
+    font-size: 8px;
+
+    font-weight: 700;
+
+    letter-spacing: 3.5px;
+
+}
+
+
+.edit-header h1 {
+
+    margin: 0;
+
+    color: #292622;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size:
+        clamp(34px, 4vw, 48px);
+
+    font-weight: 400;
+
+    letter-spacing: -1px;
+
+}
+
+
+.edit-header p {
+
+    margin: 9px 0 0;
+
+    color: #817b75;
+
+    font-size: 11px;
+
+}
+
+
+/* =========================================================
+   MAIN
+========================================================= */
+
+.edit-main {
+
+    width:
+        min(
+            760px,
+            calc(100% - 30px)
+        );
+
+    margin: 0 auto;
+
+    padding: 32px 0 70px;
+
+}
+
+
+/* =========================================================
+   BACK LINK
+========================================================= */
+
+.back-account {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    margin-bottom: 18px;
+
+    color: #81683f;
+
+    text-decoration: none;
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    transition: .2s ease;
+
+}
+
+
+.back-account span {
+
+    font-size: 15px;
+
+    transition: .2s ease;
+
+}
+
+
+.back-account:hover {
+
+    color: #302b25;
+
+}
+
+
+.back-account:hover span {
+
+    transform:
+        translateX(-3px);
+
+}
+
+
+/* =========================================================
+   CARD
+========================================================= */
+
+.edit-card {
+
+    padding: 32px;
+
+    background: #fff;
+
+    border:
+        1px solid #e7ded3;
+
+    box-shadow:
+        0 12px 40px
+        rgba(45,35,25,.055);
+
+}
+
+
+/* =========================================================
+   CARD HEADER
+========================================================= */
+
+.edit-card-header {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 16px;
+
+    padding-bottom: 25px;
+
+    border-bottom:
+        1px solid #eee7df;
+
+}
+
+
+.edit-profile-icon {
+
+    width: 48px;
+
+    height: 48px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border:
+        1px solid #d8bc8b;
+
+    border-radius: 50%;
+
+    background: #fcf8f0;
+
+    color: #a9824c;
+
+    font-size: 17px;
+
+}
+
+
+.edit-card-header > div:last-child > span {
+
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: #b08a50;
+
+    font-size: 7px;
+
+    font-weight: 700;
+
+    letter-spacing: 2px;
+
+}
+
+
+.edit-card-header h2 {
+
+    margin: 0;
+
+    color: #2d2925;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size: 25px;
+
+    font-weight: 400;
+
+}
+
+
+.edit-card-header p {
+
+    margin: 6px 0 0;
+
+    color: #858079;
+
+    font-size: 10px;
+
+    line-height: 1.6;
+
+}
+
+
+/* =========================================================
+   FORM
+========================================================= */
+
+.profile-form {
+
+    padding-top: 28px;
+
+}
+
+
+.form-group {
+
+    margin-bottom: 21px;
+
+}
+
+
+.form-group label {
+
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: #49433c;
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+}
+
+
+.input-wrapper {
+
+    position: relative;
+
+}
+
+
+.input-icon {
+
+    position: absolute;
+
+    top: 50%;
+
+    left: 15px;
+
+    transform:
+        translateY(-50%);
+
+    color: #b08a50;
+
+    font-size: 14px;
+
+    pointer-events: none;
+
+}
+
+
+.input-wrapper input {
+
+    width: 100%;
+
+    height: 50px;
+
+    box-sizing: border-box;
+
+    padding:
+        0 15px 0 43px;
+
+    border:
+        1px solid #ded5ca;
+
+    outline: none;
+
+    border-radius: 2px;
+
+    background: #fffdf9;
+
+    color: #302c27;
+
+    font-family: inherit;
+
+    font-size: 11px;
+
+    transition:
+        border-color .25s ease,
+        box-shadow .25s ease,
+        background .25s ease;
+
+}
+
+
+.input-wrapper input::placeholder {
+
+    color: #aaa39b;
+
+}
+
+
+.input-wrapper input:focus {
+
+    background: #fff;
+
+    border-color: #b99764;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(185,151,100,.09);
+
+}
+
+
+/* =========================================================
+   SAVE BUTTON
+========================================================= */
+
+.save-profile-button {
+
+    width: 100%;
+
+    height: 52px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    margin-top: 8px;
+
+    padding: 0 18px 0 20px;
+
+    border: none;
+
+    border-radius: 2px;
+
+    background: #292622;
+
+    color: #fff;
+
+    cursor: pointer;
+
+    font-family: inherit;
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    letter-spacing: .4px;
+
+    transition:
+        background .25s ease,
+        transform .25s ease;
+
+}
+
+
+.save-profile-button strong {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    width: 31px;
+
+    height: 31px;
+
+    border-radius: 50%;
+
+    background: #b99764;
+
+    color: #fff;
+
+    font-size: 16px;
+
+    font-weight: 400;
+
+}
+
+
+.save-profile-button:hover {
+
+    background: #3a342d;
+
+    transform:
+        translateY(-2px);
+
+}
+
+
+/* =========================================================
+   NOTE
+========================================================= */
+
+.profile-note {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 9px;
+
+    margin-top: 21px;
+
+    padding: 13px 15px;
+
+    background: #faf7f1;
+
+    border:
+        1px solid #eee5d9;
+
+}
+
+
+.profile-note > span {
+
+    color: #b08a50;
+
+    font-size: 12px;
+
+}
+
+
+.profile-note p {
+
+    margin: 0;
+
+    color: #8b847c;
+
+    font-size: 9px;
+
+    line-height: 1.6;
+
+}
+
+
+/* =========================================================
+   ACCOUNT INFO STRIP
+========================================================= */
+
+.account-info-strip {
+
+    display: grid;
+
+    grid-template-columns:
+        1fr 1.4fr auto;
+
+    align-items: center;
+
+    gap: 20px;
+
+    margin-top: 18px;
+
+    padding: 18px 20px;
+
+    background: #faf8f4;
+
+    border:
+        1px solid #e8dfd4;
+
+}
+
+
+.account-info-strip div {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 4px;
+
+}
+
+
+.account-info-strip span {
+
+    color: #b08a50;
+
+    font-size: 7px;
+
+    font-weight: 700;
+
+    letter-spacing: 1.8px;
+
+}
+
+
+.account-info-strip strong {
+
+    overflow: hidden;
+
+    color: #625b54;
+
+    font-size: 10px;
+
+    font-weight: 500;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+
+}
+
+
+.account-info-strip a {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    color: #8c6c3d;
+
+    text-decoration: none;
+
+    font-size: 9px;
+
+    font-weight: 700;
+
+    white-space: nowrap;
+
+}
+
+
+.account-info-strip a span {
+
+    color: #8c6c3d;
+
+    font-size: 13px;
+
+    letter-spacing: 0;
+
+}
+
+
+.account-info-strip a:hover {
+
+    color: #302b25;
+
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 650px) {
+
+    .edit-header {
+
+        padding:
+            40px 15px 35px;
+
+    }
+
+
+    .edit-main {
+
+        width:
+            calc(100% - 24px);
+
+        padding-top: 25px;
+
+    }
+
+
+    .edit-card {
+
+        padding: 23px 18px;
+
+    }
+
+
+    .edit-card-header {
+
+        gap: 12px;
+
+    }
+
+
+    .edit-card-header h2 {
+
+        font-size: 22px;
+
+    }
+
+
+    .account-info-strip {
+
+        grid-template-columns: 1fr;
+
+        gap: 14px;
+
+    }
+
+
+    .account-info-strip a {
+
+        padding-top: 4px;
+
+    }
+
+}
+
+
+@media (max-width: 420px) {
+
+    .edit-header h1 {
+
+        font-size: 32px;
+
+    }
+
+
+    .edit-profile-icon {
+
+        width: 42px;
+
+        height: 42px;
+
+    }
+
+
+    .edit-card-header p {
+
+        font-size: 9px;
+
+    }
+
+}
+
+</style>
+
+
+{% endblock %}

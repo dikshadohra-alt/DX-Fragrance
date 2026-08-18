@@ -1,0 +1,1507 @@
+{% extends "base.html" %}
+
+{% block title %}
+DX Fragrance | Order Details
+{% endblock %}
+
+{% block content %}
+
+<section class="order-detail-page">
+
+    <!-- =====================================================
+         PAGE INTRO
+    ====================================================== -->
+
+    <div class="order-page-header">
+
+        <span class="eyebrow">
+            DX FRAGRANCE
+        </span>
+
+        <h1>
+            Order Details
+        </h1>
+
+        <p>
+            Your fragrance journey, beautifully tracked.
+        </p>
+
+    </div>
+
+
+    <div class="order-detail-container">
+
+
+        <!-- =====================================================
+             ORDER STATUS CARD
+        ====================================================== -->
+
+        <div class="luxury-card order-status-card">
+
+            <div class="order-status-top">
+
+                <div>
+
+                    <span class="small-label">
+                        ORDER
+                    </span>
+
+                    <h2>
+                        #{{ order["id"] }}
+                    </h2>
+
+                </div>
+
+
+                <div class="current-status">
+
+                    <span>
+                        CURRENT STATUS
+                    </span>
+
+                    <strong class="status-{{ order['status']|lower }}">
+                        {{ order["status"]|capitalize }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- STATUS TIMELINE -->
+
+            {% set current_status = order["status"]|lower %}
+
+            <div class="luxury-timeline">
+
+                <div class="timeline-item
+                    {% if current_status in ['pending','confirmed','shipped','delivered'] %}
+                        active
+                    {% endif %}
+                ">
+
+                    <div class="timeline-circle">
+                        ✓
+                    </div>
+
+                    <span>
+                        Pending
+                    </span>
+
+                </div>
+
+
+                <div class="timeline-connector
+                    {% if current_status in ['confirmed','shipped','delivered'] %}
+                        active
+                    {% endif %}
+                "></div>
+
+
+                <div class="timeline-item
+                    {% if current_status in ['confirmed','shipped','delivered'] %}
+                        active
+                    {% endif %}
+                ">
+
+                    <div class="timeline-circle">
+                        ✓
+                    </div>
+
+                    <span>
+                        Confirmed
+                    </span>
+
+                </div>
+
+
+                <div class="timeline-connector
+                    {% if current_status in ['shipped','delivered'] %}
+                        active
+                    {% endif %}
+                "></div>
+
+
+                <div class="timeline-item
+                    {% if current_status in ['shipped','delivered'] %}
+                        active
+                    {% endif %}
+                ">
+
+                    <div class="timeline-circle">
+                        ✓
+                    </div>
+
+                    <span>
+                        Shipped
+                    </span>
+
+                </div>
+
+
+                <div class="timeline-connector
+                    {% if current_status == 'delivered' %}
+                        active
+                    {% endif %}
+                "></div>
+
+
+                <div class="timeline-item
+                    {% if current_status == 'delivered' %}
+                        active
+                    {% endif %}
+                ">
+
+                    <div class="timeline-circle">
+                        ✓
+                    </div>
+
+                    <span>
+                        Delivered
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =====================================================
+             ORDERED PRODUCTS
+        ====================================================== -->
+
+        <div class="luxury-card">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <span>
+                        YOUR PURCHASE
+                    </span>
+
+                    <h2>
+                        Ordered Products
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            {% for item in items %}
+
+            <div class="luxury-product">
+
+                <div class="luxury-product-image">
+
+                    {% if item["product_image"] %}
+
+                        <img
+                            src="{{ url_for(
+                                'static',
+                                filename='uploads/products/' + item['product_image']
+                            ) }}"
+                            alt="{{ item['product_name'] }}"
+                        >
+
+                    {% else %}
+
+                        <div class="empty-product-image">
+                            🧴
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+
+                <div class="luxury-product-info">
+
+                    <span class="product-type">
+                        DX FRAGRANCE
+                    </span>
+
+                    <h3>
+                        {{ item["product_name"] }}
+                    </h3>
+
+                    <div class="product-meta">
+
+                        <span>
+                            Quantity:
+                            <strong>
+                                {{ item["quantity"] }}
+                            </strong>
+                        </span>
+
+                        <span>
+                            Price:
+                            <strong>
+                                ₹{{ item["price"] }}
+                            </strong>
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="luxury-product-total">
+
+                    <span>
+                        ITEM TOTAL
+                    </span>
+
+                    <strong>
+                        ₹{{ item["price"] * item["quantity"] }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+
+
+        <!-- =====================================================
+             SHIPPING + PAYMENT
+        ====================================================== -->
+
+        <div class="information-grid">
+
+
+            <!-- SHIPPING -->
+
+            <div class="luxury-card information-card">
+
+                <span class="section-eyebrow">
+                    DELIVERY
+                </span>
+
+                <h2>
+                    Shipping Details
+                </h2>
+
+
+                <div class="info-list">
+
+                    <div class="info-row">
+
+                        <span>
+                            Name
+                        </span>
+
+                        <strong>
+                            {{ order["shipping_name"] }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="info-row">
+
+                        <span>
+                            Phone
+                        </span>
+
+                        <strong>
+                            {{ order["shipping_phone"] }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="info-row">
+
+                        <span>
+                            Address
+                        </span>
+
+                        <strong>
+                            {{ order["shipping_address"] }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- PAYMENT -->
+
+            <div class="luxury-card information-card">
+
+                <span class="section-eyebrow">
+                    PAYMENT
+                </span>
+
+                <h2>
+                    Order Summary
+                </h2>
+
+
+                <div class="summary-list">
+
+                    <div class="summary-row">
+
+                        <span>
+                            Order Total
+                        </span>
+
+                        <strong>
+                            ₹{{ order["total_amount"] }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="summary-row final-total">
+
+                        <span>
+                            Total Amount
+                        </span>
+
+                        <strong>
+                            ₹{{ order["total_amount"] }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="payment-note">
+
+                    <span>
+                        ✓
+                    </span>
+
+                    <p>
+                        Your order has been successfully recorded.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =====================================================
+             ACTION BUTTONS
+        ====================================================== -->
+
+        <div class="order-actions">
+
+            <a
+                href="{{ url_for('orders.my_orders') }}"
+                class="secondary-action"
+            >
+                ← My Orders
+            </a>
+
+
+            <a
+                href="{{ url_for('products.products') }}"
+                class="primary-action"
+            >
+                Continue Shopping
+                <span>→</span>
+            </a>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+
+<style>
+
+/* =========================================================
+   PAGE
+========================================================= */
+
+.order-detail-page {
+
+    min-height: 100vh;
+
+    padding:
+        65px 25px
+        90px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #faf8f4 0%,
+            #ffffff 48%,
+            #faf6ef 100%
+        );
+
+}
+
+
+/* =========================================================
+   PAGE HEADER
+========================================================= */
+
+.order-page-header {
+
+    max-width: 1050px;
+
+    margin:
+        0 auto 42px;
+
+    text-align: center;
+
+}
+
+
+.order-page-header .eyebrow {
+
+    display: block;
+
+    color: #b18a4d;
+
+    font-size: 10px;
+
+    font-weight: 600;
+
+    letter-spacing: 4px;
+
+    margin-bottom: 12px;
+
+}
+
+
+.order-page-header h1 {
+
+    margin: 0;
+
+    color: #201e1b;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size: 43px;
+
+    font-weight: 500;
+
+    letter-spacing: -0.5px;
+
+}
+
+
+.order-page-header p {
+
+    margin: 12px 0 0;
+
+    color: #898177;
+
+    font-size: 14px;
+
+}
+
+
+
+/* =========================================================
+   CONTAINER
+========================================================= */
+
+.order-detail-container {
+
+    max-width: 1050px;
+
+    margin: 0 auto;
+
+}
+
+
+
+/* =========================================================
+   LUXURY CARD
+========================================================= */
+
+.luxury-card {
+
+    position: relative;
+
+    background: rgba(255,255,255,0.96);
+
+    border:
+        1px solid #e9e0d3;
+
+    border-radius: 20px;
+
+    padding: 32px;
+
+    margin-bottom: 22px;
+
+    box-shadow:
+        0 12px 35px
+        rgba(42,31,20,0.045);
+
+}
+
+
+.luxury-card::before {
+
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+
+    left: 34px;
+
+    right: 34px;
+
+    height: 1px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            #d8bd8b,
+            transparent
+        );
+
+}
+
+
+
+/* =========================================================
+   ORDER STATUS
+========================================================= */
+
+.order-status-top {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 20px;
+
+    padding-bottom: 27px;
+
+    border-bottom:
+        1px solid #eee8df;
+
+}
+
+
+.small-label {
+
+    display: block;
+
+    color: #b18a4d;
+
+    font-size: 10px;
+
+    font-weight: 600;
+
+    letter-spacing: 2.5px;
+
+}
+
+
+.order-status-top h2 {
+
+    margin: 7px 0 0;
+
+    color: #211f1c;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size: 29px;
+
+    font-weight: 500;
+
+}
+
+
+.current-status {
+
+    text-align: right;
+
+}
+
+
+.current-status > span {
+
+    display: block;
+
+    color: #999187;
+
+    font-size: 9px;
+
+    letter-spacing: 1.7px;
+
+    margin-bottom: 8px;
+
+}
+
+
+.current-status strong {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    padding: 8px 17px;
+
+    border-radius: 30px;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+}
+
+
+.status-pending {
+
+    background: #fff5d9;
+
+    color: #9b751d;
+
+}
+
+
+.status-confirmed {
+
+    background: #edf5ff;
+
+    color: #5078a2;
+
+}
+
+
+.status-shipped {
+
+    background: #f1edff;
+
+    color: #705ca7;
+
+}
+
+
+.status-delivered {
+
+    background: #e7f7eb;
+
+    color: #39804f;
+
+}
+
+
+.status-cancelled {
+
+    background: #ffeded;
+
+    color: #b44b4b;
+
+}
+
+
+
+/* =========================================================
+   TIMELINE
+========================================================= */
+
+.luxury-timeline {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    margin-top: 30px;
+
+}
+
+
+.timeline-item {
+
+    min-width: 78px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    gap: 9px;
+
+}
+
+
+.timeline-circle {
+
+    width: 34px;
+
+    height: 34px;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: #f0ece5;
+
+    color: #aaa39a;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    border: 1px solid #e3ddd3;
+
+    transition: 0.3s ease;
+
+}
+
+
+.timeline-item.active .timeline-circle {
+
+    background: #1d1b19;
+
+    color: #d6b574;
+
+    border-color: #1d1b19;
+
+    box-shadow:
+        0 5px 15px
+        rgba(0,0,0,0.12);
+
+}
+
+
+.timeline-item span {
+
+    color: #999187;
+
+    font-size: 10px;
+
+}
+
+
+.timeline-item.active span {
+
+    color: #80663b;
+
+    font-weight: 600;
+
+}
+
+
+.timeline-connector {
+
+    flex: 1;
+
+    height: 1px;
+
+    background: #e4ddd3;
+
+    margin-top: 17px;
+
+}
+
+
+.timeline-connector.active {
+
+    background: #c7a66e;
+
+}
+
+
+
+/* =========================================================
+   SECTION HEADING
+========================================================= */
+
+.section-heading {
+
+    padding-bottom: 19px;
+
+    border-bottom:
+        1px solid #eee8df;
+
+}
+
+
+.section-heading span,
+.section-eyebrow {
+
+    color: #b18a4d;
+
+    font-size: 9px;
+
+    font-weight: 600;
+
+    letter-spacing: 2.2px;
+
+}
+
+
+.section-heading h2,
+.information-card h2 {
+
+    margin:
+        7px 0 0;
+
+    color: #24211e;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size: 22px;
+
+    font-weight: 500;
+
+}
+
+
+
+/* =========================================================
+   PRODUCTS
+========================================================= */
+
+.luxury-product {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 22px;
+
+    padding: 22px 0;
+
+    border-bottom:
+        1px solid #f0ebe4;
+
+}
+
+
+.luxury-product:last-child {
+
+    border-bottom: none;
+
+    padding-bottom: 4px;
+
+}
+
+
+.luxury-product-image {
+
+    width: 105px;
+
+    height: 105px;
+
+    flex-shrink: 0;
+
+    border-radius: 14px;
+
+    overflow: hidden;
+
+    background: #f5f0e8;
+
+    border:
+        1px solid #eee5d8;
+
+}
+
+
+.luxury-product-image img {
+
+    width: 100%;
+
+    height: 100%;
+
+    object-fit: cover;
+
+    display: block;
+
+}
+
+
+.empty-product-image {
+
+    width: 100%;
+
+    height: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 38px;
+
+}
+
+
+.luxury-product-info {
+
+    flex: 1;
+
+}
+
+
+.product-type {
+
+    display: block;
+
+    color: #b18a4d;
+
+    font-size: 9px;
+
+    letter-spacing: 1.8px;
+
+    margin-bottom: 7px;
+
+}
+
+
+.luxury-product-info h3 {
+
+    margin: 0 0 12px;
+
+    color: #24211e;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size: 19px;
+
+    font-weight: 500;
+
+}
+
+
+.product-meta {
+
+    display: flex;
+
+    gap: 25px;
+
+    color: #8b847b;
+
+    font-size: 12px;
+
+}
+
+
+.product-meta strong {
+
+    color: #3c3833;
+
+    font-weight: 600;
+
+}
+
+
+.luxury-product-total {
+
+    text-align: right;
+
+    min-width: 125px;
+
+}
+
+
+.luxury-product-total span {
+
+    display: block;
+
+    color: #aaa197;
+
+    font-size: 8px;
+
+    letter-spacing: 1.5px;
+
+    margin-bottom: 7px;
+
+}
+
+
+.luxury-product-total strong {
+
+    color: #24211e;
+
+    font-size: 18px;
+
+    font-weight: 600;
+
+}
+
+
+
+/* =========================================================
+   INFORMATION GRID
+========================================================= */
+
+.information-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, 1fr);
+
+    gap: 22px;
+
+}
+
+
+.information-card {
+
+    margin-bottom: 0;
+
+}
+
+
+.information-card h2 {
+
+    margin-bottom: 24px;
+
+}
+
+
+.info-list {
+
+    margin-top: 5px;
+
+}
+
+
+.info-row {
+
+    padding: 13px 0;
+
+    border-bottom:
+        1px solid #f0ebe4;
+
+}
+
+
+.info-row:last-child {
+
+    border-bottom: none;
+
+}
+
+
+.info-row span {
+
+    display: block;
+
+    color: #aaa197;
+
+    font-size: 10px;
+
+    margin-bottom: 5px;
+
+}
+
+
+.info-row strong {
+
+    display: block;
+
+    color: #46413b;
+
+    font-size: 13px;
+
+    line-height: 1.6;
+
+}
+
+
+
+/* =========================================================
+   SUMMARY
+========================================================= */
+
+.summary-list {
+
+    margin-top: 3px;
+
+}
+
+
+.summary-row {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    padding: 16px 0;
+
+    border-bottom:
+        1px solid #f0ebe4;
+
+    color: #858078;
+
+    font-size: 13px;
+
+}
+
+
+.summary-row strong {
+
+    color: #39352f;
+
+}
+
+
+.summary-row.final-total {
+
+    border-bottom: none;
+
+    padding-top: 22px;
+
+}
+
+
+.summary-row.final-total span {
+
+    color: #35312c;
+
+    font-weight: 600;
+
+}
+
+
+.summary-row.final-total strong {
+
+    color: #b18a4d;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size: 25px;
+
+    font-weight: 500;
+
+}
+
+
+.payment-note {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    margin-top: 18px;
+
+    padding: 11px 13px;
+
+    border-radius: 9px;
+
+    background: #faf7f1;
+
+}
+
+
+.payment-note span {
+
+    color: #4b9966;
+
+    font-weight: 700;
+
+}
+
+
+.payment-note p {
+
+    margin: 0;
+
+    color: #898178;
+
+    font-size: 10px;
+
+}
+
+
+
+/* =========================================================
+   ACTIONS
+========================================================= */
+
+.order-actions {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 15px;
+
+    margin-top: 25px;
+
+}
+
+
+.order-actions a {
+
+    min-height: 50px;
+
+    padding: 0 24px;
+
+    box-sizing: border-box;
+
+    border-radius: 10px;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    text-decoration: none;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    transition:
+        0.25s ease;
+
+}
+
+
+.secondary-action {
+
+    color: #4e4942;
+
+    background: #fff;
+
+    border:
+        1px solid #ddd3c4;
+
+}
+
+
+.secondary-action:hover {
+
+    background: #faf7f1;
+
+    border-color: #cdb58d;
+
+}
+
+
+.primary-action {
+
+    min-width: 205px;
+
+    color: white;
+
+    background: #1d1b19;
+
+    border:
+        1px solid #1d1b19;
+
+    gap: 18px;
+
+}
+
+
+.primary-action span {
+
+    color: #d2ae6c;
+
+    font-size: 19px;
+
+}
+
+
+.primary-action:hover {
+
+    background: #322f2a;
+
+    transform: translateY(-1px);
+
+}
+
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 750px) {
+
+    .order-detail-page {
+
+        padding:
+            45px 15px 70px;
+
+    }
+
+
+    .order-page-header {
+
+        margin-bottom: 28px;
+
+    }
+
+
+    .order-page-header h1 {
+
+        font-size: 34px;
+
+    }
+
+
+    .luxury-card {
+
+        padding: 22px;
+
+        border-radius: 16px;
+
+    }
+
+
+    .order-status-top {
+
+        flex-direction: column;
+
+        align-items: flex-start;
+
+    }
+
+
+    .current-status {
+
+        text-align: left;
+
+    }
+
+
+    .luxury-timeline {
+
+        overflow-x: auto;
+
+        padding-bottom: 8px;
+
+    }
+
+
+    .timeline-item {
+
+        min-width: 72px;
+
+    }
+
+
+    .timeline-connector {
+
+        min-width: 25px;
+
+    }
+
+
+    .luxury-product {
+
+        align-items: flex-start;
+
+        flex-wrap: wrap;
+
+    }
+
+
+    .luxury-product-image {
+
+        width: 85px;
+
+        height: 85px;
+
+    }
+
+
+    .luxury-product-info {
+
+        min-width:
+            calc(100% - 110px);
+
+    }
+
+
+    .luxury-product-total {
+
+        width: 100%;
+
+        text-align: left;
+
+        padding-left: 107px;
+
+    }
+
+
+    .information-grid {
+
+        grid-template-columns: 1fr;
+
+    }
+
+
+    .information-card {
+
+        margin-bottom: 0;
+
+    }
+
+
+    .order-actions {
+
+        flex-direction: column;
+
+        align-items: stretch;
+
+    }
+
+
+    .order-actions a {
+
+        width: 100%;
+
+    }
+
+}
+
+</style>
+
+{% endblock %}

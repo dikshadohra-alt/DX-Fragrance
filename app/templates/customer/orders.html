@@ -1,0 +1,952 @@
+{% extends "base.html" %}
+
+{% block title %}
+DX Fragrance | My Orders
+{% endblock %}
+
+
+{% block content %}
+
+<section class="dx-orders-page">
+
+
+    <!-- =========================================
+         PAGE HEADER
+    ========================================== -->
+
+    <div class="orders-header">
+
+        <span class="orders-label">
+            DX FRAGRANCE
+        </span>
+
+        <h1>
+            My Orders
+        </h1>
+
+        <p>
+            View your orders and track their status.
+        </p>
+
+    </div>
+
+
+
+    <!-- =========================================
+         ORDERS CONTENT
+    ========================================== -->
+
+    <div class="my-orders-container">
+
+
+        {% if orders %}
+
+
+            {% for order in orders %}
+
+            <div class="customer-order-card">
+
+
+                <!-- =================================
+                     ORDER HEADER
+                ================================== -->
+
+                <div class="customer-order-header">
+
+                    <div>
+
+                        <span class="order-label">
+                            ORDER
+                        </span>
+
+                        <h2>
+                            #{{ order["id"] }}
+                        </h2>
+
+                    </div>
+
+
+                    <span
+                        class="order-status status-{{ order['status']|lower }}"
+                    >
+                        {{ order["status"]|capitalize }}
+                    </span>
+
+                </div>
+
+
+
+                <!-- =================================
+                     ORDER INFORMATION
+                ================================== -->
+
+                <div class="order-info-grid">
+
+
+                    <div class="order-info-item">
+
+                        <span>
+                            TOTAL AMOUNT
+                        </span>
+
+                        <strong>
+                            ₹{{ order["total_amount"] }}
+                        </strong>
+
+                    </div>
+
+
+
+                    <div class="order-info-item">
+
+                        <span>
+                            ORDER DATE
+                        </span>
+
+                        <strong>
+                            {{ order["created_at"] }}
+                        </strong>
+
+                    </div>
+
+
+
+                    <div class="order-info-item">
+
+                        <span>
+                            SHIPPING TO
+                        </span>
+
+                        <strong>
+                            {{ order["shipping_name"] }}
+                        </strong>
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- =================================
+                     ACTION
+                ================================== -->
+
+                <div class="order-action">
+
+                    <a
+                        href="{{ url_for(
+                            'orders.order_detail',
+                            order_id=order['id']
+                        ) }}"
+                        class="view-order-btn"
+                    >
+                        View Order
+                        <span>→</span>
+                    </a>
+
+                </div>
+
+
+            </div>
+
+            {% endfor %}
+
+
+
+        {% else %}
+
+
+            <!-- =================================
+                 EMPTY ORDERS
+            ================================== -->
+
+            <div class="no-orders">
+
+
+                <div class="no-orders-icon">
+                    📦
+                </div>
+
+
+                <div class="empty-label">
+                    YOUR ORDERS
+                </div>
+
+
+                <h2>
+                    No Orders Yet
+                </h2>
+
+
+                <p>
+                    You haven't placed any orders yet.
+                    Start exploring our fragrances.
+                </p>
+
+
+                <a
+                    href="{{ url_for('products.products') }}"
+                    class="start-shopping-btn"
+                >
+                    Start Shopping
+                    <span>→</span>
+                </a>
+
+
+            </div>
+
+
+        {% endif %}
+
+
+    </div>
+
+
+
+    <!-- =========================================
+         BACK TO ACCOUNT
+    ========================================== -->
+
+    <div class="orders-back">
+
+        <a
+            href="{{ url_for('auth.account') }}"
+        >
+            ← Back to Account
+        </a>
+
+    </div>
+
+
+</section>
+
+
+
+<style>
+
+/* =====================================================
+   PAGE
+===================================================== */
+
+.dx-orders-page {
+
+    min-height: 100vh;
+
+    padding-bottom: 55px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #fffdf9 0%,
+            #faf8f4 55%,
+            #ffffff 100%
+        );
+
+    color: #292622;
+
+}
+
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.orders-header {
+
+    text-align: center;
+
+    padding: 38px 20px 28px;
+
+    border-bottom:
+        1px solid #eee7de;
+
+    background:
+
+        radial-gradient(
+            circle at 20% 50%,
+            rgba(210,190,155,.10),
+            transparent 28%
+        ),
+
+        radial-gradient(
+            circle at 80% 50%,
+            rgba(210,200,180,.10),
+            transparent 28%
+        );
+
+}
+
+
+.orders-label {
+
+    display: block;
+
+    margin-bottom: 9px;
+
+    color: #b08a50;
+
+    font-size: 8px;
+
+    font-weight: 700;
+
+    letter-spacing: 3.5px;
+
+}
+
+
+.orders-header h1 {
+
+    margin: 0;
+
+    color: #292622;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size: 39px;
+
+    font-weight: 400;
+
+    line-height: 1.1;
+
+}
+
+
+.orders-header p {
+
+    margin: 8px 0 0;
+
+    color: #817b74;
+
+    font-size: 11px;
+
+}
+
+
+/* =====================================================
+   CONTAINER
+===================================================== */
+
+.my-orders-container {
+
+    width:
+        min(
+            1050px,
+            calc(100% - 32px)
+        );
+
+    margin: 30px auto 0;
+
+}
+
+
+/* =====================================================
+   ORDER CARD
+===================================================== */
+
+.customer-order-card {
+
+    margin-bottom: 17px;
+
+    padding: 20px 22px;
+
+    background: #fff;
+
+    border:
+        1px solid #e7dfd4;
+
+    border-radius: 3px;
+
+    box-shadow:
+        0 7px 22px
+        rgba(45,35,25,.035);
+
+    transition:
+        transform .25s ease,
+        box-shadow .25s ease;
+
+}
+
+
+.customer-order-card:hover {
+
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+        0 12px 28px
+        rgba(45,35,25,.065);
+
+}
+
+
+/* =====================================================
+   ORDER HEADER
+===================================================== */
+
+.customer-order-header {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding-bottom: 15px;
+
+    border-bottom:
+        1px solid #eee8df;
+
+}
+
+
+.order-label {
+
+    display: block;
+
+    margin-bottom: 4px;
+
+    color: #b08a50;
+
+    font-size: 8px;
+
+    font-weight: 700;
+
+    letter-spacing: 2px;
+
+}
+
+
+.customer-order-header h2 {
+
+    margin: 0;
+
+    color: #2b2824;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size: 20px;
+
+    font-weight: 400;
+
+}
+
+
+/* =====================================================
+   STATUS
+===================================================== */
+
+.order-status {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    min-width: 85px;
+
+    padding: 7px 12px;
+
+    border-radius: 30px;
+
+    font-size: 8px;
+
+    font-weight: 700;
+
+    letter-spacing: .7px;
+
+    text-transform: uppercase;
+
+}
+
+
+/* PENDING */
+
+.status-pending {
+
+    background: #f7efdc;
+
+    color: #96723b;
+
+}
+
+
+/* CONFIRMED */
+
+.status-confirmed {
+
+    background: #edf1ee;
+
+    color: #58705f;
+
+}
+
+
+/* SHIPPED */
+
+.status-shipped {
+
+    background: #eeeae2;
+
+    color: #74664f;
+
+}
+
+
+/* DELIVERED */
+
+.status-delivered {
+
+    background: #e8eee8;
+
+    color: #4d6c53;
+
+}
+
+
+/* CANCELLED */
+
+.status-cancelled {
+
+    background: #f0e9e6;
+
+    color: #8a5b52;
+
+}
+
+
+/* =====================================================
+   ORDER INFORMATION
+===================================================== */
+
+.order-info-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 20px;
+
+    padding: 18px 0;
+
+}
+
+
+.order-info-item {
+
+    min-width: 0;
+
+}
+
+
+.order-info-item span {
+
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: #a19a91;
+
+    font-size: 7px;
+
+    font-weight: 700;
+
+    letter-spacing: 1.3px;
+
+}
+
+
+.order-info-item strong {
+
+    display: block;
+
+    overflow: hidden;
+
+    color: #37322c;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+
+}
+
+
+/* =====================================================
+   ACTION
+===================================================== */
+
+.order-action {
+
+    display: flex;
+
+    justify-content: flex-end;
+
+    padding-top: 3px;
+
+}
+
+
+.view-order-btn {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 10px 15px;
+
+    border-radius: 2px;
+
+    background: #292622;
+
+    color: #fff;
+
+    text-decoration: none;
+
+    font-size: 9px;
+
+    font-weight: 700;
+
+    transition:
+        background .25s ease,
+        transform .25s ease;
+
+}
+
+
+.view-order-btn span {
+
+    color: #c5a36d;
+
+    font-size: 13px;
+
+    transition:
+        transform .25s ease;
+
+}
+
+
+.view-order-btn:hover {
+
+    background: #3b352e;
+
+    transform:
+        translateY(-1px);
+
+}
+
+
+.view-order-btn:hover span {
+
+    transform:
+        translateX(3px);
+
+}
+
+
+/* =====================================================
+   EMPTY ORDERS
+===================================================== */
+
+.no-orders {
+
+    width:
+        min(
+            560px,
+            100%
+        );
+
+    margin: 8px auto 0;
+
+    padding: 38px 25px 34px;
+
+    box-sizing: border-box;
+
+    text-align: center;
+
+    background: #fff;
+
+    border:
+        1px solid #e7dfd4;
+
+    border-radius: 3px;
+
+    box-shadow:
+        0 10px 30px
+        rgba(45,35,25,.035);
+
+}
+
+
+/* ICON */
+
+.no-orders-icon {
+
+    width: 52px;
+
+    height: 52px;
+
+    margin: 0 auto 15px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border:
+        1px solid #d8c09a;
+
+    border-radius: 50%;
+
+    background: #faf6ee;
+
+    font-size: 23px;
+
+}
+
+
+/* LABEL */
+
+.empty-label {
+
+    margin-bottom: 7px;
+
+    color: #b08a50;
+
+    font-size: 7px;
+
+    font-weight: 700;
+
+    letter-spacing: 2.5px;
+
+}
+
+
+/* TITLE */
+
+.no-orders h2 {
+
+    margin: 0;
+
+    color: #2d2925;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size: 25px;
+
+    font-weight: 400;
+
+}
+
+
+/* DESCRIPTION */
+
+.no-orders p {
+
+    max-width: 390px;
+
+    margin: 8px auto 20px;
+
+    color: #817b74;
+
+    font-size: 10px;
+
+    line-height: 1.6;
+
+}
+
+
+/* SHOP BUTTON */
+
+.start-shopping-btn {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 10px;
+
+    min-width: 155px;
+
+    padding: 11px 17px;
+
+    border-radius: 2px;
+
+    background: #292622;
+
+    color: #fff;
+
+    text-decoration: none;
+
+    font-size: 9px;
+
+    font-weight: 700;
+
+    transition:
+        background .25s ease,
+        transform .25s ease;
+
+}
+
+
+.start-shopping-btn span {
+
+    color: #c5a36d;
+
+    font-size: 13px;
+
+}
+
+
+.start-shopping-btn:hover {
+
+    background: #3b352e;
+
+    transform:
+        translateY(-2px);
+
+}
+
+
+/* =====================================================
+   BACK
+===================================================== */
+
+.orders-back {
+
+    width:
+        min(
+            1050px,
+            calc(100% - 32px)
+        );
+
+    margin: 19px auto 0;
+
+}
+
+
+.orders-back a {
+
+    color: #817a72;
+
+    text-decoration: none;
+
+    font-size: 9px;
+
+    font-weight: 600;
+
+    transition: .2s ease;
+
+}
+
+
+.orders-back a:hover {
+
+    color: #8f7041;
+
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 700px) {
+
+    .orders-header {
+
+        padding:
+            30px 15px 24px;
+
+    }
+
+
+    .orders-header h1 {
+
+        font-size: 32px;
+
+    }
+
+
+    .my-orders-container {
+
+        width:
+            calc(100% - 22px);
+
+        margin-top: 22px;
+
+    }
+
+
+    .customer-order-header {
+
+        align-items: flex-start;
+
+    }
+
+
+    .order-info-grid {
+
+        grid-template-columns: 1fr;
+
+        gap: 13px;
+
+    }
+
+
+    .order-action {
+
+        justify-content: flex-start;
+
+    }
+
+
+    .no-orders {
+
+        padding:
+            32px 18px 28px;
+
+    }
+
+
+    .no-orders h2 {
+
+        font-size: 22px;
+
+    }
+
+
+    .orders-back {
+
+        width:
+            calc(100% - 22px);
+
+    }
+
+}
+
+</style>
+
+
+{% endblock %}

@@ -1,0 +1,920 @@
+{% extends "base.html" %}
+
+{% block title %}
+DX Fragrance | My Wishlist
+{% endblock %}
+
+
+{% block content %}
+
+<section class="dx-wishlist-page">
+
+
+    <!-- =========================================
+         HEADER
+    ========================================== -->
+
+    <div class="wishlist-header">
+
+        <span>
+            DX FRAGRANCE
+        </span>
+
+        <h1>
+            My Wishlist
+        </h1>
+
+        <p>
+            Your favourite fragrances, saved in one place.
+        </p>
+
+    </div>
+
+
+
+    <!-- =========================================
+         WISHLIST CONTENT
+    ========================================== -->
+
+    <div class="wishlist-container">
+
+        {% if wishlist_items %}
+
+
+            <!-- PRODUCTS -->
+
+            <div class="wishlist-grid">
+
+                {% for item in wishlist_items %}
+
+                <div class="wishlist-card">
+
+
+                    <!-- IMAGE -->
+
+                    <a
+                        href="{{ url_for(
+                            'products.product_detail',
+                            product_id=item['product_id']
+                        ) }}"
+                        class="wishlist-image"
+                    >
+
+                        {% if item["image"] %}
+
+                            <img
+                                src="{{ url_for(
+                                    'static',
+                                    filename='uploads/products/' + item['image']
+                                ) }}"
+                                alt="{{ item['name'] }}"
+                            >
+
+                        {% else %}
+
+                            <div class="no-image">
+                                DX
+                            </div>
+
+                        {% endif %}
+
+                    </a>
+
+
+
+                    <!-- INFO -->
+
+                    <div class="wishlist-info">
+
+                        <span class="wishlist-category">
+                            {{ item["category"] or "Premium Fragrance" }}
+                        </span>
+
+                        <h2>
+                            {{ item["name"] }}
+                        </h2>
+
+                        <strong class="wishlist-price">
+                            ₹{{ item["price"] }}
+                        </strong>
+
+
+                        <!-- ACTIONS -->
+
+                        <div class="wishlist-actions">
+
+
+                            {% if item["stock"] > 0 %}
+
+                            <form
+                                method="POST"
+                                action="{{ url_for(
+                                    'cart.add_to_cart',
+                                    product_id=item['product_id']
+                                ) }}"
+                            >
+
+                                <input
+                                    type="hidden"
+                                    name="quantity"
+                                    value="1"
+                                >
+
+                                <button
+                                    type="submit"
+                                    class="wishlist-cart-btn"
+                                >
+                                    🛒 Add to Cart
+                                </button>
+
+                            </form>
+
+                            {% else %}
+
+                            <button
+                                type="button"
+                                class="wishlist-cart-btn disabled"
+                                disabled
+                            >
+                                Out of Stock
+                            </button>
+
+                            {% endif %}
+
+
+
+                            <form
+                                method="POST"
+                                action="{{ url_for(
+                                    'wishlist.remove_from_wishlist',
+                                    wishlist_id=item['wishlist_id']
+                                ) }}"
+                                onsubmit="return confirm('Remove this product from your wishlist?');"
+                            >
+
+                                <button
+                                    type="submit"
+                                    class="wishlist-remove-btn"
+                                >
+                                    ♡ Remove
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+
+        {% else %}
+
+
+            <!-- =====================================
+                 EMPTY WISHLIST
+            ====================================== -->
+
+            <div class="empty-wishlist">
+
+
+                <div class="empty-wishlist-icon">
+                    ♡
+                </div>
+
+
+                <div class="empty-label">
+                    YOUR COLLECTION
+                </div>
+
+
+                <h2>
+                    Your Wishlist is Empty
+                </h2>
+
+
+                <p>
+                    Save the fragrances you love and
+                    find them here whenever you want.
+                </p>
+
+
+                <a
+                    href="{{ url_for('products.products') }}"
+                    class="wishlist-shop-btn"
+                >
+                    Explore Fragrances
+                    <span>→</span>
+                </a>
+
+            </div>
+
+
+        {% endif %}
+
+    </div>
+
+
+
+    <!-- =========================================
+         BACK
+    ========================================== -->
+
+    <div class="wishlist-back">
+
+        <a href="{{ url_for('main.home') }}">
+            ← Back to Home
+        </a>
+
+    </div>
+
+
+</section>
+
+
+
+<style>
+
+/* =====================================================
+   PAGE
+===================================================== */
+
+.dx-wishlist-page {
+
+    min-height: 100vh;
+
+    background:
+        linear-gradient(
+            180deg,
+            #fffdf9 0%,
+            #faf8f4 55%,
+            #ffffff 100%
+        );
+
+    color: #292622;
+
+    padding-bottom: 55px;
+
+}
+
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.wishlist-header {
+
+    text-align: center;
+
+    padding: 38px 20px 28px;
+
+    border-bottom:
+        1px solid #eee7de;
+
+    background:
+
+        radial-gradient(
+            circle at 20% 50%,
+            rgba(210,190,155,.10),
+            transparent 28%
+        ),
+
+        radial-gradient(
+            circle at 80% 50%,
+            rgba(210,200,180,.10),
+            transparent 28%
+        );
+
+}
+
+
+.wishlist-header span {
+
+    display: block;
+
+    margin-bottom: 9px;
+
+    color: #b08a50;
+
+    font-size: 8px;
+
+    font-weight: 700;
+
+    letter-spacing: 3.5px;
+
+}
+
+
+.wishlist-header h1 {
+
+    margin: 0;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size: 39px;
+
+    line-height: 1.1;
+
+    font-weight: 400;
+
+    color: #292622;
+
+}
+
+
+.wishlist-header p {
+
+    margin: 8px 0 0;
+
+    color: #817b74;
+
+    font-size: 11px;
+
+}
+
+
+/* =====================================================
+   CONTAINER
+===================================================== */
+
+.wishlist-container {
+
+    width:
+        min(
+            1080px,
+            calc(100% - 32px)
+        );
+
+    margin: 30px auto 0;
+
+}
+
+
+/* =====================================================
+   PRODUCT GRID
+===================================================== */
+
+.wishlist-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 20px;
+
+}
+
+
+/* =====================================================
+   PRODUCT CARD
+===================================================== */
+
+.wishlist-card {
+
+    overflow: hidden;
+
+    background: #fff;
+
+    border:
+        1px solid #e7dfd4;
+
+    border-radius: 3px;
+
+    transition:
+        transform .25s ease,
+        box-shadow .25s ease;
+
+}
+
+
+.wishlist-card:hover {
+
+    transform:
+        translateY(-3px);
+
+    box-shadow:
+        0 12px 28px
+        rgba(40,32,24,.07);
+
+}
+
+
+/* =====================================================
+   IMAGE
+===================================================== */
+
+.wishlist-image {
+
+    display: block;
+
+    height: 245px;
+
+    overflow: hidden;
+
+    background: #f5f0e8;
+
+    text-decoration: none;
+
+}
+
+
+.wishlist-image img {
+
+    width: 100%;
+
+    height: 100%;
+
+    object-fit: cover;
+
+    transition:
+        transform .4s ease;
+
+}
+
+
+.wishlist-card:hover
+.wishlist-image img {
+
+    transform:
+        scale(1.035);
+
+}
+
+
+.no-image {
+
+    width: 100%;
+
+    height: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-family: Georgia, serif;
+
+    font-size: 34px;
+
+    letter-spacing: 5px;
+
+    color: #b08a50;
+
+}
+
+
+/* =====================================================
+   INFO
+===================================================== */
+
+.wishlist-info {
+
+    padding: 17px;
+
+}
+
+
+.wishlist-category {
+
+    color: #b08a50;
+
+    font-size: 8px;
+
+    font-weight: 700;
+
+    letter-spacing: 1.7px;
+
+    text-transform: uppercase;
+
+}
+
+
+.wishlist-info h2 {
+
+    margin: 6px 0 7px;
+
+    color: #2b2824;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size: 18px;
+
+    font-weight: 400;
+
+}
+
+
+.wishlist-price {
+
+    display: block;
+
+    margin-bottom: 14px;
+
+    color: #37322c;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+}
+
+
+/* =====================================================
+   ACTIONS
+===================================================== */
+
+.wishlist-actions {
+
+    display: flex;
+
+    gap: 8px;
+
+}
+
+
+.wishlist-actions form {
+
+    flex: 1;
+
+}
+
+
+.wishlist-cart-btn {
+
+    width: 100%;
+
+    padding: 10px 8px;
+
+    border: none;
+
+    border-radius: 2px;
+
+    background: #292622;
+
+    color: #fff;
+
+    cursor: pointer;
+
+    font-size: 9px;
+
+    font-weight: 700;
+
+    transition: .25s ease;
+
+}
+
+
+.wishlist-cart-btn:hover {
+
+    background: #8f7041;
+
+}
+
+
+.wishlist-cart-btn.disabled {
+
+    background: #dedbd5;
+
+    color: #777;
+
+    cursor: not-allowed;
+
+}
+
+
+.wishlist-remove-btn {
+
+    width: 100%;
+
+    padding: 9px 8px;
+
+    border:
+        1px solid #ddd4c9;
+
+    border-radius: 2px;
+
+    background: #fffdf9;
+
+    color: #756f68;
+
+    cursor: pointer;
+
+    font-size: 9px;
+
+    font-weight: 600;
+
+    transition: .25s ease;
+
+}
+
+
+.wishlist-remove-btn:hover {
+
+    border-color: #b99764;
+
+    color: #8f7041;
+
+}
+
+
+/* =====================================================
+   EMPTY WISHLIST
+===================================================== */
+
+.empty-wishlist {
+
+    width:
+        min(
+            560px,
+            100%
+        );
+
+    margin: 8px auto 0;
+
+    padding: 38px 25px 34px;
+
+    box-sizing: border-box;
+
+    text-align: center;
+
+    background: #fff;
+
+    border:
+        1px solid #e7dfd4;
+
+    border-radius: 3px;
+
+    box-shadow:
+        0 10px 30px
+        rgba(45,35,25,.035);
+
+}
+
+
+/* ICON */
+
+.empty-wishlist-icon {
+
+    width: 52px;
+
+    height: 52px;
+
+    margin: 0 auto 15px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border:
+        1px solid #d8c09a;
+
+    border-radius: 50%;
+
+    background: #faf6ee;
+
+    color: #b08a50;
+
+    font-family: Georgia, serif;
+
+    font-size: 25px;
+
+}
+
+
+/* SMALL LABEL */
+
+.empty-label {
+
+    margin-bottom: 7px;
+
+    color: #b08a50;
+
+    font-size: 7px;
+
+    font-weight: 700;
+
+    letter-spacing: 2.5px;
+
+}
+
+
+/* TITLE */
+
+.empty-wishlist h2 {
+
+    margin: 0;
+
+    color: #2d2925;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size: 25px;
+
+    font-weight: 400;
+
+}
+
+
+/* TEXT */
+
+.empty-wishlist p {
+
+    max-width: 390px;
+
+    margin: 8px auto 20px;
+
+    color: #817b74;
+
+    font-size: 10px;
+
+    line-height: 1.6;
+
+}
+
+
+/* BUTTON */
+
+.wishlist-shop-btn {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 10px;
+
+    min-width: 175px;
+
+    padding: 11px 17px;
+
+    border-radius: 2px;
+
+    background: #292622;
+
+    color: #fff;
+
+    text-decoration: none;
+
+    font-size: 9px;
+
+    font-weight: 700;
+
+    transition:
+        background .25s ease,
+        transform .25s ease;
+
+}
+
+
+.wishlist-shop-btn span {
+
+    color: #c5a36d;
+
+    font-size: 13px;
+
+}
+
+
+.wishlist-shop-btn:hover {
+
+    background: #3b352e;
+
+    transform:
+        translateY(-2px);
+
+}
+
+
+/* =====================================================
+   BACK
+===================================================== */
+
+.wishlist-back {
+
+    width:
+        min(
+            1080px,
+            calc(100% - 32px)
+        );
+
+    margin: 19px auto 0;
+
+}
+
+
+.wishlist-back a {
+
+    color: #817a72;
+
+    text-decoration: none;
+
+    font-size: 9px;
+
+    font-weight: 600;
+
+}
+
+
+.wishlist-back a:hover {
+
+    color: #8f7041;
+
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media (max-width: 850px) {
+
+    .wishlist-grid {
+
+        grid-template-columns:
+            repeat(2, 1fr);
+
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .wishlist-header {
+
+        padding:
+            30px 15px 24px;
+
+    }
+
+
+    .wishlist-header h1 {
+
+        font-size: 32px;
+
+    }
+
+
+    .wishlist-container {
+
+        width:
+            calc(100% - 22px);
+
+        margin-top: 22px;
+
+    }
+
+
+    .wishlist-grid {
+
+        grid-template-columns: 1fr;
+
+    }
+
+
+    .empty-wishlist {
+
+        padding:
+            32px 18px 28px;
+
+    }
+
+
+    .empty-wishlist h2 {
+
+        font-size: 22px;
+
+    }
+
+
+    .wishlist-back {
+
+        width:
+            calc(100% - 22px);
+
+    }
+
+}
+
+</style>
+
+
+{% endblock %}
