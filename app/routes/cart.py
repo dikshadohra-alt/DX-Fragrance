@@ -184,3 +184,47 @@ def update_cart(product_id):
     session.modified = True
 
     return redirect(url_for("cart.cart"))
+@cart_bp.route("/buy-now/<int:product_id>", methods=["POST"])
+def buy_now(product_id):
+
+    quantity = request.form.get("quantity", 1, type=int)
+
+    if quantity < 1:
+        quantity = 1
+
+    connection = get_db_connection()
+
+    product = connection.execute(
+        """
+        SELECT *
+        FROM products
+        WHERE id = ?
+        AND status = 'active'
+        """,
+        (product_id,)
+    ).fetchone()
+
+    connection.close()
+
+    if not product:
+        flash("Product not found.", "error")
+        return redirect(url_for("products.products"))
+
+    if product["stock"] < quantity:
+        flash("Not enough stock available.", "error")
+        return redirect(
+            url_for(
+                "products.product_detail",
+                product_id=product_id
+            )
+        )
+
+    # Buy Now = selected product only
+    session["cart"] = [{
+        "product_id": product_id,
+        "quantity": quantity
+    }]
+
+    session.modified = True
+
+    return redirect(url_for("checkout.checkout"))

@@ -189,6 +189,27 @@ DX Fragrance | {{ product["name"] }}
                         🛒 Add to Cart
                     </button>
 
+                    <form
+    method="POST"
+    action="{{ url_for('cart.buy_now', product_id=product['id']) }}"
+    class="buy-now-form"
+>
+
+    <input
+        type="hidden"
+        name="quantity"
+        value="1"
+        id="buy-now-quantity"
+    >
+
+    <button
+        type="submit"
+        class="buy-now-button"
+    >
+        ⚡ Buy Now
+    </button>
+
+</form>
                 </form>
 
             {% else %}
