@@ -413,7 +413,7 @@ DX Fragrance | {{ product["name"] }}
 
     width: 100%;
 
-    padding: 45px 4% 85px;
+    padding: 55px 5% 90px;
 
     box-sizing: border-box;
 
@@ -434,19 +434,19 @@ DX Fragrance | {{ product["name"] }}
 
 .product-detail {
 
-    max-width: 1180px;
+    max-width: 1250px;
 
     margin: 0 auto;
 
     display: grid;
 
     grid-template-columns:
-        minmax(390px, 440px)
-        minmax(0, 1fr);
+        minmax(0, 1fr)
+        minmax(0, 0.9fr);
 
-    gap: 58px;
+    gap: 70px;
 
-    align-items: start;
+    align-items: center;
 
 }
 
@@ -461,26 +461,21 @@ DX Fragrance | {{ product["name"] }}
 
     width: 100%;
 
-    width: 100%;
+    max-width: 560px;
 
-    max-width: 440px;
+    height: 520px;
 
-    height: 480px;
-
-    margin: 18px auto 0;
+    margin: 0 auto;
 
     overflow: hidden;
 
-    border-radius: 24px;
+    border-radius: 26px;
 
     background: #f4ede3;
 
     box-shadow:
-        0 18px 42px
+        0 22px 55px
         rgba(53,39,24,0.10);
-
-    border:
-        1px solid rgba(177,138,77,0.14);
 
 }
 
@@ -493,13 +488,7 @@ DX Fragrance | {{ product["name"] }}
 
     display: block;
 
-    object-fit: contain;
-
-    object-position: center;
-
-    padding: 10px;
-
-    box-sizing: border-box;
+    object-fit: cover;
 
     transition:
         transform 0.5s ease;
@@ -553,9 +542,9 @@ DX Fragrance | {{ product["name"] }}
 
     position: absolute;
 
-    top: 18px;
+    top: 22px;
 
-    right: 18px;
+    right: 22px;
 
     z-index: 5;
 
@@ -564,9 +553,9 @@ DX Fragrance | {{ product["name"] }}
 
 .wishlist-button {
 
-    width: 54px;
+    width: 58px;
 
-    height: 54px;
+    height: 58px;
 
     border: none;
 
@@ -576,7 +565,7 @@ DX Fragrance | {{ product["name"] }}
 
     color: #df7c91;
 
-    font-size: 28px;
+    font-size: 31px;
 
     display: flex;
 
@@ -621,17 +610,7 @@ DX Fragrance | {{ product["name"] }}
 
 .product-information {
 
-    padding: 22px 28px 26px;
-
-    background: rgba(255,255,255,0.78);
-
-    border: 1px solid #eee5d9;
-
-    border-radius: 24px;
-
-    box-shadow:
-        0 16px 40px
-        rgba(48,38,28,0.055);
+    padding: 10px 5px;
 
 }
 
@@ -666,7 +645,7 @@ DX Fragrance | {{ product["name"] }}
         "Times New Roman",
         serif;
 
-    font-size: clamp(34px, 3.4vw, 50px);
+    font-size: clamp(38px, 4vw, 58px);
 
     font-weight: 500;
 
@@ -679,7 +658,7 @@ DX Fragrance | {{ product["name"] }}
 
 .price {
 
-    margin-top: 16px;
+    margin-top: 18px;
 
     color: #191817;
 
@@ -687,7 +666,7 @@ DX Fragrance | {{ product["name"] }}
         Georgia,
         serif;
 
-    font-size: 29px;
+    font-size: 31px;
 
     font-weight: 600;
 
@@ -696,15 +675,15 @@ DX Fragrance | {{ product["name"] }}
 
 .description {
 
-    margin: 22px 0;
+    margin: 30px 0;
 
     color: #756e66;
 
     font-size: 15px;
 
-    line-height: 1.75;
+    line-height: 1.8;
 
-    max-width: 560px;
+    max-width: 570px;
 
 }
 
@@ -715,9 +694,9 @@ DX Fragrance | {{ product["name"] }}
 
 .product-details-box {
 
-    margin: 24px 0;
+    margin: 28px 0;
 
-    padding: 16px 0;
+    padding: 20px 0;
 
     border-top:
         1px solid #e8dfd3;
@@ -768,7 +747,7 @@ DX Fragrance | {{ product["name"] }}
 
     gap: 9px;
 
-    margin: 18px 0;
+    margin: 22px 0;
 
     color: #398252;
 
@@ -808,7 +787,7 @@ DX Fragrance | {{ product["name"] }}
 
     gap: 14px;
 
-    margin-top: 18px;
+    margin-top: 22px;
 
 }
 
@@ -880,7 +859,7 @@ DX Fragrance | {{ product["name"] }}
 
     flex: 1;
 
-    padding: 0 24px;
+    padding: 0 31px;
 
     border: none;
 
@@ -985,9 +964,9 @@ DX Fragrance | {{ product["name"] }}
 
     gap: 25px;
 
-    margin-top: 22px;
+    margin-top: 30px;
 
-    padding-top: 18px;
+    padding-top: 22px;
 
     border-top:
         1px solid #eee7dd;
@@ -1588,126 +1567,6 @@ DX Fragrance | {{ product["name"] }}
 
     }
 
-}
-
-
-/* =========================================================
-   PREMIUM PRODUCT PAGE POLISH
-========================================================= */
-
-.product-detail {
-    position: relative;
-}
-
-.product-information {
-    position: relative;
-}
-
-.product-category::before {
-    content: "DX";
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 22px;
-    height: 22px;
-    margin-right: 8px;
-    border: 1px solid #d9c19a;
-    border-radius: 50%;
-    color: #b08a4c;
-    font-family: Georgia, serif;
-    font-size: 9px;
-    letter-spacing: 0;
-    vertical-align: -5px;
-}
-
-.cart-form {
-    display: grid;
-    grid-template-columns: 92px minmax(0, 1fr);
-    align-items: end;
-    gap: 12px;
-}
-
-.quantity input {
-    width: 92px;
-}
-
-.buy-now-form {
-    margin-top: 10px;
-}
-
-.buy-now-button {
-    min-height: 50px;
-    border-radius: 11px;
-    background: linear-gradient(135deg, #c19a5b, #aa8142);
-    border-color: #b18a4d;
-    box-shadow: 0 8px 20px rgba(177,138,77,0.14);
-}
-
-.buy-now-button:hover {
-    background: #211f1d;
-    border-color: #211f1d;
-}
-
-.product-actions {
-    gap: 12px;
-}
-
-.back-button,
-.cart-link {
-    padding: 9px 13px;
-    border-radius: 9px;
-    background: #faf7f1;
-    border: 1px solid #eee5d9;
-}
-
-@media (max-width: 900px) {
-    .product-detail {
-        grid-template-columns: minmax(0, 1fr);
-        gap: 36px;
-        max-width: 650px;
-    }
-
-    .product-image-area {
-        max-width: 480px;
-        height: 470px;
-        margin-top: 0;
-    }
-
-    .product-information {
-        padding: 22px;
-    }
-}
-
-@media (max-width: 600px) {
-    .product-page {
-        padding: 25px 14px 55px;
-    }
-
-    .product-image-area {
-        height: 350px;
-        border-radius: 18px;
-    }
-
-    .product-information {
-        padding: 18px;
-        border-radius: 18px;
-    }
-
-    .product-information h1 {
-        font-size: 34px;
-    }
-
-    .cart-form {
-        grid-template-columns: 1fr;
-    }
-
-    .quantity input {
-        width: 100%;
-    }
-
-    .product-actions {
-        gap: 8px;
-    }
 }
 
 </style>
