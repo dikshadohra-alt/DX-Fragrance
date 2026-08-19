@@ -846,7 +846,140 @@ def customers():
         "admin/customers.html",
         customers=customers
     )
+# =========================================================
+# CUSTOMER DETAILS
+# =========================================================
 
+@admin_bp.route("/customers/<int:customer_id>")
+def customer_detail(customer_id):
+
+    if "admin_id" not in session:
+        return redirect(
+            url_for("admin.login")
+        )
+
+    customer = CustomerService.get_customer(
+        customer_id
+    )
+
+    if not customer:
+        flash(
+            "Customer not found.",
+            "error"
+        )
+
+        return redirect(
+            url_for("admin.customers")
+        )
+
+    # Values required by customer_detail.html
+    total_spending = customer["total_spending"] or 0
+    total_orders = customer["total_orders"] or 0
+
+    return render_template(
+        "admin/customer_detail.html",
+        customer=customer,
+        total_spending=total_spending,
+        total_orders=total_orders
+    )
+
+# =========================================================
+# DELETE CUSTOMER
+# =========================================================
+
+@admin_bp.route(
+    "/customers/delete/<int:customer_id>",
+    methods=["POST"]
+)
+def delete_customer(customer_id):
+
+    if "admin_id" not in session:
+        return redirect(
+            url_for("admin.login")
+        )
+
+    connection = AuthService.get_db_connection()
+
+    try:
+        customer = connection.execute(
+            """
+            SELECT id, username
+            FROM users
+            WHERE id = ?
+              AND is_admin = 0
+            """,
+            (customer_id,)
+        ).fetchone()
+
+        if not customer:
+            flash(
+                "Customer not found.",
+                "error"
+            )
+
+            return redirect(
+                url_for("admin.customers")
+            )
+
+        # Delete customer's order items first
+        connection.execute(
+            """
+            DELETE FROM order_items
+            WHERE order_id IN (
+                SELECT id
+                FROM orders
+                WHERE user_id = ?
+            )
+            """,
+            (customer_id,)
+        )
+
+        # Delete customer's orders
+        connection.execute(
+            """
+            DELETE FROM orders
+            WHERE user_id = ?
+            """,
+            (customer_id,)
+        )
+
+        # Delete customer
+        connection.execute(
+            """
+            DELETE FROM users
+            WHERE id = ?
+              AND is_admin = 0
+            """,
+            (customer_id,)
+        )
+
+        connection.commit()
+
+        flash(
+            f"Customer {customer['username']} deleted successfully.",
+            "success"
+        )
+
+    except Exception as error:
+
+        connection.rollback()
+
+        current_app.logger.exception(
+            "Customer deletion error: %s",
+            error
+        )
+
+        flash(
+            "Customer could not be deleted.",
+            "error"
+        )
+
+    finally:
+        connection.close()
+
+    return redirect(
+        url_for("admin.customers")
+    )
 
 # =========================================================
 # INVENTORY

@@ -8,41 +8,61 @@ class CustomerService:
 
         connection = get_db_connection()
 
-        customers = connection.execute(
-            """
-            SELECT
-                users.id,
-                users.username,
-                users.email,
-                users.is_admin,
+        try:
+            # Make sure phone column exists
+            columns = connection.execute(
+                "PRAGMA table_info(users)"
+            ).fetchall()
 
-                COUNT(DISTINCT orders.id) AS total_orders,
+            column_names = [
+                column["name"]
+                for column in columns
+            ]
 
-                COALESCE(
-                    SUM(orders.total_amount),
-                    0
-                ) AS total_spending
+            if "phone" not in column_names:
+                connection.execute(
+                    "ALTER TABLE users ADD COLUMN phone TEXT"
+                )
+                connection.commit()
 
-            FROM users
+            customers = connection.execute(
+                """
+                SELECT
+                    users.id,
+                    users.username,
+                    users.email,
+                    users.phone,
+                    users.is_admin,
 
-            LEFT JOIN orders
-                ON users.id = orders.user_id
+                    COUNT(DISTINCT orders.id) AS total_orders,
 
-            WHERE users.is_admin = 0
+                    COALESCE(
+                        SUM(orders.total_amount),
+                        0
+                    ) AS total_spending
 
-            GROUP BY
-                users.id,
-                users.username,
-                users.email,
-                users.is_admin
+                FROM users
 
-            ORDER BY users.id DESC
-            """
-        ).fetchall()
+                LEFT JOIN orders
+                    ON users.id = orders.user_id
 
-        connection.close()
+                WHERE users.is_admin = 0
 
-        return customers
+                GROUP BY
+                    users.id,
+                    users.username,
+                    users.email,
+                    users.phone,
+                    users.is_admin
+
+                ORDER BY users.id DESC
+                """
+            ).fetchall()
+
+            return customers
+
+        finally:
+            connection.close()
 
 
     @staticmethod
@@ -50,38 +70,57 @@ class CustomerService:
 
         connection = get_db_connection()
 
-        customer = connection.execute(
-            """
-            SELECT
-                users.id,
-                users.username,
-                users.email,
-                users.is_admin,
+        try:
+            columns = connection.execute(
+                "PRAGMA table_info(users)"
+            ).fetchall()
 
-                COUNT(DISTINCT orders.id) AS total_orders,
+            column_names = [
+                column["name"]
+                for column in columns
+            ]
 
-                COALESCE(
-                    SUM(orders.total_amount),
-                    0
-                ) AS total_spending
+            if "phone" not in column_names:
+                connection.execute(
+                    "ALTER TABLE users ADD COLUMN phone TEXT"
+                )
+                connection.commit()
 
-            FROM users
+            customer = connection.execute(
+                """
+                SELECT
+                    users.id,
+                    users.username,
+                    users.email,
+                    users.phone,
+                    users.is_admin,
 
-            LEFT JOIN orders
-                ON users.id = orders.user_id
+                    COUNT(DISTINCT orders.id) AS total_orders,
 
-            WHERE users.id = ?
-              AND users.is_admin = 0
+                    COALESCE(
+                        SUM(orders.total_amount),
+                        0
+                    ) AS total_spending
 
-            GROUP BY
-                users.id,
-                users.username,
-                users.email,
-                users.is_admin
-            """,
-            (customer_id,)
-        ).fetchone()
+                FROM users
 
-        connection.close()
+                LEFT JOIN orders
+                    ON users.id = orders.user_id
 
-        return customer
+                WHERE users.id = ?
+                  AND users.is_admin = 0
+
+                GROUP BY
+                    users.id,
+                    users.username,
+                    users.email,
+                    users.phone,
+                    users.is_admin
+                """,
+                (customer_id,)
+            ).fetchone()
+
+            return customer
+
+        finally:
+            connection.close()
