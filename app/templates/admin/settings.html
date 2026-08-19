@@ -393,85 +393,279 @@ DX Fragrance | Settings Dashboard
 
 
     <!-- ================= PAYMENT ================= -->
-    <div class="dx-section-box">
+    <form method="POST" enctype="multipart/form-data">
 
-        <div class="dx-section-title">
+        <div class="dx-section-box">
 
-            <div class="dx-title-icon">
-                <i class="fa-solid fa-credit-card"></i>
-            </div>
-
-            <div>
-                <strong>Payment Gateways</strong>
-                <small>Manage available payment methods</small>
-            </div>
-
-        </div>
-
-
-        <!-- COD -->
-        <div class="dx-setting-row">
-
-            <div class="dx-setting-left">
-
-                <div class="dx-mini-icon">
-                    <i class="fa-solid fa-money-bill-wave"></i>
-                </div>
-
-                <div>
-                    <strong>Cash on Delivery</strong>
-                    <p>
-                        Allow customers to pay when their order arrives.
-                    </p>
-                </div>
-
-            </div>
-
-
-            <label class="dx-switch">
-
-                <input type="checkbox"
-                       name="cod_enabled"
-                       checked>
-
-                <span class="dx-slider"></span>
-
-            </label>
-
-        </div>
-
-
-        <!-- ONLINE PAYMENT -->
-        <div class="dx-setting-row">
-
-            <div class="dx-setting-left">
-
-                <div class="dx-mini-icon">
+            <div class="dx-section-title">
+                <div class="dx-title-icon">
                     <i class="fa-solid fa-credit-card"></i>
                 </div>
 
                 <div>
-                    <strong>Online Payment Gateway</strong>
+                    <strong>Payment Gateways</strong>
+                    <small>Manage secure payment methods customers can use</small>
+                </div>
+            </div>
+
+
+            <!-- CASH ON DELIVERY -->
+            <div class="dx-setting-row">
+
+                <div class="dx-setting-left">
+                    <div class="dx-mini-icon">
+                        <i class="fa-solid fa-money-bill-wave"></i>
+                    </div>
+
+                    <div>
+                        <strong>Cash on Delivery</strong>
+                        <p>Allow customers to pay when their order arrives.</p>
+                    </div>
+                </div>
+
+                <label class="dx-switch">
+                    <input
+                        type="checkbox"
+                        name="cod_enabled"
+                        {% if settings and settings["cod_enabled"] %}checked{% endif %}
+                    >
+                    <span class="dx-slider"></span>
+                </label>
+
+            </div>
+
+
+            <!-- ONLINE PAYMENT -->
+            <div class="dx-setting-row">
+
+                <div class="dx-setting-left">
+                    <div class="dx-mini-icon">
+                        <i class="fa-solid fa-globe"></i>
+                    </div>
+
+                    <div>
+                        <strong>Online Payment</strong>
+                        <p>Enable online payment at checkout.</p>
+                    </div>
+                </div>
+
+                <label class="dx-switch">
+                    <input
+                        type="checkbox"
+                        name="online_payment"
+                        {% if settings and settings["online_payment"] %}checked{% endif %}
+                    >
+                    <span class="dx-slider"></span>
+                </label>
+
+            </div>
+
+
+            <!-- UPI -->
+            <div class="dx-setting-row">
+
+                <div class="dx-setting-left">
+                    <div class="dx-mini-icon">
+                        <i class="fa-solid fa-mobile-screen-button"></i>
+                    </div>
+
+                    <div>
+                        <strong>UPI Payment</strong>
+                        <p>Allow customers to pay using UPI.</p>
+                    </div>
+                </div>
+
+                <label class="dx-switch">
+                    <input
+                        type="checkbox"
+                        name="upi_enabled"
+                        {% if settings and settings["upi_enabled"] %}checked{% endif %}
+                    >
+                    <span class="dx-slider"></span>
+                </label>
+
+            </div>
+
+
+            <!-- UPI DETAILS -->
+            <div class="dx-payment-details">
+
+                <div class="dx-field">
+
+                    <label>
+                        <i class="fa-solid fa-at"></i>
+                        UPI ID
+                    </label>
+
+                    <input
+                        type="text"
+                        name="upi_id"
+                        value="{{ settings['upi_id'] if settings and settings['upi_id'] else '' }}"
+                        placeholder="yourname@upi"
+                        autocomplete="off"
+                    >
+
+                    <small class="dx-field-help">
+                        This UPI ID can be shown to customers for manual UPI payment.
+                    </small>
+
+                </div>
+
+
+                <!-- QR UPLOAD -->
+                <div class="dx-field">
+
+                    <label>
+                        <i class="fa-solid fa-qrcode"></i>
+                        UPI QR / Scanner
+                    </label>
+
+                    <input
+                        type="file"
+                        name="upi_qr"
+                        accept="image/png,image/jpeg,image/webp"
+                    >
+
+                    <small class="dx-field-help">
+                        Upload a clear QR image. PNG, JPG or WEBP only.
+                    </small>
+
+
+                    {% if settings and settings["upi_qr"] %}
+
+                        <div class="dx-current-qr">
+
+                            <img
+                                src="{{ url_for('static', filename='uploads/payment/' ~ settings['upi_qr']) }}"
+                                alt="Current UPI QR"
+                            >
+
+                            <span>Current QR uploaded</span>
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+            <!-- CARDS -->
+            <div class="dx-setting-row">
+
+                <div class="dx-setting-left">
+                    <div class="dx-mini-icon">
+                        <i class="fa-solid fa-credit-card"></i>
+                    </div>
+
+                    <div>
+                        <strong>Cards</strong>
+                        <p>Allow supported debit and credit card payments.</p>
+                    </div>
+                </div>
+
+                <label class="dx-switch">
+                    <input
+                        type="checkbox"
+                        name="cards_enabled"
+                        {% if settings and settings["cards_enabled"] %}checked{% endif %}
+                    >
+                    <span class="dx-slider"></span>
+                </label>
+
+            </div>
+
+
+            <!-- NET BANKING -->
+            <div class="dx-setting-row">
+
+                <div class="dx-setting-left">
+                    <div class="dx-mini-icon">
+                        <i class="fa-solid fa-building-columns"></i>
+                    </div>
+
+                    <div>
+                        <strong>Net Banking</strong>
+                        <p>Allow supported bank payment options.</p>
+                    </div>
+                </div>
+
+                <label class="dx-switch">
+                    <input
+                        type="checkbox"
+                        name="netbanking_enabled"
+                        {% if settings and settings["netbanking_enabled"] %}checked{% endif %}
+                    >
+                    <span class="dx-slider"></span>
+                </label>
+
+            </div>
+
+
+            <!-- RAZORPAY -->
+            <div class="dx-setting-row">
+
+                <div class="dx-setting-left">
+                    <div class="dx-mini-icon">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+
+                    <div>
+                        <strong>Razorpay</strong>
+                        <p>Use Razorpay Checkout for supported online payment methods.</p>
+                    </div>
+                </div>
+
+                <label class="dx-switch">
+                    <input
+                        type="checkbox"
+                        name="razorpay_enabled"
+                        {% if settings and settings["razorpay_enabled"] %}checked{% endif %}
+                    >
+                    <span class="dx-slider"></span>
+                </label>
+
+            </div>
+
+
+            <!-- SECURITY NOTE -->
+            <div class="dx-security-note">
+
+                <i class="fa-solid fa-lock"></i>
+
+                <div>
+                    <strong>Payment security</strong>
+
                     <p>
-                        UPI, cards and net banking can be enabled later.
+                        Never enter your Razorpay Secret Key or other private
+                        credentials here. Keep secret credentials inside your
+                        server-side environment variables (.env). Customers
+                        will never see them.
                     </p>
                 </div>
 
             </div>
 
 
-            <label class="dx-switch">
+            <!-- SAVE -->
+            <div class="dx-save-area">
 
-                <input type="checkbox"
-                       name="online_payment">
+                <button
+                    type="submit"
+                    name="action"
+                    value="payment"
+                    class="dx-save-btn"
+                >
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    Save Payment Settings
+                </button>
 
-                <span class="dx-slider"></span>
-
-            </label>
+            </div>
 
         </div>
 
-    </div>
+    </form>
 
 
     <!-- ================= NOTIFICATIONS ================= -->
@@ -593,6 +787,8 @@ DX Fragrance | Settings Dashboard
 
 
     <!-- ================= STORE STATUS ================= -->
+<form method="POST">
+
     <div class="dx-section-box">
 
         <div class="dx-section-title">
@@ -613,14 +809,29 @@ DX Fragrance | Settings Dashboard
 
             <div>
 
-                <div class="dx-status-title">
-                    <span class="dx-online-dot"></span>
-                    Store is Online
-                </div>
+                {% if store_settings and store_settings["store_online"] %}
 
-                <p>
-                    Customers can browse products and place orders normally.
-                </p>
+                    <div class="dx-status-title">
+                        <span class="dx-online-dot"></span>
+                        Store is Online
+                    </div>
+
+                    <p>
+                        Customers can browse products and place orders normally.
+                    </p>
+
+                {% else %}
+
+                    <div class="dx-status-title dx-offline-title">
+                        <span class="dx-offline-dot"></span>
+                        Store is Offline
+                    </div>
+
+                    <p>
+                        Customers can browse products, but cannot place new orders.
+                    </p>
+
+                {% endif %}
 
             </div>
 
@@ -629,7 +840,15 @@ DX Fragrance | Settings Dashboard
 
                 <input
                     type="checkbox"
-                    checked
+                    name="store_online"
+                    {% if store_settings and store_settings["store_online"] %}checked{% endif %}
+                    onchange="this.form.submit()"
+                >
+
+                <input
+                    type="hidden"
+                    name="action"
+                    value="store_status"
                 >
 
                 <span class="dx-slider"></span>
@@ -640,7 +859,7 @@ DX Fragrance | Settings Dashboard
 
     </div>
 
-
+</form>
     <!-- ================= QUICK LINKS ================= -->
     <div class="dx-section-box">
 
@@ -1130,6 +1349,64 @@ DX Fragrance | Settings Dashboard
 }
 
 
+/* PAYMENT DETAILS */
+
+.dx-payment-details {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+    padding: 18px 0 8px;
+}
+
+.dx-current-qr {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #766c65;
+    font-size: 11px;
+}
+
+.dx-current-qr img {
+    width: 92px;
+    height: 92px;
+    object-fit: contain;
+    border: 1px solid #e5ddd4;
+    border-radius: 10px;
+    background: #fff;
+    padding: 5px;
+}
+
+.dx-security-note {
+    margin-top: 18px;
+    padding: 14px 16px;
+    border: 1px solid #e7dfd5;
+    border-radius: 12px;
+    background: #fbf8f3;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+}
+
+.dx-security-note > i {
+    color: #b18d54;
+    margin-top: 2px;
+}
+
+.dx-security-note strong {
+    display: block;
+    color: #3a2e28;
+    font-size: 13px;
+}
+
+.dx-security-note p {
+    margin: 4px 0 0;
+    color: #80766f;
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+
 /* STORE STATUS */
 
 .dx-status-card {
@@ -1164,6 +1441,18 @@ DX Fragrance | Settings Dashboard
     background: #55a76b;
     border-radius: 50%;
     box-shadow: 0 0 0 4px rgba(85,167,107,.12);
+}
+
+.dx-offline-title {
+    color: #a33b3b;
+}
+
+.dx-offline-dot {
+    width: 9px;
+    height: 9px;
+    background: #c95b5b;
+    border-radius: 50%;
+    box-shadow: 0 0 0 4px rgba(201,91,91,.12);
 }
 
 .dx-status-card p {
@@ -1253,6 +1542,10 @@ DX Fragrance | Settings Dashboard
 
     .dx-full {
         grid-column: auto;
+    }
+
+    .dx-payment-details {
+        grid-template-columns: 1fr;
     }
 
     .dx-card-row,

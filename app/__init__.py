@@ -1,6 +1,9 @@
 import os
+
 from flask import Flask
+
 from dotenv import load_dotenv
+
 from app.routes.wishlist import wishlist_bp
 from app.routes.reviews import reviews_bp
 from app.routes.main import main_bp
@@ -17,13 +20,32 @@ from config.database import get_db_connection
 
 def create_app():
 
+    # =========================================================
+    # LOAD ENVIRONMENT VARIABLES
+    # =========================================================
+
     load_dotenv()
+
+    # =========================================================
+    # CREATE FLASK APP
+    # =========================================================
 
     app = Flask(__name__)
 
-    app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
-    app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+    # =========================================================
+    # FLASK CONFIGURATION
+    # =========================================================
 
+    # .env mein key ho to use karega.
+    # Agar nahi hai to ye default key use hogi.
+    app.config["SECRET_KEY"] = os.getenv(
+        "SECRET_KEY",
+        "dx-fragrance-secret-key-2026"
+    )
+
+    app.secret_key = app.config["SECRET_KEY"]
+
+    app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
     # =========================================================
     # REGISTER BLUEPRINTS
@@ -39,7 +61,6 @@ def create_app():
     app.register_blueprint(orders_bp)
     app.register_blueprint(auth_bp)
 
-
     # =========================================================
     # GLOBAL STORE SETTINGS
     # =========================================================
@@ -54,7 +75,8 @@ def create_app():
             connection = get_db_connection()
 
             # Existing database ke columns use karenge
-            store_settings = connection.execute("""
+            store_settings = connection.execute(
+                """
                 SELECT
                     id,
                     store_name,
@@ -67,12 +89,14 @@ def create_app():
                     youtube
                 FROM store_settings
                 WHERE id = 1
-            """).fetchone()
+                """
+            ).fetchone()
 
             # Agar row nahi hai to default row bana do
             if store_settings is None:
 
-                connection.execute("""
+                connection.execute(
+                    """
                     INSERT INTO store_settings
                     (
                         id,
@@ -94,14 +118,15 @@ def create_app():
                         '',
                         '',
                         '',
-                        '',
                         ''
                     )
-                """)
+                    """
+                )
 
                 connection.commit()
 
-                store_settings = connection.execute("""
+                store_settings = connection.execute(
+                    """
                     SELECT
                         id,
                         store_name,
@@ -114,8 +139,8 @@ def create_app():
                         youtube
                     FROM store_settings
                     WHERE id = 1
-                """).fetchone()
-
+                    """
+                ).fetchone()
 
             # -------------------------------------------------
             # Footer ke liye address naam se bhi available hoga
@@ -129,11 +154,9 @@ def create_app():
                     store_settings.get("store_address") or ""
                 )
 
-
             return {
                 "store_settings": store_settings
             }
-
 
         except Exception as error:
 
@@ -146,11 +169,13 @@ def create_app():
                 "store_settings": None
             }
 
-
         finally:
 
             if connection:
                 connection.close()
 
+    # =========================================================
+    # RETURN APP
+    # =========================================================
 
     return app

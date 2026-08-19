@@ -1,0 +1,420 @@
+{% extends "base.html" %}
+
+{% block title %}DX Fragrance | Secure Payment{% endblock %}
+
+{% block content %}
+
+<section class="payment-page">
+
+    <div class="payment-header">
+        <span>DX FRAGRANCE</span>
+        <h1>Complete Your Payment</h1>
+        <p>Secure payment for your signature fragrance.</p>
+    </div>
+
+    <div class="payment-container">
+
+        <div class="payment-card">
+
+            <div class="secure-badge">
+                🔒 Secure Payment
+            </div>
+
+            <div class="payment-icon-main">
+                💳
+            </div>
+
+            <h2>Online Payment</h2>
+
+            <p class="payment-description">
+                Pay securely using UPI, Cards or Net Banking.
+            </p>
+
+            <div class="amount-box">
+                <span>Total Amount</span>
+                <strong>₹{{ total }}</strong>
+            </div>
+
+            <div class="customer-info">
+
+                <div>
+                    <span>Name</span>
+                    <strong>{{ shipping_name }}</strong>
+                </div>
+
+                <div>
+                    <span>Phone</span>
+                    <strong>{{ shipping_phone }}</strong>
+                </div>
+
+            </div>
+
+            <button
+                id="pay-button"
+                class="pay-button"
+                type="button"
+            >
+                <span>Pay ₹{{ total }} Securely</span>
+                <span class="arrow">→</span>
+            </button>
+
+            <p class="payment-security">
+                🔐 Your payment information is securely processed.
+            </p>
+
+            <div id="payment-message" class="payment-message"></div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const payButton = document.getElementById("pay-button");
+    const paymentMessage = document.getElementById("payment-message");
+
+    if (!payButton) {
+        return;
+    }
+
+    payButton.addEventListener("click", function () {
+
+        paymentMessage.textContent = "";
+
+        const options = {
+            key: "{{ razorpay_key_id }}",
+            amount: "{{ amount }}",
+            currency: "INR",
+            name: "DX Fragrance",
+            description: "DX Fragrance Order",
+            order_id: "{{ razorpay_order_id }}",
+
+            prefill: {
+                name: "{{ shipping_name }}",
+                contact: "{{ shipping_phone }}"
+            },
+
+            theme: {
+                color: "#b8975a"
+            },
+
+            modal: {
+                ondismiss: function () {
+
+                    payButton.disabled = false;
+
+                    payButton.innerHTML =
+                        '<span>Pay ₹{{ total }} Securely</span>' +
+                        '<span class="arrow">→</span>';
+                }
+            },
+
+            handler: function (response) {
+
+                payButton.disabled = true;
+                payButton.innerHTML =
+                    "<span>Verifying Payment...</span>";
+
+                fetch(
+                    "{{ url_for('checkout.payment_success') }}",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+
+                        body: JSON.stringify({
+                            razorpay_payment_id:
+                                response.razorpay_payment_id,
+
+                            razorpay_order_id:
+                                response.razorpay_order_id,
+
+                            razorpay_signature:
+                                response.razorpay_signature
+                        })
+                    }
+                )
+                .then(function (res) {
+                    return res.json();
+                })
+                .then(function (data) {
+
+                    if (data.success) {
+
+                        window.location.href =
+                            "/orders/success/" + data.order_id;
+
+                        return;
+                    }
+
+                    paymentMessage.textContent =
+                        data.message ||
+                        "Payment verification failed.";
+
+                    payButton.disabled = false;
+
+                    payButton.innerHTML =
+                        '<span>Try Payment Again</span>' +
+                        '<span class="arrow">→</span>';
+                })
+                .catch(function (error) {
+
+                    console.error(error);
+
+                    paymentMessage.textContent =
+                        "Something went wrong while verifying payment.";
+
+                    payButton.disabled = false;
+
+                    payButton.innerHTML =
+                        '<span>Try Payment Again</span>' +
+                        '<span class="arrow">→</span>';
+                });
+            }
+        };
+
+        const razorpay = new Razorpay(options);
+
+        razorpay.on(
+            "payment.failed",
+            function (response) {
+
+                console.error(
+                    "Payment Failed:",
+                    response.error
+                );
+
+                paymentMessage.textContent =
+                    response.error.description ||
+                    "Payment failed. Please try again.";
+
+                payButton.disabled = false;
+
+                payButton.innerHTML =
+                    '<span>Try Payment Again</span>' +
+                    '<span class="arrow">→</span>';
+            }
+        );
+
+        razorpay.open();
+    });
+
+});
+</script>
+
+<style>
+
+.payment-page {
+    min-height: 80vh;
+    padding: 70px 20px 90px;
+    background: linear-gradient(135deg, #fcfaf6, #f7f0e5);
+}
+
+.payment-header {
+    text-align: center;
+    margin-bottom: 45px;
+}
+
+.payment-header span {
+    color: #b8975a;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 4px;
+}
+
+.payment-header h1 {
+    margin: 12px 0 10px;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 42px;
+    font-weight: 500;
+    color: #1d1b19;
+}
+
+.payment-header p {
+    margin: 0;
+    color: #817a70;
+    font-size: 14px;
+}
+
+.payment-container {
+    max-width: 540px;
+    margin: 0 auto;
+}
+
+.payment-card {
+    background: #ffffff;
+    border: 1px solid #e6ddd0;
+    border-radius: 22px;
+    padding: 40px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(40, 30, 20, 0.08);
+}
+
+.secure-badge {
+    display: inline-flex;
+    padding: 7px 13px;
+    border-radius: 30px;
+    background: #faf5eb;
+    color: #9c7843;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+.payment-icon-main {
+    width: 70px;
+    height: 70px;
+    margin: 25px auto 18px;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f7efe1;
+    font-size: 30px;
+}
+
+.payment-card h2 {
+    margin: 0;
+    font-family: Georgia, serif;
+    font-size: 27px;
+    font-weight: 500;
+    color: #24211e;
+}
+
+.payment-description {
+    margin: 8px 0 25px;
+    color: #878078;
+    font-size: 13px;
+}
+
+.amount-box {
+    padding: 20px;
+    border-radius: 13px;
+    background: #faf7f1;
+    border: 1px solid #eee4d4;
+}
+
+.amount-box span {
+    display: block;
+    margin-bottom: 5px;
+    color: #8a8278;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+}
+
+.amount-box strong {
+    color: #1f1d1a;
+    font-family: Georgia, serif;
+    font-size: 30px;
+    font-weight: 500;
+}
+
+.customer-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 18px 0 22px;
+}
+
+.customer-info div {
+    padding: 13px;
+    text-align: left;
+    border: 1px solid #eee7dd;
+    border-radius: 10px;
+}
+
+.customer-info span {
+    display: block;
+    margin-bottom: 5px;
+    color: #9a9288;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.customer-info strong {
+    display: block;
+    color: #332e29;
+    font-size: 12px;
+    word-break: break-word;
+}
+
+.pay-button {
+    width: 100%;
+    min-height: 58px;
+    border: none;
+    border-radius: 11px;
+    background: #1c1b19;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.pay-button:hover {
+    background: #b8975a;
+    transform: translateY(-1px);
+}
+
+.pay-button:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.arrow {
+    font-size: 22px;
+    color: #d5b477;
+}
+
+.payment-security {
+    margin: 18px 0 0;
+    color: #938b82;
+    font-size: 10px;
+}
+
+.payment-message {
+    margin-top: 15px;
+    color: #a04438;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+@media (max-width: 600px) {
+
+    .payment-page {
+        padding: 45px 15px 65px;
+    }
+
+    .payment-header h1 {
+        font-size: 32px;
+    }
+
+    .payment-card {
+        padding: 25px 20px;
+        border-radius: 16px;
+    }
+
+    .customer-info {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+</style>
+
+{% endblock %}

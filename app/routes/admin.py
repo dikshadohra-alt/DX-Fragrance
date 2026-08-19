@@ -829,157 +829,24 @@ def delete_order(order_id):
 # CUSTOMERS
 # =========================================================
 
-# =========================================================
-# =========================================================
-# CUSTOMERS
-# =========================================================
-
 @admin_bp.route("/customers")
 def customers():
 
     if "admin_id" not in session:
+
         return redirect(
             url_for("admin.login")
         )
 
+
     customers = CustomerService.get_all_customers()
+
 
     return render_template(
         "admin/customers.html",
         customers=customers
     )
 
-
-# =========================================================
-# CUSTOMER DETAIL
-# =========================================================
-
-@admin_bp.route("/customers/<int:customer_id>")
-def customer_detail(customer_id):
-
-    if "admin_id" not in session:
-        return redirect(
-            url_for("admin.login")
-        )
-
-    connection = AuthService.get_db_connection()
-
-    try:
-
-        customer = connection.execute(
-            """
-            SELECT
-                id,
-                username,
-                email,
-                phone,
-                is_admin
-            FROM users
-            WHERE id = ?
-            """,
-            (customer_id,)
-        ).fetchone()
-
-        if not customer:
-
-            flash(
-                "Customer not found.",
-                "error"
-            )
-
-            return redirect(
-                url_for("admin.customers")
-            )
-
-
-        orders = connection.execute(
-            """
-            SELECT
-                id,
-                total_amount,
-                status,
-                shipping_name,
-                shipping_phone,
-                shipping_address,
-                created_at
-            FROM orders
-            WHERE user_id = ?
-            ORDER BY id DESC
-            """,
-            (customer_id,)
-        ).fetchall()
-
-
-        total_orders = len(orders)
-
-
-        result = connection.execute(
-            """
-            SELECT
-                COALESCE(SUM(total_amount), 0)
-            FROM orders
-            WHERE user_id = ?
-            AND LOWER(
-                COALESCE(status, '')
-            ) != 'cancelled'
-            """,
-            (customer_id,)
-        ).fetchone()
-
-
-        total_spending = result[0] if result else 0
-
-
-        latest_order = connection.execute(
-            """
-            SELECT
-                shipping_name,
-                shipping_phone,
-                shipping_address
-            FROM orders
-            WHERE user_id = ?
-            ORDER BY id DESC
-            LIMIT 1
-            """,
-            (customer_id,)
-        ).fetchone()
-
-
-        return render_template(
-            "admin/customer_detail.html",
-            customer=customer,
-            orders=orders,
-            total_orders=total_orders,
-            total_spending=total_spending,
-            latest_order=latest_order
-        )
-
-
-    except Exception as error:
-
-        current_app.logger.exception(
-            "Customer detail error: %s",
-            error
-        )
-
-        flash(
-            "Unable to load customer details.",
-            "error"
-        )
-
-        return redirect(
-            url_for("admin.customers")
-        )
-
-
-    finally:
-
-        connection.close()
-
-
-# =========================================================
-# INVENTORY
-# =========================================================
 
 # =========================================================
 # INVENTORY
@@ -1308,7 +1175,11 @@ def change_password():
 
 
 # =========================================================
-# STORE SETTINGS
+# SETTINGS
+# =========================================================
+
+# =========================================================
+# SETTINGS
 # =========================================================
 
 @admin_bp.route("/settings", methods=["GET", "POST"])
@@ -1320,54 +1191,74 @@ def settings():
     connection = AuthService.get_db_connection()
 
     try:
+        # -----------------------------------------------------
+        # STORE SETTINGS COLUMNS
+        # -----------------------------------------------------
+        # Existing databases may not have these newer columns.
+        # Add only the columns that are missing.
+        columns = connection.execute(
+            "PRAGMA table_info(store_settings)"
+        ).fetchall()
 
-        # -------------------------------------------------
-        # CREATE TABLE IF NOT EXISTS
-        # -------------------------------------------------
+        column_names = [column["name"] for column in columns]
 
+        required_columns = {
+            "shipping_charge": "REAL DEFAULT 0",
+            "free_shipping_threshold": "REAL DEFAULT 999",
+            "store_online": "INTEGER NOT NULL DEFAULT 1"
+        }
+
+        for column_name, column_type in required_columns.items():
+            if column_name not in column_names:
+                connection.execute(
+                    f"ALTER TABLE store_settings ADD COLUMN "
+                    f"{column_name} {column_type}"
+                )
+
+        # -----------------------------------------------------
+        # PAYMENT SETTINGS TABLE
+        # -----------------------------------------------------
         connection.execute("""
-            CREATE TABLE IF NOT EXISTS store_settings (
+            CREATE TABLE IF NOT EXISTS payment_settings (
                 id INTEGER PRIMARY KEY CHECK (id = 1),
-                store_name TEXT DEFAULT 'DX Fragrance',
-                store_email TEXT DEFAULT 'admin@dxfragrance.com',
-                store_phone TEXT DEFAULT '',
-                store_address TEXT DEFAULT '',
-                instagram TEXT DEFAULT '',
-                facebook TEXT DEFAULT '',
-                youtube TEXT DEFAULT '',
-                whatsapp TEXT DEFAULT '',
-                shipping_charge REAL DEFAULT 0,
-                free_shipping_threshold REAL DEFAULT 999,
-                cod_enabled INTEGER DEFAULT 1,
-                online_payment INTEGER DEFAULT 0,
-                store_online INTEGER DEFAULT 1,
-                address TEXT DEFAULT ''
+                cod_enabled INTEGER NOT NULL DEFAULT 1,
+                online_payment_enabled INTEGER NOT NULL DEFAULT 0,
+                upi_enabled INTEGER NOT NULL DEFAULT 1,
+                cards_enabled INTEGER NOT NULL DEFAULT 1,
+                netbanking_enabled INTEGER NOT NULL DEFAULT 1,
+                razorpay_enabled INTEGER NOT NULL DEFAULT 0,
+                upi_id TEXT DEFAULT '',
+                upi_qr TEXT DEFAULT ''
             )
         """)
 
-        # -------------------------------------------------
-        # MAKE SURE DEFAULT ROW EXISTS
-        # -------------------------------------------------
-
         connection.execute("""
-            INSERT OR IGNORE INTO store_settings (id)
-            VALUES (1)
+            INSERT OR IGNORE INTO payment_settings (
+                id,
+                cod_enabled,
+                online_payment_enabled,
+                upi_enabled,
+                cards_enabled,
+                netbanking_enabled,
+                razorpay_enabled,
+                upi_id,
+                upi_qr
+            )
+            VALUES (1, 1, 0, 1, 1, 1, 0, '', '')
         """)
 
         connection.commit()
 
-        # -------------------------------------------------
+        # -----------------------------------------------------
         # SAVE SETTINGS
-        # -------------------------------------------------
-
+        # -----------------------------------------------------
         if request.method == "POST":
 
             action = request.form.get("action", "").strip()
 
-            # =================================================
+            # -------------------------------------------------
             # STORE INFORMATION
-            # =================================================
-
+            # -------------------------------------------------
             if action == "store_info":
 
                 store_name = request.form.get(
@@ -1404,14 +1295,13 @@ def settings():
                 connection.commit()
 
                 flash(
-                    "Store information updated successfully!",
+                    "Store information saved successfully.",
                     "success"
                 )
 
-            # =================================================
-            # SOCIAL MEDIA
-            # =================================================
-
+            # -------------------------------------------------
+            # SOCIAL LINKS
+            # -------------------------------------------------
             elif action == "social_links":
 
                 instagram = request.form.get(
@@ -1448,14 +1338,13 @@ def settings():
                 connection.commit()
 
                 flash(
-                    "Social links updated successfully!",
+                    "Social links saved successfully.",
                     "success"
                 )
 
-            # =================================================
-            # SHIPPING SETTINGS
-            # =================================================
-
+            # -------------------------------------------------
+            # SHIPPING
+            # -------------------------------------------------
             elif action == "shipping":
 
                 shipping_charge = request.form.get(
@@ -1467,90 +1356,284 @@ def settings():
                 ).strip()
 
                 try:
-
-                    shipping_charge = float(
-                        shipping_charge or 0
-                    )
-
+                    shipping_charge = float(shipping_charge)
                     free_shipping_threshold = float(
-                        free_shipping_threshold or 999
+                        free_shipping_threshold
+                    )
+                except ValueError:
+                    flash(
+                        "Please enter valid shipping amounts.",
+                        "error"
+                    )
+                else:
+                    if (
+                        shipping_charge < 0
+                        or free_shipping_threshold < 0
+                    ):
+                        flash(
+                            "Shipping amounts cannot be negative.",
+                            "error"
+                        )
+                    else:
+                        connection.execute("""
+                            UPDATE store_settings
+                            SET
+                                shipping_charge = ?,
+                                free_shipping_threshold = ?
+                            WHERE id = 1
+                        """, (
+                            shipping_charge,
+                            free_shipping_threshold
+                        ))
+
+                        connection.commit()
+
+                        flash(
+                            "Shipping settings saved successfully.",
+                            "success"
+                        )
+
+
+            # -------------------------------------------------
+            # STORE STATUS
+            # -------------------------------------------------
+            elif action == "store_status":
+
+                store_online = (
+                    1
+                    if request.form.get("store_online") == "on"
+                    else 0
+                )
+
+                connection.execute(
+                    """
+                    UPDATE store_settings
+                    SET store_online = ?
+                    WHERE id = 1
+                    """,
+                    (store_online,)
+                )
+
+                connection.commit()
+
+                if store_online:
+                    flash(
+                        "Store is now ONLINE. Customers can place orders.",
+                        "success"
+                    )
+                else:
+                    flash(
+                        "Store is now OFFLINE. Customers cannot place new orders.",
+                        "success"
                     )
 
+            # -------------------------------------------------
+            # PAYMENT SETTINGS
+            # -------------------------------------------------
+            elif action in ("payment_settings", "payment"):
+
+                cod_enabled = (
+                    1
+                    if request.form.get("cod_enabled") == "on"
+                    else 0
+                )
+
+                online_payment_enabled = (
+                    1
+                    if request.form.get("online_payment_enabled", request.form.get("online_payment")) == "on"
+                    else 0
+                )
+
+                upi_enabled = (
+                    1
+                    if request.form.get("upi_enabled") == "on"
+                    else 0
+                )
+
+                cards_enabled = (
+                    1
+                    if request.form.get("cards_enabled") == "on"
+                    else 0
+                )
+
+                netbanking_enabled = (
+                    1
+                    if request.form.get("netbanking_enabled") == "on"
+                    else 0
+                )
+
+                razorpay_enabled = (
+                    1
+                    if request.form.get("razorpay_enabled") == "on"
+                    else 0
+                )
+
+                upi_id = request.form.get(
+                    "upi_id", ""
+                ).strip()
+
+                # ---------------------------------------------
+                # UPI ID VALIDATION
+                # ---------------------------------------------
+                if upi_enabled and not upi_id:
+                    flash(
+                        "Please enter your UPI ID when UPI is enabled.",
+                        "error"
+                    )
+                else:
+
+                    # -----------------------------------------
+                    # QR IMAGE
+                    # -----------------------------------------
+                    qr_image = request.files.get("upi_qr")
+                    qr_filename = None
+
+                    if qr_image and qr_image.filename:
+
+                        extension = qr_image.filename.rsplit(
+                            ".",
+                            1
+                        )[-1].lower()
+
+                        if extension not in {
+                            "png",
+                            "jpg",
+                            "jpeg",
+                            "webp"
+                        }:
+                            flash(
+                                "UPI QR must be PNG, JPG, JPEG or WEBP.",
+                                "error"
+                            )
+                            qr_image = None
+                        else:
+                            qr_filename = secure_filename(
+                                qr_image.filename
+                            )
+
+                            # Avoid accidentally overwriting an old QR
+                            base, ext = os.path.splitext(
+                                qr_filename
+                            )
+
+                            qr_filename = (
+                                f"upi_qr_{session['admin_id']}"
+                                f"{ext.lower()}"
+                            )
+
+                            upload_folder = current_app.config[
+                                "UPLOAD_FOLDER"
+                            ]
+
+                            os.makedirs(
+                                upload_folder,
+                                exist_ok=True
+                            )
+
+                            qr_image.save(
+                                os.path.join(
+                                    upload_folder,
+                                    qr_filename
+                                )
+                            )
+
+                    # -----------------------------------------
+                    # KEEP OLD QR IF NO NEW FILE
+                    # -----------------------------------------
+                    current_payment = connection.execute("""
+                        SELECT upi_qr
+                        FROM payment_settings
+                        WHERE id = 1
+                    """).fetchone()
+
+                    if not qr_filename:
+                        qr_filename = (
+                            current_payment["upi_qr"]
+                            if current_payment
+                            else ""
+                        )
+
+                    # -----------------------------------------
+                    # SAVE PAYMENT SETTINGS
+                    # -----------------------------------------
                     connection.execute("""
-                        UPDATE store_settings
+                        UPDATE payment_settings
                         SET
-                            shipping_charge = ?,
-                            free_shipping_threshold = ?
+                            cod_enabled = ?,
+                            online_payment_enabled = ?,
+                            upi_enabled = ?,
+                            cards_enabled = ?,
+                            netbanking_enabled = ?,
+                            razorpay_enabled = ?,
+                            upi_id = ?,
+                            upi_qr = ?
                         WHERE id = 1
                     """, (
-                        shipping_charge,
-                        free_shipping_threshold
+                        cod_enabled,
+                        online_payment_enabled,
+                        upi_enabled,
+                        cards_enabled,
+                        netbanking_enabled,
+                        razorpay_enabled,
+                        upi_id,
+                        qr_filename or ""
                     ))
 
                     connection.commit()
 
                     flash(
-                        "Shipping settings updated successfully!",
+                        "Payment settings saved successfully.",
                         "success"
                     )
 
-                except (ValueError, TypeError) as error:
-
-                    connection.rollback()
-
-                    flash(
-                        f"Invalid shipping value: {error}",
-                        "error"
-                    )
-
-            # =================================================
-            # OTHER SETTINGS
-            # =================================================
-
             else:
-
                 flash(
-                    "No settings action selected.",
+                    "Unknown settings action.",
                     "error"
                 )
 
-            return redirect(
-                url_for("admin.settings")
-            )
+            return redirect(url_for("admin.settings"))
 
-        # -------------------------------------------------
-        # LOAD CURRENT SETTINGS
-        # -------------------------------------------------
-
-        settings = connection.execute("""
+        # -----------------------------------------------------
+        # LOAD STORE SETTINGS
+        # -----------------------------------------------------
+        store_settings = connection.execute("""
             SELECT *
             FROM store_settings
             WHERE id = 1
         """).fetchone()
 
+        # -----------------------------------------------------
+        # LOAD PAYMENT SETTINGS
+        # -----------------------------------------------------
+        payment_settings = connection.execute("""
+            SELECT *
+            FROM payment_settings
+            WHERE id = 1
+        """).fetchone()
+
         return render_template(
-    "admin/settings.html",
-    settings=settings,
-    store_settings=settings
-)
+            "admin/settings.html",
+            settings=payment_settings,
+            store_settings=store_settings,
+            payment_settings=payment_settings
+        )
+
     except Exception as error:
 
         connection.rollback()
 
         current_app.logger.exception(
-            "Store settings error: %s",
+            "Admin settings error: %s",
             error
         )
 
         flash(
-            f"Store settings could not be updated: {error}",
+            "Settings could not be saved. Please check the server terminal.",
             "error"
         )
 
-        return redirect(
-            url_for("admin.settings")
-        )
+        return redirect(url_for("admin.settings"))
 
     finally:
-
         connection.close()
