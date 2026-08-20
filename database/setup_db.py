@@ -57,3 +57,18 @@ CREATE TABLE IF NOT EXISTS notifications (
 connection.commit()
 connection.close()
 print("🎉 All tables have been created successfully!")
+
+# Store Settings Table
+cursor.execute('''
+CREATE TABLE IF NOT EXISTS store_settings (
+    id INTEGER PRIMARY KEY,
+    store_name TEXT,
+    store_email TEXT,
+    store_phone TEXT,
+    store_address TEXT,
+    whatsapp TEXT,
+    instagram TEXT,
+    facebook TEXT,
+    youtube TEXT
+)
+''')
