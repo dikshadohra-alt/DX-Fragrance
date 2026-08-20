@@ -6,4 +6,4 @@ click==8.2.1
 blinker==1.9.0
 python-dotenv==1.2.3
 gunicorn==23.0.0
-razorpayrazorpay
+razorpay
