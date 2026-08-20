@@ -54,10 +54,6 @@ CREATE TABLE IF NOT EXISTS notifications (
 )
 ''')
 
-connection.commit()
-connection.close()
-print("🎉 All tables have been created successfully!")
-
 # Store Settings Table
 cursor.execute('''
 CREATE TABLE IF NOT EXISTS store_settings (
@@ -72,3 +68,11 @@ CREATE TABLE IF NOT EXISTS store_settings (
     youtube TEXT
 )
 ''')
+
+# Save changes
+connection.commit()
+
+# Close database
+connection.close()
+
+print("🎉 All tables have been created successfully!")
