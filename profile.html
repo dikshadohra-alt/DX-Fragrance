@@ -1,0 +1,872 @@
+{% extends "base.html" %}
+
+{% block title %}
+DX Fragrance | Admin Profile
+{% endblock %}
+
+{% block content %}
+
+<div class="dx-profile-page">
+
+    <!-- HEADER -->
+    <div class="dx-profile-header">
+
+        <div>
+            <span class="dx-brand-tag">
+                DX FRAGRANCE ADMIN
+            </span>
+
+            <h1>
+                Admin Profile & Security
+            </h1>
+
+            <p>
+                Update your administrator information and security settings.
+            </p>
+        </div>
+
+        <a
+            href="{{ url_for('admin.dashboard') }}"
+            class="dx-back-btn"
+        >
+            <i class="fa-solid fa-arrow-left"></i>
+            Back to Dashboard
+        </a>
+
+    </div>
+
+
+    <!-- PROFILE FORM -->
+    <form
+        method="POST"
+        class="dx-profile-card"
+    >
+
+        <div class="dx-section-heading">
+
+            <div class="dx-heading-icon">
+                <i class="fa-solid fa-user-shield"></i>
+            </div>
+
+            <div>
+                <h2>
+                    Account Information
+                </h2>
+
+                <p>
+                    Keep your administrator details up to date.
+                </p>
+            </div>
+
+        </div>
+
+
+        <div class="dx-divider"></div>
+
+
+        <div class="dx-form-grid">
+
+            <!-- NAME -->
+            <div class="dx-field">
+
+                <label for="username">
+                    Administrator Name
+                </label>
+
+                <div class="dx-input-wrap">
+
+                    <i class="fa-regular fa-user"></i>
+
+                    <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        value="{{ user.username if user and user.username else 'Admin' }}"
+                        placeholder="Enter administrator name"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- EMAIL -->
+            <div class="dx-field">
+
+                <label for="email">
+                    Email Address
+                </label>
+
+                <div class="dx-input-wrap">
+
+                    <i class="fa-regular fa-envelope"></i>
+
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        value="{{ user.email if user and user.email else '' }}"
+                        placeholder="Enter email address"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- PHONE -->
+            <div class="dx-field">
+
+                <label for="phone">
+                    Phone Number
+                </label>
+
+                <div class="dx-input-wrap">
+
+                    <i class="fa-solid fa-phone"></i>
+
+                    <input
+                        type="tel"
+                        id="phone"
+                        name="phone"
+                        value="{{ user.phone if user and user.phone else '' }}"
+                        placeholder="+91 XXXXX XXXXX"
+                        autocomplete="tel"
+                    >
+
+                </div>
+
+                <small>
+                    Your phone number will be saved with your administrator profile.
+                </small>
+
+            </div>
+
+
+            <!-- ROLE -->
+            <div class="dx-field">
+
+                <label for="role">
+                    Account Role
+                </label>
+
+                <div class="dx-input-wrap">
+
+                    <i class="fa-solid fa-shield-halved"></i>
+
+                    <input
+                        type="text"
+                        id="role"
+                        value="Super Admin (Verified)"
+                        readonly
+                        class="dx-readonly"
+                    >
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ACTIONS -->
+        <div class="dx-form-actions">
+
+            <button
+                type="submit"
+                class="dx-save-btn"
+            >
+                <i class="fa-solid fa-floppy-disk"></i>
+                Save Changes
+            </button>
+
+            <a
+                href="{{ url_for('admin.dashboard') }}"
+                class="dx-cancel-btn"
+            >
+                Cancel
+            </a>
+
+        </div>
+
+    </form>
+
+
+    <!-- SECURITY -->
+    <div class="dx-security-card">
+
+        <div class="dx-section-heading">
+
+            <div class="dx-heading-icon security">
+                <i class="fa-solid fa-lock"></i>
+            </div>
+
+            <div>
+                <h2>
+                    Security & Password
+                </h2>
+
+                <p>
+                    Protect your administrator account.
+                </p>
+            </div>
+
+        </div>
+
+
+        <div class="dx-divider"></div>
+
+
+        <div class="dx-security-row">
+
+            <div class="dx-security-info">
+
+                <div class="dx-security-title">
+                    <i class="fa-solid fa-key"></i>
+
+                    <strong>
+                        Change Administrator Password
+                    </strong>
+                </div>
+
+                <p>
+                    Update your password regularly to keep your store secure.
+                </p>
+
+            </div>
+
+
+            <a
+                href="{{ url_for('admin.change_password') }}"
+                class="dx-password-btn"
+            >
+                Change Password
+                <i class="fa-solid fa-arrow-right"></i>
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<style>
+
+/* ================================
+   PROFILE PAGE
+================================ */
+
+.dx-profile-page {
+
+    max-width: 1000px;
+
+    margin: 35px auto;
+
+    padding: 0 22px 60px;
+
+    font-family:
+        'Plus Jakarta Sans',
+        Arial,
+        sans-serif;
+
+}
+
+
+/* ================================
+   HEADER
+================================ */
+
+.dx-profile-header {
+
+    background:
+        linear-gradient(
+            135deg,
+            #2c221e 0%,
+            #49382f 100%
+        );
+
+    color: #fff;
+
+    padding: 30px 34px;
+
+    border-radius: 18px;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 25px;
+
+    margin-bottom: 24px;
+
+    box-shadow:
+        0 15px 35px
+        rgba(44,34,30,0.14);
+
+}
+
+
+.dx-brand-tag {
+
+    display: inline-block;
+
+    color: #d4af37;
+
+    font-size: 11px;
+
+    font-weight: 800;
+
+    letter-spacing: 2.5px;
+
+    margin-bottom: 5px;
+
+}
+
+
+.dx-profile-header h1 {
+
+    margin: 3px 0 7px;
+
+    font-size: 27px;
+
+    font-weight: 750;
+
+    letter-spacing: -0.5px;
+
+}
+
+
+.dx-profile-header p {
+
+    margin: 0;
+
+    color: #ddd4cd;
+
+    font-size: 13px;
+
+}
+
+
+.dx-back-btn {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 10px 17px;
+
+    border-radius: 30px;
+
+    text-decoration: none;
+
+    color: #d4af37;
+
+    border: 1px solid #d4af37;
+
+    background:
+        rgba(212,175,55,0.12);
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    white-space: nowrap;
+
+    transition: 0.2s ease;
+
+}
+
+
+.dx-back-btn:hover {
+
+    background: #d4af37;
+
+    color: #fff;
+
+}
+
+
+/* ================================
+   MAIN PROFILE CARD
+================================ */
+
+.dx-profile-card,
+.dx-security-card {
+
+    background: #fff;
+
+    border: 1px solid #e8e1da;
+
+    border-radius: 18px;
+
+    padding: 28px 32px;
+
+    box-shadow:
+        0 8px 25px
+        rgba(44,34,30,0.045);
+
+}
+
+
+.dx-section-heading {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 13px;
+
+}
+
+
+.dx-heading-icon {
+
+    width: 44px;
+
+    height: 44px;
+
+    border-radius: 12px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: #f7eadb;
+
+    color: #b58b4b;
+
+    font-size: 18px;
+
+}
+
+
+.dx-heading-icon.security {
+
+    background: #f1ece7;
+
+    color: #735f51;
+
+}
+
+
+.dx-section-heading h2 {
+
+    margin: 0 0 3px;
+
+    color: #2c221e;
+
+    font-size: 18px;
+
+}
+
+
+.dx-section-heading p {
+
+    margin: 0;
+
+    color: #8a7c73;
+
+    font-size: 12.5px;
+
+}
+
+
+.dx-divider {
+
+    height: 1px;
+
+    background: #eee8e1;
+
+    margin: 22px 0;
+
+}
+
+
+/* ================================
+   FORM
+================================ */
+
+.dx-form-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 20px;
+
+}
+
+
+.dx-field {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 7px;
+
+}
+
+
+.dx-field label {
+
+    color: #463a34;
+
+    font-size: 12.5px;
+
+    font-weight: 700;
+
+}
+
+
+.dx-field small {
+
+    color: #9b8e85;
+
+    font-size: 10.5px;
+
+}
+
+
+.dx-input-wrap {
+
+    position: relative;
+
+}
+
+
+.dx-input-wrap > i {
+
+    position: absolute;
+
+    left: 14px;
+
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    color: #b39a7b;
+
+    font-size: 13px;
+
+    pointer-events: none;
+
+}
+
+
+.dx-input-wrap input {
+
+    width: 100%;
+
+    box-sizing: border-box;
+
+    padding: 13px 14px 13px 42px;
+
+    border: 1px solid #ddd3c8;
+
+    border-radius: 10px;
+
+    background: #fbf9f6;
+
+    color: #2c221e;
+
+    font-size: 13.5px;
+
+    outline: none;
+
+    transition: 0.2s ease;
+
+}
+
+
+.dx-input-wrap input::placeholder {
+
+    color: #aaa099;
+
+}
+
+
+.dx-input-wrap input:focus {
+
+    border-color: #b89e6d;
+
+    background: #fff;
+
+    box-shadow:
+        0 0 0 4px
+        rgba(184,158,109,0.12);
+
+}
+
+
+.dx-input-wrap input.dx-readonly {
+
+    background: #f1ede6;
+
+    color: #756a63;
+
+    cursor: not-allowed;
+
+}
+
+
+/* ================================
+   BUTTONS
+================================ */
+
+.dx-form-actions {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    margin-top: 25px;
+
+}
+
+
+.dx-save-btn {
+
+    border: none;
+
+    background: #2c221e;
+
+    color: #fff;
+
+    padding: 12px 20px;
+
+    border-radius: 10px;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    transition: 0.2s ease;
+
+}
+
+
+.dx-save-btn:hover {
+
+    background: #b89e6d;
+
+    transform: translateY(-1px);
+
+}
+
+
+.dx-cancel-btn {
+
+    padding: 11px 18px;
+
+    border-radius: 10px;
+
+    border: 1px solid #ddd3c8;
+
+    color: #665951;
+
+    background: #fff;
+
+    text-decoration: none;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+}
+
+
+.dx-cancel-btn:hover {
+
+    background: #faf6f1;
+
+}
+
+
+/* ================================
+   SECURITY
+================================ */
+
+.dx-security-card {
+
+    margin-top: 20px;
+
+}
+
+
+.dx-security-row {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+}
+
+
+.dx-security-title {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    color: #342a26;
+
+    font-size: 14px;
+
+}
+
+
+.dx-security-title i {
+
+    color: #b89e6d;
+
+}
+
+
+.dx-security-info p {
+
+    margin: 7px 0 0;
+
+    color: #8b7d75;
+
+    font-size: 12px;
+
+}
+
+
+.dx-password-btn {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 11px 17px;
+
+    border-radius: 9px;
+
+    background: #faf7f2;
+
+    border: 1px solid #d4af37;
+
+    color: #5c4731;
+
+    text-decoration: none;
+
+    font-size: 12.5px;
+
+    font-weight: 700;
+
+    white-space: nowrap;
+
+    transition: 0.2s ease;
+
+}
+
+
+.dx-password-btn:hover {
+
+    background: #d4af37;
+
+    color: #fff;
+
+}
+
+
+/* ================================
+   RESPONSIVE
+================================ */
+
+@media (max-width: 768px) {
+
+    .dx-profile-page {
+
+        margin-top: 20px;
+
+        padding: 0 14px 40px;
+
+    }
+
+
+    .dx-profile-header {
+
+        flex-direction: column;
+
+        align-items: flex-start;
+
+        padding: 24px;
+
+    }
+
+
+    .dx-profile-header h1 {
+
+        font-size: 22px;
+
+    }
+
+
+    .dx-form-grid {
+
+        grid-template-columns: 1fr;
+
+    }
+
+
+    .dx-profile-card,
+    .dx-security-card {
+
+        padding: 22px;
+
+    }
+
+
+    .dx-security-row {
+
+        flex-direction: column;
+
+        align-items: flex-start;
+
+    }
+
+
+    .dx-password-btn {
+
+        width: 100%;
+
+        justify-content: center;
+
+    }
+
+}
+
+</style>
+
+{% endblock %}
