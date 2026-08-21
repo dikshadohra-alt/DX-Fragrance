@@ -1,0 +1,1564 @@
+{% extends "base.html" %}
+
+{% block title %}
+DX Fragrance | Settings Dashboard
+{% endblock %}
+
+{% block content %}
+
+<div class="dx-settings-wrapper">
+
+    <!-- ================= HEADER ================= -->
+    <div class="dx-header-card">
+        <div>
+            <span class="dx-brand-tag">DX FRAGRANCE ADMIN</span>
+            <h1>Store Settings & Preferences</h1>
+            <p>
+                Manage your store information, security, payments,
+                shipping and customer experience.
+            </p>
+        </div>
+
+        <div class="dx-badge-pill">
+            <i class="fa-solid fa-sliders"></i>
+            Live Control
+        </div>
+    </div>
+
+
+    <!-- ================= ADMIN PROFILE ================= -->
+    <div class="dx-section-box">
+
+        <div class="dx-section-title">
+            <div class="dx-title-icon">
+                <i class="fa-solid fa-user-gear"></i>
+            </div>
+
+            <div>
+                <strong>Admin Profile</strong>
+                <small>Manage your administrator account</small>
+            </div>
+        </div>
+
+        <div class="dx-card-row">
+
+            <div class="dx-info-text">
+                <strong>Administrator Account</strong>
+                <p>
+                    Update your admin name, email and personal contact
+                    information.
+                </p>
+            </div>
+
+            <a href="{{ url_for('admin.profile') }}" class="dx-btn-action">
+                Edit Profile
+                <i class="fa-solid fa-arrow-right"></i>
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= SECURITY ================= -->
+    <div class="dx-section-box">
+
+        <div class="dx-section-title">
+            <div class="dx-title-icon">
+                <i class="fa-solid fa-shield-halved"></i>
+            </div>
+
+            <div>
+                <strong>Security & Authentication</strong>
+                <small>Protect your administrator account</small>
+            </div>
+        </div>
+
+        <div class="dx-card-row">
+
+            <div class="dx-info-text">
+                <strong>Password Protection</strong>
+                <p>
+                    Keep your administrator account secure with a strong
+                    password.
+                </p>
+            </div>
+
+            <a href="{{ url_for('admin.change_password') }}"
+               class="dx-btn-action">
+                Change Password
+                <i class="fa-solid fa-lock"></i>
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= STORE INFORMATION ================= -->
+    <form method="POST" class="dx-settings-form">
+
+        <div class="dx-section-box">
+
+            <div class="dx-section-title">
+                <div class="dx-title-icon">
+                    <i class="fa-solid fa-store"></i>
+                </div>
+
+                <div>
+                    <strong>Store Information</strong>
+                    <small>Information customers see across your store</small>
+                </div>
+            </div>
+
+
+            <div class="dx-grid-2">
+
+                <div class="dx-field">
+                    <label>
+                        <i class="fa-solid fa-store"></i>
+                        Store Name
+                    </label>
+
+                    <input
+                        type="text"
+                        name="store_name"
+                        value="{{ store_settings['store_name'] if settings and store_settings['store_name'] else 'DX Fragrance' }}"
+                        placeholder="DX Fragrance"
+                    >
+                </div>
+
+
+                <div class="dx-field">
+                    <label>
+                        <i class="fa-solid fa-indian-rupee-sign"></i>
+                        Currency
+                    </label>
+
+                    <input
+                        type="text"
+                        value="₹ INR"
+                        readonly
+                        class="dx-readonly"
+                    >
+                </div>
+
+
+                <div class="dx-field">
+                    <label>
+                        <i class="fa-solid fa-envelope"></i>
+                        Customer Support Email
+                    </label>
+
+                    <input
+                        type="email"
+                        name="store_email"
+                        value="{{ store_settings['store_email'] if settings and store_settings['store_email'] else 'admin@dxfragrance.com' }}"
+                        placeholder="support@dxfragrance.com"
+                    >
+                </div>
+
+
+                <div class="dx-field">
+                    <label>
+                        <i class="fa-solid fa-phone"></i>
+                        Store Contact Number
+                    </label>
+
+                    <input
+                        type="text"
+                        name="store_phone"
+                        value="{{ store_settings['store_phone'] if settings and store_settings['store_phone'] else '' }}"
+                        placeholder="919XXXXXXXXX"
+                        inputmode="numeric"
+                    >
+                </div>
+
+
+                <div class="dx-field dx-full">
+    <label>
+        <i class="fa-solid fa-location-dot"></i>
+        Store Address
+    </label>
+
+    <textarea
+        name="store_address"
+        rows="3"
+        placeholder="Enter your store address"
+    >{{ store_settings['store_address'] if settings and store_settings and store_settings['store_address'] else '' }}</textarea>
+</div>
+            </div>
+
+
+            <div class="dx-save-area">
+                <button type="submit"
+                        name="action"
+                        value="store_info"
+                        class="dx-save-btn">
+
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    Save Store Information
+
+                </button>
+            </div>
+
+        </div>
+
+    </form>
+
+
+    <!-- ================= SOCIAL MEDIA ================= -->
+    <form method="POST">
+
+        <div class="dx-section-box">
+
+            <div class="dx-section-title">
+
+                <div class="dx-title-icon">
+                    <i class="fa-solid fa-share-nodes"></i>
+                </div>
+
+                <div>
+                    <strong>Social Media</strong>
+                    <small>These links will be used in the customer website footer</small>
+                </div>
+
+            </div>
+
+
+            <div class="dx-grid-2">
+
+                <div class="dx-field">
+
+                    <label>
+                        <i class="fa-brands fa-instagram"></i>
+                        Instagram
+                    </label>
+
+                    <input
+                        type="url"
+                        name="instagram"
+                        value="{{ store_settings['instagram'] if settings and store_settings['instagram'] else '' }}"
+                        placeholder="https://instagram.com/yourbrand"
+                    >
+
+                </div>
+
+
+                <div class="dx-field">
+
+                    <label>
+                        <i class="fa-brands fa-facebook"></i>
+                        Facebook
+                    </label>
+
+                    <input
+                        type="url"
+                        name="facebook"
+                        value="{{ store_settings['facebook'] if settings and store_settings['facebook'] else '' }}"
+                        placeholder="https://facebook.com/yourbrand"
+                    >
+
+                </div>
+
+
+                <div class="dx-field">
+
+                    <label>
+                        <i class="fa-brands fa-youtube"></i>
+                        YouTube
+                    </label>
+
+                    <input
+                        type="url"
+                        name="youtube"
+                        value="{{ store_settings['youtube'] if settings and store_settings['youtube'] else '' }}"
+                        placeholder="https://youtube.com/@yourbrand"
+                    >
+
+                </div>
+
+
+                <div class="dx-field">
+
+                    <label>
+                        <i class="fa-brands fa-whatsapp"></i>
+                        WhatsApp
+                    </label>
+
+                    <input
+                        type="text"
+                        name="whatsapp"
+                        value="{{ store_settings['whatsapp'] if settings and store_settings['whatsapp'] else '' }}"
+                        placeholder="+91 XXXXX XXXXX"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <div class="dx-save-area">
+
+               <button type="submit"
+        name="action"
+        value="social_links"
+        class="dx-save-btn">
+
+    <i class="fa-solid fa-floppy-disk"></i>
+    Save Social Links
+
+</button>
+
+            </div>
+
+        </div>
+
+    </form>
+
+
+    <!-- ================= ORDER SETTINGS ================= -->
+    <form method="POST">
+
+        <div class="dx-section-box">
+
+            <div class="dx-section-title">
+
+                <div class="dx-title-icon">
+                    <i class="fa-solid fa-box-open"></i>
+                </div>
+
+                <div>
+                    <strong>Order & Shipping</strong>
+                    <small>Control shipping charges and free delivery</small>
+                </div>
+
+            </div>
+
+
+            <div class="dx-grid-2">
+
+                <div class="dx-field">
+
+                    <label>
+                        Standard Shipping Charge (₹)
+                    </label>
+
+                    <input
+    type="number"
+    name="shipping_charge"
+    value="{{ store_settings['shipping_charge'] or 0 }}"
+    min="0"
+    step="1">
+
+                </div>
+
+
+                <div class="dx-field">
+
+                    <label>
+                        Free Shipping Above (₹)
+                    </label>
+
+                    <input
+    type="number"
+    name="free_shipping_threshold"
+    value="{{ store_settings['free_shipping_threshold'] or 999 }}"
+    min="0"
+    step="1">
+
+                </div>
+
+            </div>
+
+
+            <div class="dx-save-area">
+
+                <button
+                    type="submit"
+                    name="action"
+                    value="shipping"
+                    class="dx-save-btn">
+
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    Save Shipping Settings
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </form>
+
+
+    <!-- ================= PAYMENT ================= -->
+    <form method="POST" enctype="multipart/form-data">
+
+        <div class="dx-section-box">
+
+            <div class="dx-section-title">
+                <div class="dx-title-icon">
+                    <i class="fa-solid fa-credit-card"></i>
+                </div>
+
+                <div>
+                    <strong>Payment Gateways</strong>
+                    <small>Manage secure payment methods customers can use</small>
+                </div>
+            </div>
+
+
+            <!-- CASH ON DELIVERY -->
+            <div class="dx-setting-row">
+
+                <div class="dx-setting-left">
+                    <div class="dx-mini-icon">
+                        <i class="fa-solid fa-money-bill-wave"></i>
+                    </div>
+
+                    <div>
+                        <strong>Cash on Delivery</strong>
+                        <p>Allow customers to pay when their order arrives.</p>
+                    </div>
+                </div>
+
+                <label class="dx-switch">
+                    <input
+                        type="checkbox"
+                        name="cod_enabled"
+                        {% if settings and settings["cod_enabled"] %}checked{% endif %}
+                    >
+                    <span class="dx-slider"></span>
+                </label>
+
+            </div>
+
+
+            <!-- ONLINE PAYMENT -->
+            <div class="dx-setting-row">
+
+                <div class="dx-setting-left">
+                    <div class="dx-mini-icon">
+                        <i class="fa-solid fa-globe"></i>
+                    </div>
+
+                    <div>
+                        <strong>Online Payment</strong>
+                        <p>Enable online payment at checkout.</p>
+                    </div>
+                </div>
+
+                <label class="dx-switch">
+                    <input
+                        type="checkbox"
+                        name="online_payment"
+                        {% if settings and settings["online_payment"] %}checked{% endif %}
+                    >
+                    <span class="dx-slider"></span>
+                </label>
+
+            </div>
+
+
+            <!-- UPI -->
+            <div class="dx-setting-row">
+
+                <div class="dx-setting-left">
+                    <div class="dx-mini-icon">
+                        <i class="fa-solid fa-mobile-screen-button"></i>
+                    </div>
+
+                    <div>
+                        <strong>UPI Payment</strong>
+                        <p>Allow customers to pay using UPI.</p>
+                    </div>
+                </div>
+
+                <label class="dx-switch">
+                    <input
+                        type="checkbox"
+                        name="upi_enabled"
+                        {% if settings and settings["upi_enabled"] %}checked{% endif %}
+                    >
+                    <span class="dx-slider"></span>
+                </label>
+
+            </div>
+
+
+            <!-- UPI DETAILS -->
+            <div class="dx-payment-details">
+
+                <div class="dx-field">
+
+                    <label>
+                        <i class="fa-solid fa-at"></i>
+                        UPI ID
+                    </label>
+
+                    <input
+                        type="text"
+                        name="upi_id"
+                        value="{{ settings['upi_id'] if settings and settings['upi_id'] else '' }}"
+                        placeholder="yourname@upi"
+                        autocomplete="off"
+                    >
+
+                    <small class="dx-field-help">
+                        This UPI ID can be shown to customers for manual UPI payment.
+                    </small>
+
+                </div>
+
+
+                <!-- QR UPLOAD -->
+                <div class="dx-field">
+
+                    <label>
+                        <i class="fa-solid fa-qrcode"></i>
+                        UPI QR / Scanner
+                    </label>
+
+                    <input
+                        type="file"
+                        name="upi_qr"
+                        accept="image/png,image/jpeg,image/webp"
+                    >
+
+                    <small class="dx-field-help">
+                        Upload a clear QR image. PNG, JPG or WEBP only.
+                    </small>
+
+
+                    {% if settings and settings["upi_qr"] %}
+
+                        <div class="dx-current-qr">
+
+                            <img
+                                src="{{ url_for('static', filename='uploads/payment/' ~ settings['upi_qr']) }}"
+                                alt="Current UPI QR"
+                            >
+
+                            <span>Current QR uploaded</span>
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+            <!-- CARDS -->
+            <div class="dx-setting-row">
+
+                <div class="dx-setting-left">
+                    <div class="dx-mini-icon">
+                        <i class="fa-solid fa-credit-card"></i>
+                    </div>
+
+                    <div>
+                        <strong>Cards</strong>
+                        <p>Allow supported debit and credit card payments.</p>
+                    </div>
+                </div>
+
+                <label class="dx-switch">
+                    <input
+                        type="checkbox"
+                        name="cards_enabled"
+                        {% if settings and settings["cards_enabled"] %}checked{% endif %}
+                    >
+                    <span class="dx-slider"></span>
+                </label>
+
+            </div>
+
+
+            <!-- NET BANKING -->
+            <div class="dx-setting-row">
+
+                <div class="dx-setting-left">
+                    <div class="dx-mini-icon">
+                        <i class="fa-solid fa-building-columns"></i>
+                    </div>
+
+                    <div>
+                        <strong>Net Banking</strong>
+                        <p>Allow supported bank payment options.</p>
+                    </div>
+                </div>
+
+                <label class="dx-switch">
+                    <input
+                        type="checkbox"
+                        name="netbanking_enabled"
+                        {% if settings and settings["netbanking_enabled"] %}checked{% endif %}
+                    >
+                    <span class="dx-slider"></span>
+                </label>
+
+            </div>
+
+
+            <!-- RAZORPAY -->
+            <div class="dx-setting-row">
+
+                <div class="dx-setting-left">
+                    <div class="dx-mini-icon">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+
+                    <div>
+                        <strong>Razorpay</strong>
+                        <p>Use Razorpay Checkout for supported online payment methods.</p>
+                    </div>
+                </div>
+
+                <label class="dx-switch">
+                    <input
+                        type="checkbox"
+                        name="razorpay_enabled"
+                        {% if settings and settings["razorpay_enabled"] %}checked{% endif %}
+                    >
+                    <span class="dx-slider"></span>
+                </label>
+
+            </div>
+
+
+            <!-- SECURITY NOTE -->
+            <div class="dx-security-note">
+
+                <i class="fa-solid fa-lock"></i>
+
+                <div>
+                    <strong>Payment security</strong>
+
+                    <p>
+                        Never enter your Razorpay Secret Key or other private
+                        credentials here. Keep secret credentials inside your
+                        server-side environment variables (.env). Customers
+                        will never see them.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <!-- SAVE -->
+            <div class="dx-save-area">
+
+                <button
+                    type="submit"
+                    name="action"
+                    value="payment"
+                    class="dx-save-btn"
+                >
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    Save Payment Settings
+                </button>
+
+            </div>
+
+        </div>
+
+    </form>
+
+
+    <!-- ================= NOTIFICATIONS ================= -->
+    <div class="dx-section-box">
+
+        <div class="dx-section-title">
+
+            <div class="dx-title-icon">
+                <i class="fa-solid fa-bell"></i>
+            </div>
+
+            <div>
+                <strong>Notifications Control</strong>
+                <small>Control important store alerts</small>
+            </div>
+
+        </div>
+
+
+        <!-- ORDER ALERT -->
+        <div class="dx-setting-row">
+
+            <div class="dx-setting-left">
+
+                <div class="dx-mini-icon">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                </div>
+
+                <div>
+                    <strong>New Order Alerts</strong>
+                    <p>
+                        Get notified whenever a customer places an order.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <label class="dx-switch">
+
+                <input
+                    type="checkbox"
+                    checked
+                >
+
+                <span class="dx-slider"></span>
+
+            </label>
+
+        </div>
+
+
+        <!-- LOW STOCK -->
+        <div class="dx-setting-row">
+
+            <div class="dx-setting-left">
+
+                <div class="dx-mini-icon">
+                    <i class="fa-solid fa-boxes-stacked"></i>
+                </div>
+
+                <div>
+                    <strong>Low Stock Warnings</strong>
+                    <p>
+                        Alert when perfume stock becomes low.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <label class="dx-switch">
+
+                <input
+                    type="checkbox"
+                    checked
+                >
+
+                <span class="dx-slider"></span>
+
+            </label>
+
+        </div>
+
+
+        <!-- CUSTOMER REGISTRATION -->
+        <div class="dx-setting-row">
+
+            <div class="dx-setting-left">
+
+                <div class="dx-mini-icon">
+                    <i class="fa-solid fa-user-plus"></i>
+                </div>
+
+                <div>
+                    <strong>New Customer Alerts</strong>
+                    <p>
+                        Get notified when a new customer creates an account.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <label class="dx-switch">
+
+                <input
+                    type="checkbox"
+                    checked
+                >
+
+                <span class="dx-slider"></span>
+
+            </label>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= STORE STATUS ================= -->
+<form method="POST">
+
+    <div class="dx-section-box">
+
+        <div class="dx-section-title">
+
+            <div class="dx-title-icon">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+
+            <div>
+                <strong>Store Status</strong>
+                <small>Control whether your store is accepting orders</small>
+            </div>
+
+        </div>
+
+
+        <div class="dx-status-card">
+
+            <div>
+
+                {% if store_settings and store_settings["store_online"] %}
+
+                    <div class="dx-status-title">
+                        <span class="dx-online-dot"></span>
+                        Store is Online
+                    </div>
+
+                    <p>
+                        Customers can browse products and place orders normally.
+                    </p>
+
+                {% else %}
+
+                    <div class="dx-status-title dx-offline-title">
+                        <span class="dx-offline-dot"></span>
+                        Store is Offline
+                    </div>
+
+                    <p>
+                        Customers can browse products, but cannot place new orders.
+                    </p>
+
+                {% endif %}
+
+            </div>
+
+
+            <label class="dx-switch">
+
+                <input
+                    type="checkbox"
+                    name="store_online"
+                    {% if store_settings and store_settings["store_online"] %}checked{% endif %}
+                    onchange="this.form.submit()"
+                >
+
+                <input
+                    type="hidden"
+                    name="action"
+                    value="store_status"
+                >
+
+                <span class="dx-slider"></span>
+
+            </label>
+
+        </div>
+
+    </div>
+
+</form>
+    <!-- ================= QUICK LINKS ================= -->
+    <div class="dx-section-box">
+
+        <div class="dx-section-title">
+
+            <div class="dx-title-icon">
+                <i class="fa-solid fa-bolt"></i>
+            </div>
+
+            <div>
+                <strong>Quick Admin Access</strong>
+                <small>Jump directly to important areas</small>
+            </div>
+
+        </div>
+
+
+        <div class="dx-quick-grid">
+
+            <a href="{{ url_for('admin.products') }}" class="dx-quick-card">
+
+                <i class="fa-solid fa-spray-can-sparkles"></i>
+
+                <span>
+                    Products
+                    <small>Manage fragrances</small>
+                </span>
+
+                <i class="fa-solid fa-arrow-right"></i>
+
+            </a>
+
+
+            <a href="{{ url_for('admin.orders') }}" class="dx-quick-card">
+
+                <i class="fa-solid fa-bag-shopping"></i>
+
+                <span>
+                    Orders
+                    <small>Manage customer orders</small>
+                </span>
+
+                <i class="fa-solid fa-arrow-right"></i>
+
+            </a>
+
+
+            <a href="{{ url_for('admin.customers') }}" class="dx-quick-card">
+
+                <i class="fa-solid fa-users"></i>
+
+                <span>
+                    Customers
+                    <small>View registered customers</small>
+                </span>
+
+                <i class="fa-solid fa-arrow-right"></i>
+
+            </a>
+
+
+            <a href="{{ url_for('admin.inventory') }}" class="dx-quick-card">
+
+                <i class="fa-solid fa-boxes-stacked"></i>
+
+                <span>
+                    Inventory
+                    <small>Check product stock</small>
+                </span>
+
+                <i class="fa-solid fa-arrow-right"></i>
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+<style>
+
+/* =====================================================
+   DX FRAGRANCE SETTINGS — LUXURY ADMIN
+===================================================== */
+
+.dx-settings-wrapper {
+    max-width: 1100px;
+    margin: 35px auto;
+    padding: 0 24px 60px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+
+/* HEADER */
+
+.dx-header-card {
+    background:
+        radial-gradient(circle at top right,
+        rgba(212,175,55,.18),
+        transparent 35%),
+        linear-gradient(135deg,#2b211d,#49382f);
+
+    color: white;
+    padding: 34px;
+    border-radius: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 25px;
+
+    box-shadow:
+        0 18px 45px rgba(44,34,30,.15);
+
+    margin-bottom: 26px;
+}
+
+.dx-brand-tag {
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #d4af37;
+    font-weight: 700;
+}
+
+.dx-header-card h1 {
+    font-size: 29px;
+    margin: 8px 0 7px;
+    font-weight: 700;
+}
+
+.dx-header-card p {
+    color: #ddd4ce;
+    font-size: 14px;
+    margin: 0;
+    line-height: 1.6;
+}
+
+.dx-badge-pill {
+    background: rgba(212,175,55,.14);
+    border: 1px solid rgba(212,175,55,.65);
+    color: #e2c56b;
+    padding: 11px 18px;
+    border-radius: 50px;
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+
+/* SECTION */
+
+.dx-section-box {
+    background: #fff;
+    border: 1px solid #e8e1da;
+    border-radius: 18px;
+    padding: 25px;
+    margin-bottom: 20px;
+
+    box-shadow:
+        0 7px 24px rgba(45,34,29,.045);
+
+    transition: .25s ease;
+}
+
+.dx-section-box:hover {
+    box-shadow:
+        0 12px 32px rgba(45,34,29,.075);
+}
+
+
+/* SECTION TITLE */
+
+.dx-section-title {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+
+    padding-bottom: 17px;
+    margin-bottom: 22px;
+
+    border-bottom: 1px solid #eee7df;
+}
+
+.dx-section-title strong {
+    display: block;
+    color: #2c221e;
+    font-size: 17px;
+}
+
+.dx-section-title small {
+    display: block;
+    margin-top: 3px;
+    color: #8b817a;
+    font-size: 12px;
+    font-weight: 400;
+}
+
+.dx-title-icon {
+    width: 45px;
+    height: 45px;
+    border-radius: 13px;
+
+    background: #f5eadb;
+    color: #b18d54;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 18px;
+}
+
+
+/* CARD ROW */
+
+.dx-card-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.dx-info-text strong {
+    color: #2c221e;
+    font-size: 15px;
+}
+
+.dx-info-text p {
+    color: #827871;
+    font-size: 13px;
+    margin: 5px 0 0;
+    line-height: 1.5;
+}
+
+
+/* BUTTON */
+
+.dx-btn-action {
+    background: #fffaf2;
+    color: #76582f;
+
+    border: 1px solid #d4af37;
+
+    padding: 11px 17px;
+    border-radius: 10px;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    text-decoration: none;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    white-space: nowrap;
+
+    transition: .25s ease;
+}
+
+.dx-btn-action:hover {
+    background: #d4af37;
+    color: white;
+}
+
+
+/* FORM GRID */
+
+.dx-grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    gap: 18px;
+}
+
+.dx-full {
+    grid-column: 1 / -1;
+}
+
+.dx-field {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.dx-field label {
+    color: #4e4039;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.dx-field label i {
+    color: #b89e6d;
+    margin-right: 5px;
+}
+
+.dx-field input,
+.dx-field textarea {
+    width: 100%;
+    box-sizing: border-box;
+
+    padding: 12px 14px;
+
+    border: 1px solid #ddd3c8;
+    border-radius: 10px;
+
+    background: #fbf9f6;
+
+    color: #2c221e;
+    font-family: inherit;
+    font-size: 14px;
+
+    outline: none;
+
+    transition: .2s ease;
+}
+
+.dx-field textarea {
+    resize: vertical;
+    min-height: 90px;
+}
+
+.dx-field-help {
+    color: #8b817a;
+    font-size: 11px;
+    line-height: 1.4;
+    margin-top: -2px;
+}
+
+.dx-field input:focus,
+.dx-field textarea:focus {
+    border-color: #b89e6d;
+    background: white;
+
+    box-shadow:
+        0 0 0 4px rgba(184,158,109,.12);
+}
+
+.dx-readonly {
+    background: #f1ede6 !important;
+    color: #7b716a !important;
+}
+
+
+/* SAVE */
+
+.dx-save-area {
+    margin-top: 20px;
+}
+
+.dx-save-btn {
+    background: #2c221e;
+    color: white;
+
+    border: none;
+
+    padding: 12px 19px;
+    border-radius: 10px;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    transition: .25s ease;
+}
+
+.dx-save-btn:hover {
+    background: #b89e6d;
+    transform: translateY(-1px);
+}
+
+
+/* SETTINGS ROW */
+
+.dx-setting-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding: 15px 0;
+
+    border-bottom: 1px solid #eee8e1;
+}
+
+.dx-setting-row:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.dx-setting-left {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+}
+
+.dx-mini-icon {
+    width: 40px;
+    height: 40px;
+
+    border-radius: 11px;
+
+    background: #faf1e4;
+    color: #b08c50;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dx-setting-left strong {
+    color: #302621;
+    font-size: 14px;
+}
+
+.dx-setting-left p {
+    margin: 4px 0 0;
+    color: #877d76;
+    font-size: 12px;
+}
+
+
+/* SWITCH */
+
+.dx-switch {
+    position: relative;
+
+    width: 50px;
+    height: 27px;
+
+    flex-shrink: 0;
+}
+
+.dx-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.dx-slider {
+    position: absolute;
+    inset: 0;
+
+    background: #d4ccc4;
+
+    border-radius: 50px;
+
+    cursor: pointer;
+
+    transition: .3s ease;
+}
+
+.dx-slider:before {
+    content: "";
+
+    position: absolute;
+
+    width: 21px;
+    height: 21px;
+
+    left: 3px;
+    top: 3px;
+
+    background: white;
+
+    border-radius: 50%;
+
+    box-shadow: 0 2px 5px rgba(0,0,0,.2);
+
+    transition: .3s ease;
+}
+
+.dx-switch input:checked + .dx-slider {
+    background: #b89e6d;
+}
+
+.dx-switch input:checked + .dx-slider:before {
+    transform: translateX(23px);
+}
+
+
+/* PAYMENT DETAILS */
+
+.dx-payment-details {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+    padding: 18px 0 8px;
+}
+
+.dx-current-qr {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #766c65;
+    font-size: 11px;
+}
+
+.dx-current-qr img {
+    width: 92px;
+    height: 92px;
+    object-fit: contain;
+    border: 1px solid #e5ddd4;
+    border-radius: 10px;
+    background: #fff;
+    padding: 5px;
+}
+
+.dx-security-note {
+    margin-top: 18px;
+    padding: 14px 16px;
+    border: 1px solid #e7dfd5;
+    border-radius: 12px;
+    background: #fbf8f3;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+}
+
+.dx-security-note > i {
+    color: #b18d54;
+    margin-top: 2px;
+}
+
+.dx-security-note strong {
+    display: block;
+    color: #3a2e28;
+    font-size: 13px;
+}
+
+.dx-security-note p {
+    margin: 4px 0 0;
+    color: #80766f;
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+
+/* STORE STATUS */
+
+.dx-status-card {
+    background: #f9faf7;
+
+    border: 1px solid #e3eadf;
+
+    border-radius: 13px;
+
+    padding: 18px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+}
+
+.dx-status-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #315c3a;
+
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.dx-online-dot {
+    width: 9px;
+    height: 9px;
+    background: #55a76b;
+    border-radius: 50%;
+    box-shadow: 0 0 0 4px rgba(85,167,107,.12);
+}
+
+.dx-offline-title {
+    color: #a33b3b;
+}
+
+.dx-offline-dot {
+    width: 9px;
+    height: 9px;
+    background: #c95b5b;
+    border-radius: 50%;
+    box-shadow: 0 0 0 4px rgba(201,91,91,.12);
+}
+
+.dx-status-card p {
+    margin: 5px 0 0;
+    font-size: 12px;
+    color: #7c817c;
+}
+
+
+/* QUICK LINKS */
+
+.dx-quick-grid {
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    gap: 12px;
+}
+
+.dx-quick-card {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+
+    padding: 15px;
+
+    border: 1px solid #eee5dc;
+    border-radius: 12px;
+
+    color: #342923;
+    text-decoration: none;
+
+    transition: .25s ease;
+}
+
+.dx-quick-card > i:first-child {
+    color: #b18d54;
+    font-size: 18px;
+}
+
+.dx-quick-card span {
+    flex: 1;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.dx-quick-card span small {
+    display: block;
+    margin-top: 3px;
+    color: #938880;
+    font-size: 11px;
+    font-weight: 400;
+}
+
+.dx-quick-card > i:last-child {
+    color: #a89b91;
+}
+
+.dx-quick-card:hover {
+    border-color: #d4af37;
+    background: #fffcf7;
+    transform: translateY(-2px);
+}
+
+
+/* MOBILE */
+
+@media(max-width: 768px) {
+
+    .dx-settings-wrapper {
+        padding: 0 14px 40px;
+        margin-top: 20px;
+    }
+
+    .dx-header-card {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 25px;
+    }
+
+    .dx-header-card h1 {
+        font-size: 23px;
+    }
+
+    .dx-grid-2,
+    .dx-quick-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dx-full {
+        grid-column: auto;
+    }
+
+    .dx-payment-details {
+        grid-template-columns: 1fr;
+    }
+
+    .dx-card-row,
+    .dx-setting-row {
+        align-items: flex-start;
+    }
+
+    .dx-btn-action {
+        padding: 9px 12px;
+    }
+
+}
+
+</style>
+
+{% endblock %}

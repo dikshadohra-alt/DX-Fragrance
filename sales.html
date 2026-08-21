@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}
+DX Fragrance | Sales & Revenue
+{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: center; min-height: 85vh; background-color: #FAF8F5; padding: 40px 20px; font-family: sans-serif;">
+    
+    <!-- Main Wrapper Box -->
+    <div style="background: #FFFDF9; border: 1px solid #EAE4D9; padding: 35px; border-radius: 14px; width: 100%; max-width: 900px; box-shadow: 0 10px 25px rgba(0,0,0,0.03); height: fit-content;">
+        
+        <!-- Header Area -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid #EAE4D9; padding-bottom: 20px;">
+            <div>
+                <h1 style="font-size: 22px; font-weight: 600; color: #222; margin-bottom: 4px;">Sales & Revenue</h1>
+                <p style="font-size: 13px; color: #777;">Track your store performance and revenue metrics.</p>
+            </div>
+            <a href="{{ url_for('admin.dashboard') }}" style="background: #F4EFEA; color: #B89E6D; border: 1px solid #EAE4D9; padding: 8px 14px; border-radius: 6px; font-size: 13px; text-decoration: none; font-weight: 500;">
+                ← Back to Dashboard
+            </a>
+        </div>
+
+        <!-- 4 Stats Cards Row -->
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 30px;">
+            
+            <div style="background: #FFF; padding: 18px; border: 1px solid #EAE4D9; border-radius: 10px;">
+                <div style="font-size: 12px; color: #777; margin-bottom: 6px;">Today's Sales</div>
+                <div style="font-size: 18px; font-weight: bold; color: #222;">₹0</div>
+            </div>
+
+            <div style="background: #FFF; padding: 18px; border: 1px solid #EAE4D9; border-radius: 10px;">
+                <div style="font-size: 12px; color: #777; margin-bottom: 6px;">This Month</div>
+                <div style="font-size: 18px; font-weight: bold; color: #222;">₹0</div>
+            </div>
+
+            <div style="background: #FFF; padding: 18px; border: 1px solid #EAE4D9; border-radius: 10px;">
+                <div style="font-size: 12px; color: #777; margin-bottom: 6px;">Total Revenue</div>
+                <div style="font-size: 18px; font-weight: bold; color: #B89E6D;">₹0</div>
+            </div>
+
+            <div style="background: #FFF; padding: 18px; border: 1px solid #EAE4D9; border-radius: 10px;">
+                <div style="font-size: 12px; color: #777; margin-bottom: 6px;">Best Seller</div>
+                <div style="font-size: 15px; font-weight: 600; color: #222;">No Sales Yet</div>
+            </div>
+
+        </div>
+
+        <!-- Sales Overview Section -->
+        <h2 style="font-size: 16px; font-weight: 600; color: #333; margin-bottom: 15px;">Sales Overview</h2>
+
+        <div style="text-align: center; padding: 50px 20px; background: #FAF6F0; border: 1px dashed #EAE4D9; border-radius: 10px;">
+            <div style="font-size: 32px; margin-bottom: 10px; color: #B89E6D;">📊</div>
+            <h3 style="font-size: 16px; font-weight: 600; color: #333; margin-bottom: 5px;">No completed sales yet</h3>
+            <p style="font-size: 13px; color: #777; margin: 0;">Sales analytics and graphs will appear here once orders are completed.</p>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

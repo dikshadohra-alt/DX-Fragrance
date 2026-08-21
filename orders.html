@@ -1,0 +1,402 @@
+{% extends "base.html" %}
+
+{% block title %}
+DX Fragrance | Order Management
+{% endblock %}
+
+{% block content %}
+
+<div style="
+    display: flex;
+    justify-content: center;
+    min-height: 85vh;
+    background-color: #FAF8F5;
+    padding: 40px 20px;
+    font-family: sans-serif;
+">
+
+    <div style="
+        background: #FFFDF9;
+        border: 1px solid #EAE4D9;
+        padding: 35px;
+        border-radius: 14px;
+        width: 100%;
+        max-width: 1100px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.03);
+        height: fit-content;
+    ">
+
+        <!-- HEADER -->
+
+        <div style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #EAE4D9;
+            padding-bottom: 20px;
+        ">
+
+            <div>
+
+                <p style="
+                    font-size: 11px;
+                    color: #B89E6D;
+                    letter-spacing: 1px;
+                    margin-bottom: 5px;
+                ">
+                    DX FRAGRANCE
+                </p>
+
+                <h1 style="
+                    font-size: 26px;
+                    font-weight: 600;
+                    color: #222;
+                    margin: 0 0 5px;
+                ">
+                    Order Management
+                </h1>
+
+                <p style="
+                    font-size: 13px;
+                    color: #777;
+                    margin: 0;
+                ">
+                    Monitor and manage all customer orders.
+                </p>
+
+            </div>
+
+
+            <a
+                href="{{ url_for('admin.dashboard') }}"
+                style="
+                    background: #F4EFEA;
+                    color: #B89E6D;
+                    border: 1px solid #EAE4D9;
+                    padding: 9px 15px;
+                    border-radius: 6px;
+                    font-size: 13px;
+                    text-decoration: none;
+                    font-weight: 500;
+                "
+            >
+                ← Dashboard
+            </a>
+
+        </div>
+
+
+        <!-- ORDERS -->
+
+        {% if orders %}
+
+            <div style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 15px;
+            ">
+
+                <h2 style="
+                    font-size: 17px;
+                    font-weight: 600;
+                    color: #333;
+                    margin: 0;
+                ">
+                    Customer Orders
+                </h2>
+
+                <span style="
+                    font-size: 13px;
+                    color: #777;
+                ">
+                    {{ orders|length }} Order{% if orders|length != 1 %}s{% endif %}
+                </span>
+
+            </div>
+
+
+            <div style="
+                overflow-x: auto;
+                border: 1px solid #EAE4D9;
+                border-radius: 10px;
+            ">
+
+                <table style="
+                    width: 100%;
+                    border-collapse: collapse;
+                    text-align: left;
+                    font-size: 14px;
+                ">
+
+                    <thead>
+
+                        <tr style="
+                            background: #FAF6F0;
+                            border-bottom: 1px solid #EAE4D9;
+                            color: #555;
+                        ">
+
+                            <th style="padding: 14px;">
+                                Order ID
+                            </th>
+
+                            <th style="padding: 14px;">
+                                Customer
+                            </th>
+
+                            <th style="padding: 14px;">
+                                Email
+                            </th>
+
+                            <th style="padding: 14px;">
+                                Total
+                            </th>
+
+                            <th style="padding: 14px;">
+                                Status
+                            </th>
+
+                            <th style="padding: 14px;">
+                                Date
+                            </th>
+
+                            <th style="padding: 14px;">
+                                Action
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for order in orders %}
+
+                            <tr style="
+                                border-bottom: 1px solid #EAE4D9;
+                            ">
+
+                                <!-- ORDER ID -->
+
+                                <td style="padding: 14px;">
+
+                                    <strong>
+                                        #{{ order["id"] }}
+                                    </strong>
+
+                                </td>
+
+
+                                <!-- CUSTOMER -->
+
+                                <td style="padding: 14px;">
+
+                                    {{ order["customer_name"] or "Unknown Customer" }}
+
+                                </td>
+
+
+                                <!-- EMAIL -->
+
+                                <td style="
+                                    padding: 14px;
+                                    color: #666;
+                                ">
+
+                                    {{ order["customer_email"] or "N/A" }}
+
+                                </td>
+
+
+                                <!-- TOTAL -->
+
+                                <td style="padding: 14px;">
+
+                                    <strong>
+                                        ₹{{ order["total_amount"] }}
+                                    </strong>
+
+                                </td>
+
+
+                                <!-- STATUS -->
+
+                                <td style="padding: 14px;">
+
+                                    {% if order["status"] == "pending" %}
+
+                                        <span style="
+                                            background: #FFF3CD;
+                                            color: #856404;
+                                            padding: 6px 10px;
+                                            border-radius: 20px;
+                                            font-size: 12px;
+                                            font-weight: 600;
+                                        ">
+                                            Pending
+                                        </span>
+
+                                    {% elif order["status"] == "processing" %}
+
+                                        <span style="
+                                            background: #E8F1FF;
+                                            color: #315A9B;
+                                            padding: 6px 10px;
+                                            border-radius: 20px;
+                                            font-size: 12px;
+                                            font-weight: 600;
+                                        ">
+                                            Processing
+                                        </span>
+
+                                    {% elif order["status"] == "shipped" %}
+
+                                        <span style="
+                                            background: #E8F8EE;
+                                            color: #287A45;
+                                            padding: 6px 10px;
+                                            border-radius: 20px;
+                                            font-size: 12px;
+                                            font-weight: 600;
+                                        ">
+                                            Shipped
+                                        </span>
+
+                                    {% elif order["status"] == "delivered" %}
+
+                                        <span style="
+                                            background: #DFF5E5;
+                                            color: #176B2F;
+                                            padding: 6px 10px;
+                                            border-radius: 20px;
+                                            font-size: 12px;
+                                            font-weight: 600;
+                                        ">
+                                            Delivered
+                                        </span>
+
+                                    {% elif order["status"] == "cancelled" %}
+
+                                        <span style="
+                                            background: #F8D7DA;
+                                            color: #842029;
+                                            padding: 6px 10px;
+                                            border-radius: 20px;
+                                            font-size: 12px;
+                                            font-weight: 600;
+                                        ">
+                                            Cancelled
+                                        </span>
+
+                                    {% else %}
+
+                                        <span style="
+                                            background: #F4EFEA;
+                                            color: #666;
+                                            padding: 6px 10px;
+                                            border-radius: 20px;
+                                            font-size: 12px;
+                                        ">
+                                            {{ order["status"]|capitalize }}
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+
+                                <!-- DATE -->
+
+                                <td style="
+                                    padding: 14px;
+                                    color: #666;
+                                    white-space: nowrap;
+                                ">
+
+                                    {{ order["created_at"] }}
+
+                                </td>
+
+
+                                <!-- ACTION -->
+
+                                <td style="padding: 14px;">
+
+                                    <a
+                                        href="{{ url_for(
+                                            'admin.order_detail',
+                                            order_id=order['id']
+                                        ) }}"
+                                        style="
+                                            background: #222;
+                                            color: white;
+                                            padding: 8px 12px;
+                                            border-radius: 6px;
+                                            text-decoration: none;
+                                            font-size: 12px;
+                                        "
+                                    >
+                                        View
+                                    </a>
+
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+        {% else %}
+
+            <!-- EMPTY STATE -->
+
+            <div style="
+                text-align: center;
+                padding: 60px 20px;
+                background: #FAF6F0;
+                border: 1px dashed #EAE4D9;
+                border-radius: 10px;
+            ">
+
+                <div style="
+                    font-size: 40px;
+                    margin-bottom: 12px;
+                ">
+                    🛒
+                </div>
+
+                <h3 style="
+                    font-size: 17px;
+                    font-weight: 600;
+                    color: #333;
+                    margin-bottom: 6px;
+                ">
+                    No orders yet
+                </h3>
+
+                <p style="
+                    font-size: 13px;
+                    color: #777;
+                    margin: 0;
+                ">
+                    Customer orders will appear here once placed.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}
