@@ -1,3 +1,5 @@
+from multiprocessing import connection
+
 from flask import Blueprint, render_template, session
 from config.database import get_db_connection
 
@@ -11,13 +13,10 @@ def home():
     connection = get_db_connection()
 
     # Get all products
-    products = connection.execute(
-        """
-        SELECT *
-        FROM products
-        ORDER BY id DESC
-        """
-    ).fetchall()
+    # Sahi tarika (Cursor ka use karke):
+    cursor = connection.cursor()
+    cursor.execute("SELECT * FROM products")
+    products = cursor.fetchall()
 
     # Get customer's wishlist
     wishlist_product_ids = set()
