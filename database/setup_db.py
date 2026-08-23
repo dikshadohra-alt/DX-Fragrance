@@ -1,3 +1,9 @@
+import sys
+import os
+
+# Root folder ko Python path mein add karne ke liye
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 import os
 import sqlite3
 from config.database import get_db_connection, DATABASE_URL
