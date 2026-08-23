@@ -208,16 +208,10 @@ DX Fragrance | Shop
 
                 <!-- VIEW -->
 
-                <a
-                    href="{{ url_for(
-                        'products.product_detail',
-                        product_id=product['id']
-                    ) }}"
-                    class="image-view"
-                >
-                    View Fragrance
-                    <span>→</span>
-                </a>
+                <a href="{{ url_for('product_detail', product_id=product['id']) }}" class="image-view">
+    View Fragrance 
+    <span>&rarr;</span>
+</a>
 
             </div>
 

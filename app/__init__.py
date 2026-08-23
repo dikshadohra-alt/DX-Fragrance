@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask
+from flask import Flask, app
 
 from dotenv import load_dotenv
 
@@ -65,7 +65,7 @@ def create_app():
     # GLOBAL STORE SETTINGS
     # =========================================================
 
-    @app.context_processor
+@app.context_processor
 def inject_store_settings():
 
     connection = None
