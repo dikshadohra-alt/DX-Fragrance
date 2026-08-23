@@ -1,11 +1,12 @@
+import os
 import sqlite3
 
-from config.settings import Config
-
-
 def get_db_connection():
-    connection = sqlite3.connect(Config.DATABASE_PATH)
-
+    # Project ke main directory ka absolute path calculate karna
+    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    db_path = os.path.join(base_dir, 'database', 'dx_fragrance.db')
+    
+    # Connection banao
+    connection = sqlite3.connect(db_path)
     connection.row_factory = sqlite3.Row
-
     return connection
