@@ -139,35 +139,25 @@ class ReviewService:
         )
 
 
+class ReviewService:
     @staticmethod
     def get_all_reviews():
-
-        connection = get_db_connection()
-
-        reviews = connection.execute(
-            """
-            SELECT
-                reviews.id,
-                reviews.rating,
-                reviews.comment,
-                reviews.review_image,
-                reviews.created_at,
-                users.username AS customer_name,
-                users.email AS customer_email,
-                products.name AS product_name
-            FROM reviews
-            JOIN users
-                ON reviews.user_id = users.id
-            JOIN products
-                ON reviews.product_id = products.id
-            ORDER BY reviews.id DESC
-            """
-        ).fetchall()
-
-        connection.close()
-
-        return reviews
-
+        try:
+            connection = get_db_connection()
+            reviews = connection.execute(
+                """
+                SELECT r.*, u.username, p.name as product_name 
+                FROM reviews r
+                LEFT JOIN users u ON r.user_id = u.id
+                LEFT JOIN products p ON r.product_id = p.id
+                ORDER BY r.created_at DESC
+                """
+            ).fetchall()
+            connection.close()
+            return reviews
+        except Exception as e:
+            print("Error fetching reviews (safe fallback):", e)
+            return []
 
     @staticmethod
     def delete_review(review_id):
