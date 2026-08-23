@@ -13,24 +13,47 @@ class PostgreSQLCursorWrapper:
     def __init__(self, conn):
         self.conn = conn
         self.cursor_obj = conn.cursor()
+        self._lastrowid = None
 
     def execute(self, query, params=None):
-        # SQLite ke '?' ko PostgreSQL ke '%s' mein badalne ke liye agar zaroorat ho,
-        # ya direct execute karne ke liye:
-        # Note: psycopg2 ? placeholder ko bhi support karta hai agar adaptors hain,
-        # par agar error aaye toh niche wala standard use karein:
         formatted_query = query.replace("?", "%s")
+        
+        # Agar INSERT query hai aur RETURNING id nahi hai, toh PostgreSQL ke liye add kar dete hain taaki lastrowid mil jaye
+        if "INSERT" in formatted_query.upper() and "RETURNING" not in formatted_query.upper():
+            formatted_query = formatted_query.rstrip(";") + " RETURNING id"
+            
         if params:
             self.cursor_obj.execute(formatted_query, params)
         else:
             self.cursor_obj.execute(formatted_query)
+            
+        # Agar INSERT tha toh ID fetch kar lete hain
+        try:
+            row = self.cursor_obj.fetchone()
+            if row and "id" in row:
+                self._lastrowid = row["id"]
+            elif row and len(row) > 0:
+                self._lastrowid = row[0]
+        except Exception:
+            pass
+            
         return self
 
+    @property
+    def lastrowid(self):
+        return self._lastrowid
+
     def fetchall(self):
-        return self.cursor_obj.fetchall()
+        try:
+            return self.cursor_obj.fetchall()
+        except Exception:
+            return []
 
     def fetchone(self):
-        return self.cursor_obj.fetchone()
+        try:
+            return self.cursor_obj.fetchone()
+        except Exception:
+            return None
 
     def commit(self):
         return self.conn.commit()
