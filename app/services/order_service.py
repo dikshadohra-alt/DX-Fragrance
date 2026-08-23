@@ -9,37 +9,21 @@ class OrderService:
 
     @staticmethod
     def get_all_orders():
-
-        connection = get_db_connection()
-
-        orders = connection.execute(
-            """
-            SELECT
-                orders.id,
-                orders.user_id,
-                orders.total_amount,
-                orders.status,
-                orders.shipping_name,
-                orders.shipping_phone,
-                orders.shipping_address,
-                orders.created_at,
-
-                users.username AS customer_name,
-                users.email AS customer_email
-
-            FROM orders
-
-            LEFT JOIN users
-                ON orders.user_id = users.id
-
-            ORDER BY orders.id DESC
-            """
-        ).fetchall()
-
-        connection.close()
-
-        return orders
-
+        try:
+            connection = get_db_connection()
+            orders = connection.execute(
+                """
+                SELECT o.*, u.username, u.email 
+                FROM orders o
+                LEFT JOIN users u ON o.user_id = u.id
+                ORDER BY o.created_at DESC
+                """
+            ).fetchall()
+            connection.close()
+            return orders
+        except Exception as e:
+            print("Error fetching orders (safe fallback):", e)
+            return []
 
     # =========================================================
     # GET SINGLE ORDER
