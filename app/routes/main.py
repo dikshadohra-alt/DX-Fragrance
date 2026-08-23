@@ -23,20 +23,19 @@ def home():
     wishlist_product_ids = set()
 
     if session.get("user_id"):
-
-        wishlist_rows = connection.execute(
-            """
-            SELECT product_id
-            FROM wishlist
-            WHERE user_id = ?
-            """,
-            (session["user_id"],)
-        ).fetchall()
-
-        wishlist_product_ids = {
-            row["product_id"]
-            for row in wishlist_rows
-        }
+        try:
+            wishlist_rows = connection.execute(
+                """
+                SELECT product_id
+                FROM wishlist
+                WHERE user_id = ?
+                """,
+                (session["user_id"],)
+            ).fetchall()
+            wishlist_product_ids = {row["product_id"] for row in wishlist_rows}
+        except Exception as e:
+            print("Wishlist fetch error:", e)
+            wishlist_product_ids = set()
 
     connection.close()
 
