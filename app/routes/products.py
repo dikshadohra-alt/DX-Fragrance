@@ -178,13 +178,61 @@ def products():
 # ============================================================
 # PRODUCT DETAIL
 # ============================================================
-
 @products_bp.route("/product/<product_id>")
 def product_detail(product_id):
 
     connection = get_db_connection()
 
+    print("PRODUCT DETAIL REQUESTED ID:", product_id)
 
+    product = connection.execute(
+        """
+        SELECT *
+        FROM products
+        WHERE id = ?
+        AND status = 'active'
+        """,
+        (product_id,)
+    ).fetchone()
+
+    print("PRODUCT FOUND:", product)
+
+    if not product:
+        connection.close()
+        abort(404)
+
+    wishlist_added = False
+
+    if "user_id" in session:
+
+        wishlist = connection.execute(
+            """
+            SELECT id
+            FROM wishlist
+            WHERE user_id = ?
+            AND product_id = ?
+            """,
+            (
+                session["user_id"],
+                product_id
+            )
+        ).fetchone()
+
+        if wishlist:
+            wishlist_added = True
+
+    connection.close()
+
+    reviews = ReviewService.get_product_reviews(
+        product_id
+    )
+
+    return render_template(
+        "customer/product.html",
+        product=product,
+        wishlist_added=wishlist_added,
+        reviews=reviews
+    )
     # ========================================================
     # GET PRODUCT
     # ========================================================
