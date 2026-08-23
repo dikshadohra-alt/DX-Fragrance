@@ -171,6 +171,19 @@ cursor.execute(
 )
 
 
+# Wishlist table creation directly in setup script
+connection.execute("""
+    CREATE TABLE IF NOT EXISTS wishlist (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        product_id INTEGER NOT NULL,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+        FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+    );
+""")
+connection.commit()
+
+
 # ============================================================
 # DEFAULT STORE SETTINGS
 # ============================================================
