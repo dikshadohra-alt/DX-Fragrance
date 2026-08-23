@@ -188,7 +188,8 @@ def product_detail(product_id):
     # ========================================================
     # GET PRODUCT
     # ========================================================
-
+    
+    print("PRODUCT DETAIL REQUESTED ID:", product_id)
     product = connection.execute(
         """
         SELECT *
@@ -198,7 +199,7 @@ def product_detail(product_id):
         """,
         (product_id,)
     ).fetchone()
-
+    print("PRODUCT FOUND:", product)
 
     if not product:
 
