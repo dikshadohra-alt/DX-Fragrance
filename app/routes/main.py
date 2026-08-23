@@ -1,5 +1,3 @@
-from multiprocessing import connection
-
 from flask import Blueprint, render_template, session
 from config.database import get_db_connection
 
@@ -9,11 +7,9 @@ main_bp = Blueprint("main", __name__)
 
 @main_bp.route("/")
 def home():
-
     connection = get_db_connection()
 
-    # Get all products
-    # Sahi tarika (Cursor ka use karke):
+    # Get all products using cursor
     cursor = connection.cursor()
     cursor.execute("SELECT * FROM products")
     products = cursor.fetchall()
@@ -23,14 +19,16 @@ def home():
 
     if session.get("user_id"):
         try:
-            wishlist_rows = connection.execute(
+            # PostgreSQL / SQLite compatible query using cursor
+            cursor.execute(
                 """
                 SELECT product_id
                 FROM wishlist
-                WHERE user_id = ?
+                WHERE user_id = %s
                 """,
                 (session["user_id"],)
-            ).fetchall()
+            )
+            wishlist_rows = cursor.fetchall()
             wishlist_product_ids = {row["product_id"] for row in wishlist_rows}
         except Exception as e:
             print("Wishlist fetch error:", e)
