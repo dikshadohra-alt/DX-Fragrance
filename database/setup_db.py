@@ -105,6 +105,16 @@ try:
 except sqlite3.OperationalError:
     pass
 
+try:
+    cursor.execute(
+        """
+        ALTER TABLE products
+        ADD COLUMN size_ml TEXT
+        """
+    )
+    print("Added products.size_ml column.")
+except sqlite3.OperationalError:
+    pass
 
 # Existing products ko active kar do agar status khali hai
 cursor.execute(
