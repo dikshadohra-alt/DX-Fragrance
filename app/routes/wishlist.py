@@ -121,6 +121,29 @@ def add_to_wishlist(product_id):
 
     if not existing:
 
+        # Check that logged-in user actually exists
+        user_check = connection.execute(
+            """
+            SELECT id
+            FROM users
+            WHERE id = ?
+            """,
+            (session["user_id"],)
+        ).fetchone()
+
+        if not user_check:
+
+            print(
+                "INVALID SESSION USER ID:",
+                session.get("user_id")
+            )
+
+            session.clear()
+
+            return redirect(
+                url_for("auth.login")
+            )
+
         connection.execute(
             """
             INSERT INTO wishlist
@@ -136,7 +159,7 @@ def add_to_wishlist(product_id):
             )
         )
 
-        connection.commit()
+    connection.commit()
 
     connection.close()
 
