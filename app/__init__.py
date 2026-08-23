@@ -173,7 +173,9 @@ def create_app():
 
             if connection:
                 connection.close()
-
+# Error logging enable karne ke liye ye add kar do
+    import logging
+    app.logger.setLevel(logging.DEBUG)
     # =========================================================
     # RETURN APP
     # =========================================================
