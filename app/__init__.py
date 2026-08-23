@@ -66,15 +66,65 @@ def create_app():
     # =========================================================
 
     @app.context_processor
-    def inject_store_settings():
+def inject_store_settings():
 
-        connection = None
+    connection = None
 
-        try:
+    try:
 
-            connection = get_db_connection()
+        connection = get_db_connection()
 
-            # Existing database ke columns use karenge
+        store_settings = connection.execute(
+            """
+            SELECT
+                id,
+                store_name,
+                store_email,
+                store_phone,
+                store_address,
+                whatsapp,
+                instagram,
+                facebook,
+                youtube
+            FROM store_settings
+            WHERE id = 1
+            """
+        ).fetchone()
+
+        # If settings don't exist, create them
+        if store_settings is None:
+
+            connection.execute(
+                """
+                INSERT INTO store_settings
+                (
+                    id,
+                    store_name,
+                    store_email,
+                    store_phone,
+                    store_address,
+                    whatsapp,
+                    instagram,
+                    facebook,
+                    youtube
+                )
+                VALUES
+                (
+                    1,
+                    'DX Fragrance',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    ''
+                )
+                """
+            )
+
+            connection.commit()
+
             store_settings = connection.execute(
                 """
                 SELECT
@@ -92,89 +142,33 @@ def create_app():
                 """
             ).fetchone()
 
-            # Agar row nahi hai to default row bana do
-            if store_settings is None:
+        if store_settings:
 
-                connection.execute(
-                    """
-                    INSERT INTO store_settings
-                    (
-                        id,
-                        store_name,
-                        store_email,
-                        store_phone,
-                        store_address,
-                        whatsapp,
-                        instagram,
-                        facebook,
-                        youtube
-                    )
-                    VALUES
-                    (
-                        1,
-                        'DX Fragrance',
-                        '',
-                        '',
-                        '',
-                        '',
-                        '',
-                        '',
-                        ''
+            store_settings = dict(store_settings)
 
-                    )
-                    """
-                )
-
-                connection.commit()
-
-                store_settings = connection.execute(
-                    """
-                    SELECT
-                        id,
-                        store_name,
-                        store_email,
-                        store_phone,
-                        store_address,
-                        whatsapp,
-                        instagram,
-                        facebook,
-                        youtube
-                    FROM store_settings
-                    WHERE id = 1
-                    """
-                ).fetchone()
-
-            # -------------------------------------------------
-            # Footer ke liye address naam se bhi available hoga
-            # -------------------------------------------------
-
-            if store_settings:
-
-                store_settings = dict(store_settings)
-
-                store_settings["address"] = (
-                    store_settings.get("store_address") or ""
-                )
-
-            return {
-                "store_settings": store_settings
-            }
-
-        except Exception as error:
-
-            print(
-                "Store settings loading error:",
-                error
+            store_settings["address"] = (
+                store_settings.get("store_address") or ""
             )
 
-            return {
-                "store_settings": None
-            }
+        return {
+            "store_settings": store_settings
+        }
 
-        finally:
+    except Exception as error:
 
-            if connection:
-                connection.close()
+        print(
+            "Store settings loading error:",
+            error
+        )
+
+        return {
+            "store_settings": None
+        }
+
+    finally:
+
+        if connection:
+            connection.close()
 # Error logging enable karne ke liye ye add kar do
     import logging
     app.logger.setLevel(logging.DEBUG)
