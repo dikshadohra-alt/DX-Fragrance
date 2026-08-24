@@ -1,7 +1,7 @@
+import logging
 import os
 
-from flask import Flask, app
-
+from flask import Flask
 from dotenv import load_dotenv
 
 from app.routes.wishlist import wishlist_bp
@@ -36,8 +36,6 @@ def create_app():
     # FLASK CONFIGURATION
     # =========================================================
 
-    # .env mein key ho to use karega.
-    # Agar nahi hai to ye default key use hogi.
     app.config["SECRET_KEY"] = os.getenv(
         "SECRET_KEY",
         "dx-fragrance-secret-key-2026"
@@ -65,65 +63,18 @@ def create_app():
     # GLOBAL STORE SETTINGS
     # =========================================================
 
-@app.context_processor
-def inject_store_settings():
+    @app.context_processor
+    def inject_store_settings():
 
-    connection = None
+        connection = None
 
-    try:
+        try:
 
-        connection = get_db_connection()
+            connection = get_db_connection()
 
-        store_settings = connection.execute(
-            """
-            SELECT
-                id,
-                store_name,
-                store_email,
-                store_phone,
-                store_address,
-                whatsapp,
-                instagram,
-                facebook,
-                youtube
-            FROM store_settings
-            WHERE id = 1
-            """
-        ).fetchone()
-
-        # If settings don't exist, create them
-        if store_settings is None:
-
-            connection.execute(
-                """
-                INSERT INTO store_settings
-                (
-                    id,
-                    store_name,
-                    store_email,
-                    store_phone,
-                    store_address,
-                    whatsapp,
-                    instagram,
-                    facebook,
-                    youtube
-                )
-                VALUES
-                (
-                    1,
-                    'DX Fragrance',
-                    '',
-                    '',
-                    '',
-                    '',
-                    '',
-                    '',
-                    ''
-                )
-                """
-            )
-
-            connection.commit()
+            # -------------------------------------------------
+            # GET EXISTING STORE SETTINGS
+            # -------------------------------------------------
 
             store_settings = connection.execute(
                 """
@@ -142,36 +93,98 @@ def inject_store_settings():
                 """
             ).fetchone()
 
-        if store_settings:
+            # -------------------------------------------------
+            # CREATE DEFAULT SETTINGS ONLY IF MISSING
+            # -------------------------------------------------
 
-            store_settings = dict(store_settings)
+            if store_settings is None:
 
-            store_settings["address"] = (
-                store_settings.get("store_address") or ""
+                connection.execute(
+                    """
+                    INSERT INTO store_settings
+                    (
+                        id,
+                        store_name,
+                        store_email,
+                        store_phone,
+                        store_address,
+                        whatsapp,
+                        instagram,
+                        facebook,
+                        youtube
+                    )
+                    VALUES
+                    (
+                        1,
+                        'DX Fragrance',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        ''
+                    )
+                    """
+                )
+
+                connection.commit()
+
+                store_settings = connection.execute(
+                    """
+                    SELECT
+                        id,
+                        store_name,
+                        store_email,
+                        store_phone,
+                        store_address,
+                        whatsapp,
+                        instagram,
+                        facebook,
+                        youtube
+                    FROM store_settings
+                    WHERE id = 1
+                    """
+                ).fetchone()
+
+            # -------------------------------------------------
+            # PREPARE SETTINGS FOR TEMPLATES
+            # -------------------------------------------------
+
+            if store_settings:
+
+                store_settings = dict(store_settings)
+
+                store_settings["address"] = (
+                    store_settings.get("store_address") or ""
+                )
+
+            return {
+                "store_settings": store_settings
+            }
+
+        except Exception as error:
+
+            print(
+                "Store settings loading error:",
+                error
             )
 
-        return {
-            "store_settings": store_settings
-        }
+            return {
+                "store_settings": None
+            }
 
-    except Exception as error:
+        finally:
 
-        print(
-            "Store settings loading error:",
-            error
-        )
+            if connection:
+                connection.close()
 
-        return {
-            "store_settings": None
-        }
+    # =========================================================
+    # LOGGING CONFIGURATION
+    # =========================================================
 
-    finally:
-
-        if connection:
-            connection.close()
-# Error logging enable karne ke liye ye add kar do
-    import logging
     app.logger.setLevel(logging.DEBUG)
+
     # =========================================================
     # RETURN APP
     # =========================================================
