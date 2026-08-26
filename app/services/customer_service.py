@@ -51,7 +51,8 @@ class CustomerService:
                 LEFT JOIN orders
                     ON users.id = orders.user_id
 
-                WHERE users.is_admin = 0
+                WHERE users.id = ?
+                AND users.is_admin = FALSE
 
                 GROUP BY
                     users.id,
@@ -77,7 +78,12 @@ class CustomerService:
 
         try:
             columns = connection.execute(
-                "PRAGMA table_info(users)"
+                """
+SELECT column_name
+FROM information_schema.columns
+WHERE table_name = 'users'
+ORDER BY ordinal_position
+"""
             ).fetchall()
 
             column_names = [
@@ -113,7 +119,7 @@ class CustomerService:
                     ON users.id = orders.user_id
 
                 WHERE users.id = ?
-                  AND users.is_admin = 0
+                  AND users.is_admin = FALSE
 
                 GROUP BY
                     users.id,

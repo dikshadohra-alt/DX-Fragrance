@@ -1330,7 +1330,12 @@ def settings():
         # Existing databases may not have these newer columns.
         # Add only the columns that are missing.
         columns = connection.execute(
-            "PRAGMA table_info(store_settings)"
+        """
+        SELECT column_name
+        FROM information_schema.columns
+        WHERE table_name = 'store_settings'
+        ORDER BY ordinal_position
+        """
         ).fetchall()
 
         column_names = [column["name"] for column in columns]

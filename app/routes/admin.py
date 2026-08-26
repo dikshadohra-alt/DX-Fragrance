@@ -906,7 +906,7 @@ def delete_customer(customer_id):
             SELECT id, username
             FROM users
             WHERE id = ?
-              AND is_admin = 0
+              AND is_admin = FALSE
             """,
             (customer_id,)
         ).fetchone()
@@ -948,7 +948,7 @@ def delete_customer(customer_id):
             """
             DELETE FROM users
             WHERE id = ?
-              AND is_admin = 0
+              AND is_admin = FALSE
             """,
             (customer_id,)
         )
@@ -1077,11 +1077,11 @@ def profile():
         # to SQLite database mein automatically create ho jayega.
         columns = connection.execute(
             """
-            SELECT column_name
-            FROM information_schema.columns
-            WHERE table_name = 'store_settings'
-            ORDER BY ordinal_position
-            """
+SELECT column_name
+FROM information_schema.columns
+WHERE table_name = 'users'
+ORDER BY ordinal_position
+"""
         ).fetchall()
 
         column_names = [column["name"] for column in columns]
@@ -1335,7 +1335,12 @@ def settings():
         # Existing databases may not have these newer columns.
         # Add only the columns that are missing.
         columns = connection.execute(
-            "PRAGMA table_info(store_settings)"
+            """
+SELECT column_name
+FROM information_schema.columns
+WHERE table_name = 'store_settings'
+ORDER BY ordinal_position
+"""
         ).fetchall()
 
         column_names = [column["name"] for column in columns]
@@ -1371,18 +1376,19 @@ def settings():
         """)
 
         connection.execute("""
-            INSERT OR IGNORE INTO payment_settings (
-                id,
-                cod_enabled,
-                online_payment_enabled,
-                upi_enabled,
-                cards_enabled,
-                netbanking_enabled,
-                razorpay_enabled,
-                upi_id,
-                upi_qr
-            )
-            VALUES (1, 1, 0, 1, 1, 1, 0, '', '')
+            INSERT INTO payment_settings (
+    id,
+    cod_enabled,
+    online_payment_enabled,
+    upi_enabled,
+    cards_enabled,
+    netbanking_enabled,
+    razorpay_enabled,
+    upi_id,
+    upi_qr
+)
+VALUES (1, 1, 0, 1, 1, 1, 0, '', '')
+ON CONFLICT (id) DO NOTHING
         """)
 
         connection.commit()
