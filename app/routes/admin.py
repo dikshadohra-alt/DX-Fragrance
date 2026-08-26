@@ -1076,7 +1076,12 @@ def profile():
         # Agar users table mein phone column nahi hai,
         # to SQLite database mein automatically create ho jayega.
         columns = connection.execute(
-            "PRAGMA table_info(users)"
+            """
+            SELECT column_name
+            FROM information_schema.columns
+            WHERE table_name = 'store_settings'
+            ORDER BY ordinal_position
+            """
         ).fetchall()
 
         column_names = [column["name"] for column in columns]

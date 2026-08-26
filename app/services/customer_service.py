@@ -11,7 +11,12 @@ class CustomerService:
         try:
             # Make sure phone column exists
             columns = connection.execute(
-                "PRAGMA table_info(users)"
+                """
+                SELECT column_name
+                FROM information_schema.columns
+                WHERE table_name = 'users'
+                ORDER BY ordinal_position
+            """
             ).fetchall()
 
             column_names = [
