@@ -147,42 +147,38 @@ DX Fragrance | Shop
                 </a>
 
 
-                <!-- WISHLIST -->
 
-                {% if session.get("user_id") %}
+{% if session.get("user_id") %}
 
-                <form
-                    method="POST"
-                    action="{{ url_for(
-                        'wishlist.toggle_wishlist',
-                        product_id=product['id']
-                    ) }}"
-                    class="wishlist-form"
-                >
+<form
+    method="POST"
+    action="{{ url_for('wishlist.toggle_wishlist', product_id=product['id']) }}"
+    class="wishlist-form"
+>
+    <button
+        type="submit"
+        class="wishlist-btn {% if product['id'] in wishlist_product_ids %}active{% endif %}"
+        title="Wishlist"
+    >
+        {% if product['id'] in wishlist_product_ids %}
+            ♥
+        {% else %}
+            ♡
+        {% endif %}
+    </button>
+</form>
 
-                    <button
-                        type="submit"
-                        class="wishlist-btn"
-                        title="Wishlist"
-                    >
-                        ♡
-                    </button>
+{% else %}
 
-                </form>
+<a
+    href="{{ url_for('auth.login') }}"
+    class="wishlist-btn wishlist-login"
+    title="Login to add to wishlist"
+>
+    ♡
+</a>
 
-                {% else %}
-
-                <a
-                    href="{{ url_for('auth.login') }}"
-                    class="wishlist-btn wishlist-login"
-                    title="Login to add to wishlist"
-                >
-                    ♡
-                </a>
-
-                {% endif %}
-
-
+{% endif %}
                 <!-- STOCK -->
 
                 {% if (product["stock"] or 0)|int > 0 %}
@@ -208,10 +204,7 @@ DX Fragrance | Shop
 
                 <!-- VIEW -->
 
-                <a href="{{ url_for('product_detail', product_id=product['id']) }}" class="image-view">
-    View Fragrance 
-    <span>&rarr;</span>
-</a>
+                <a href="{{ url_for('products.product_detail', product_id=product['id']) }}" class="image-view"></a>
 
             </div>
 
@@ -1559,6 +1552,57 @@ DX Fragrance | Shop
     }
 
 }
+.wishlist-btn {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    border: none;
+    background: #ffffff;
+    color: #e889a2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 25px;
+    line-height: 1;
+    transition: all 0.3s ease;
+}
+
+.wishlist-btn:hover {
+    color: #e889a2;
+    transform: scale(1.05);
+}
+
+.wishlist-btn.active {
+    color: #e889a2;
+}
+/* SHOP WISHLIST - SAME AS HOME */
+.wishlist-btn {
+    width: 46px !important;
+    height: 46px !important;
+    border-radius: 50% !important;
+    background: #ffffff !important;
+    border: none !important;
+    color: #e889a2 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer;
+    font-size: 25px !important;
+    line-height: 1 !important;
+    transition: all 0.3s ease;
+}
+
+.wishlist-btn.active {
+    background: #ffffff !important;
+    color: #e889a2 !important;
+    border: none !important;
+}
+
+.wishlist-btn:hover {
+    background: #ffffff !important;
+    color: #e889a2 !important;
+}
 
 </style>
 
@@ -2023,6 +2067,7 @@ document.addEventListener(
 
     }
 );
+
 
 </script>
 

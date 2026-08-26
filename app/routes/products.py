@@ -39,7 +39,6 @@ def products():
         ""
     ).strip()
 
-
     connection = get_db_connection()
 
 
@@ -57,7 +56,6 @@ def products():
         ORDER BY category ASC
         """
     ).fetchall()
-
 
     categories = [
         row["category"]
@@ -142,7 +140,6 @@ def products():
 
     else:
 
-        # newest/default
         query += """
             ORDER BY id DESC
         """
@@ -158,6 +155,29 @@ def products():
     ).fetchall()
 
 
+    # ========================================================
+    # GET USER WISHLIST
+    # ========================================================
+
+    wishlist_product_ids = set()
+
+    if session.get("user_id"):
+
+        wishlist_rows = connection.execute(
+            """
+            SELECT product_id
+            FROM wishlist
+            WHERE user_id = ?
+            """,
+            (session["user_id"],)
+        ).fetchall()
+
+        wishlist_product_ids = {
+            row["product_id"]
+            for row in wishlist_rows
+        }
+
+
     connection.close()
 
 
@@ -171,73 +191,30 @@ def products():
         categories=categories,
         search=search,
         selected_category=selected_category,
-        selected_sort=selected_sort
+        selected_sort=selected_sort,
+        wishlist_product_ids=wishlist_product_ids
     )
 
 
 # ============================================================
 # PRODUCT DETAIL
 # ============================================================
+
 @products_bp.route("/product/<product_id>")
 def product_detail(product_id):
 
     connection = get_db_connection()
 
-    print("PRODUCT DETAIL REQUESTED ID:", product_id)
-
-    product = connection.execute(
-        """
-        SELECT *
-        FROM products
-        WHERE id = ?
-        AND status = 'active'
-        """,
-        (product_id,)
-    ).fetchone()
-
-    print("PRODUCT FOUND:", product)
-
-    if not product:
-        connection.close()
-        abort(404)
-
-    wishlist_added = False
-
-    if "user_id" in session:
-
-        wishlist = connection.execute(
-            """
-            SELECT id
-            FROM wishlist
-            WHERE user_id = ?
-            AND product_id = ?
-            """,
-            (
-                session["user_id"],
-                product_id
-            )
-        ).fetchone()
-
-        if wishlist:
-            wishlist_added = True
-
-    connection.close()
-
-    reviews = ReviewService.get_product_reviews(
+    print(
+        "PRODUCT DETAIL REQUESTED ID:",
         product_id
     )
 
-    return render_template(
-        "customer/product.html",
-        product=product,
-        wishlist_added=wishlist_added,
-        reviews=reviews
-    )
+
     # ========================================================
     # GET PRODUCT
     # ========================================================
-    
-    print("PRODUCT DETAIL REQUESTED ID:", product_id)
+
     product = connection.execute(
         """
         SELECT *
@@ -247,7 +224,13 @@ def product_detail(product_id):
         """,
         (product_id,)
     ).fetchone()
-    print("PRODUCT FOUND:", product)
+
+
+    print(
+        "PRODUCT FOUND:",
+        product
+    )
+
 
     if not product:
 
@@ -261,7 +244,6 @@ def product_detail(product_id):
     # ========================================================
 
     wishlist_added = False
-
 
     if "user_id" in session:
 
@@ -307,6 +289,11 @@ def product_detail(product_id):
         reviews=reviews
     )
 
+
+# ============================================================
+# SEARCH SUGGESTIONS
+# ============================================================
+
 @products_bp.route("/products/search-suggestions")
 def search_suggestions():
 
@@ -315,7 +302,9 @@ def search_suggestions():
         ""
     ).strip()
 
+
     if not search:
+
         return []
 
 

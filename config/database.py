@@ -1,5 +1,6 @@
 import os
 import sqlite3
+
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -7,7 +8,6 @@ load_dotenv()
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 
-# Yeh class psycopg2 connection ko SQLite jaisa banati hai taaki .execute() direct chal sake
 class PostgreSQLCursorWrapper:
 
     def __init__(self, conn):
@@ -16,27 +16,40 @@ class PostgreSQLCursorWrapper:
         self._lastrowid = None
 
     def execute(self, query, params=None):
+
         formatted_query = query.replace("?", "%s")
-        
-        # Agar INSERT query hai aur RETURNING id nahi hai, toh PostgreSQL ke liye add kar dete hain taaki lastrowid mil jaye
-        if "INSERT" in formatted_query.upper() and "RETURNING" not in formatted_query.upper():
-            formatted_query = formatted_query.rstrip(";") + " RETURNING id"
-            
+
+        is_insert = formatted_query.strip().upper().startswith("INSERT")
+
+        if is_insert and "RETURNING" not in formatted_query.upper():
+            formatted_query = (
+                formatted_query.rstrip(";")
+                + " RETURNING id"
+            )
+
         if params:
-            self.cursor_obj.execute(formatted_query, params)
+            self.cursor_obj.execute(
+                formatted_query,
+                params
+            )
         else:
-            self.cursor_obj.execute(formatted_query)
-            
-        # Agar INSERT tha toh ID fetch kar lete hain
-        try:
-            row = self.cursor_obj.fetchone()
-            if row and "id" in row:
-                self._lastrowid = row["id"]
-            elif row and len(row) > 0:
-                self._lastrowid = row[0]
-        except Exception:
-            pass
-            
+            self.cursor_obj.execute(
+                formatted_query
+            )
+
+        # Only fetch returned ID for INSERT queries.
+        # Do NOT fetch rows automatically for SELECT queries.
+        if is_insert:
+
+            try:
+                row = self.cursor_obj.fetchone()
+
+                if row:
+                    self._lastrowid = row[0]
+
+            except Exception:
+                self._lastrowid = None
+
         return self
 
     @property
@@ -44,23 +57,16 @@ class PostgreSQLCursorWrapper:
         return self._lastrowid
 
     def fetchall(self):
-        try:
-            return self.cursor_obj.fetchall()
-        except Exception:
-            return []
+        return self.cursor_obj.fetchall()
 
     def fetchone(self):
-        try:
-            return self.cursor_obj.fetchone()
-        except Exception:
-            return None
+        return self.cursor_obj.fetchone()
 
     def commit(self):
         return self.conn.commit()
 
     def close(self):
-        self.cursor_obj.close()
-        self.conn.close()
+        return self.cursor_obj.close()
 
 
 class PostgreSQLConnectionWrapper:
@@ -69,8 +75,15 @@ class PostgreSQLConnectionWrapper:
         self.conn = conn
 
     def execute(self, query, params=None):
-        wrapper = PostgreSQLCursorWrapper(self.conn)
-        return wrapper.execute(query, params)
+
+        wrapper = PostgreSQLCursorWrapper(
+            self.conn
+        )
+
+        return wrapper.execute(
+            query,
+            params
+        )
 
     def commit(self):
         return self.conn.commit()
@@ -83,15 +96,33 @@ class PostgreSQLConnectionWrapper:
 
 
 def get_db_connection():
+
+    # ========================================================
+    # POSTGRESQL
+    # ========================================================
+
     if DATABASE_URL:
+
         import psycopg2
         import psycopg2.extras
 
         conn = psycopg2.connect(
-            DATABASE_URL, cursor_factory=psycopg2.extras.DictCursor
+            DATABASE_URL,
+            cursor_factory=psycopg2.extras.DictCursor
         )
-        return PostgreSQLConnectionWrapper(conn)
-    else:
-        conn = sqlite3.connect("database/dx_fragrance.db")
-        conn.row_factory = sqlite3.Row
-        return conn
+
+        return PostgreSQLConnectionWrapper(
+            conn
+        )
+
+    # ========================================================
+    # SQLITE - LOCAL DEVELOPMENT
+    # ========================================================
+
+    conn = sqlite3.connect(
+        "database/dx_fragrance.db"
+    )
+
+    conn.row_factory = sqlite3.Row
+
+    return conn

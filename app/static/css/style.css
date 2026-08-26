@@ -1137,3 +1137,19 @@ footer {
     }
 
 }
+/* Wishlist button ko sabse upar laane ke liye */
+.product-image-wrap {
+    position: relative; /* Yeh ensure karega ki children absolute position me theek rahein */
+}
+
+.wishlist-form, 
+.wishlist-btn, 
+.wishlist-login {
+    position: relative;
+    z-index: 10; /* Yeh link se upar rahega aur click pakad lega */
+}
+
+/* Image view link ko neeche rakhne ke liye */
+.image-view {
+    z-index: 1; 
+}

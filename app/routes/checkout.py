@@ -371,6 +371,7 @@ def checkout():
                     total=total,
                     razorpay_key_id=RAZORPAY_KEY_ID
                 )
+            
 
 
         # =====================================================
@@ -380,6 +381,22 @@ def checkout():
         if payment_method == "cod":
 
             connection = get_db_connection()
+
+            # Safety Check for order_items table
+            connection.execute(
+                """
+                CREATE TABLE IF NOT EXISTS order_items (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    order_id INTEGER NOT NULL,
+                    product_id INTEGER NOT NULL,
+                    quantity INTEGER NOT NULL,
+                    price REAL NOT NULL,
+                    FOREIGN KEY (order_id) REFERENCES orders (id),
+                    FOREIGN KEY (product_id) REFERENCES products (id)
+                )
+                """
+            )
+            connection.commit()
 
 
             try:
@@ -392,7 +409,7 @@ def checkout():
                     """
                     INSERT INTO orders (
                         user_id,
-                        total_amount,
+                        total_price,
                         status,
                         shipping_name,
                         shipping_phone,
@@ -667,6 +684,22 @@ def payment_success():
 
     connection = get_db_connection()
 
+    # Safety Check for order_items table
+    connection.execute(
+        """
+        CREATE TABLE IF NOT EXISTS order_items (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            order_id INTEGER NOT NULL,
+            product_id INTEGER NOT NULL,
+            quantity INTEGER NOT NULL,
+            price REAL NOT NULL,
+            FOREIGN KEY (order_id) REFERENCES orders (id),
+            FOREIGN KEY (product_id) REFERENCES products (id)
+        )
+        """
+    )
+    connection.commit()
+
 
     try:
 
@@ -702,7 +735,7 @@ def payment_success():
             """
             INSERT INTO orders (
                 user_id,
-                total_amount,
+                total_price,
                 status,
                 shipping_name,
                 shipping_phone,

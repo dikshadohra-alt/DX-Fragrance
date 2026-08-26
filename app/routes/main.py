@@ -9,8 +9,9 @@ main_bp = Blueprint("main", __name__)
 def home():
     connection = get_db_connection()
 
-    # Get all products using cursor
     cursor = connection.cursor()
+
+    # Get all products
     cursor.execute("SELECT * FROM products")
     products = cursor.fetchall()
 
@@ -19,17 +20,21 @@ def home():
 
     if session.get("user_id"):
         try:
-            # PostgreSQL / SQLite compatible query using cursor
             cursor.execute(
                 """
                 SELECT product_id
                 FROM wishlist
-                WHERE user_id = %s
+                WHERE user_id = ?
                 """,
                 (session["user_id"],)
             )
+
             wishlist_rows = cursor.fetchall()
-            wishlist_product_ids = {row["product_id"] for row in wishlist_rows}
+
+            wishlist_product_ids = {
+                row["product_id"] for row in wishlist_rows
+            }
+
         except Exception as e:
             print("Wishlist fetch error:", e)
             wishlist_product_ids = set()
