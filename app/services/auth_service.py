@@ -63,7 +63,7 @@ class AuthService:
                     password,
                     is_admin
                 )
-                VALUES (?, ?, ?, 1)
+                VALUES (?, ?, ?, TRUE)
                 """,
                 (
                     "Admin",
@@ -79,7 +79,7 @@ class AuthService:
                 UPDATE users
                 SET
                     password = ?,
-                    is_admin = 1
+                    is_admin = TRUE
                 WHERE email = ?
                 """,
                 (
