@@ -7,42 +7,69 @@ main_bp = Blueprint("main", __name__)
 
 @main_bp.route("/")
 def home():
+
     connection = get_db_connection()
 
-    cursor = connection.cursor()
+    try:
 
-    # Get all products
-    cursor.execute("SELECT * FROM products")
-    products = cursor.fetchall()
+        # =====================================================
+        # GET ALL PRODUCTS
+        # =====================================================
 
-    # Get customer's wishlist
-    wishlist_product_ids = set()
+        products = connection.execute(
+            """
+            SELECT *
+            FROM products
+            ORDER BY id DESC
+            """
+        ).fetchall()
 
-    if session.get("user_id"):
-        try:
-            cursor.execute(
-                """
-                SELECT product_id
-                FROM wishlist
-                WHERE user_id = ?
-                """,
-                (session["user_id"],)
-            )
 
-            wishlist_rows = cursor.fetchall()
+        # =====================================================
+        # GET CUSTOMER WISHLIST
+        # =====================================================
 
-            wishlist_product_ids = {
-                row["product_id"] for row in wishlist_rows
-            }
+        wishlist_product_ids = set()
 
-        except Exception as e:
-            print("Wishlist fetch error:", e)
-            wishlist_product_ids = set()
+        if session.get("user_id"):
 
-    connection.close()
+            try:
 
-    return render_template(
-        "customer/home.html",
-        products=products,
-        wishlist_product_ids=wishlist_product_ids
-    )
+                wishlist_rows = connection.execute(
+                    """
+                    SELECT product_id
+                    FROM wishlist
+                    WHERE user_id = ?
+                    """,
+                    (session["user_id"],)
+                ).fetchall()
+
+                wishlist_product_ids = {
+                    row["product_id"]
+                    for row in wishlist_rows
+                }
+
+            except Exception as e:
+
+                print(
+                    "Wishlist fetch error:",
+                    repr(e)
+                )
+
+                wishlist_product_ids = set()
+
+
+        # =====================================================
+        # HOME PAGE
+        # =====================================================
+
+        return render_template(
+            "customer/home.html",
+            products=products,
+            wishlist_product_ids=wishlist_product_ids
+        )
+
+
+    finally:
+
+        connection.close()
