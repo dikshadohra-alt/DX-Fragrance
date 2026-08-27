@@ -9,21 +9,50 @@ class OrderService:
 
     @staticmethod
     def get_all_orders():
+
+        connection = get_db_connection()
+
         try:
-            connection = get_db_connection()
+
             orders = connection.execute(
                 """
-                SELECT o.*, u.username, u.email 
-                FROM orders o
-                LEFT JOIN users u ON o.user_id = u.id
-                ORDER BY o.created_at DESC
+                SELECT
+                    orders.id,
+                    orders.user_id,
+                    orders.total_amount,
+                    orders.status,
+                    orders.shipping_name,
+                    orders.shipping_phone,
+                    orders.shipping_address,
+                    orders.created_at,
+
+                    users.username AS customer_name,
+                    users.email AS customer_email
+
+                FROM orders
+
+                LEFT JOIN users
+                    ON orders.user_id = users.id
+
+                ORDER BY orders.created_at DESC
                 """
             ).fetchall()
-            connection.close()
+
             return orders
+
         except Exception as e:
-            print("Error fetching orders (safe fallback):", e)
+
+            print(
+                "Error fetching orders:",
+                repr(e)
+            )
+
             return []
+
+        finally:
+
+            connection.close()
+
 
     # =========================================================
     # GET SINGLE ORDER
@@ -34,178 +63,170 @@ class OrderService:
 
         connection = get_db_connection()
 
-        order = connection.execute(
-            """
-            SELECT
-                orders.id,
-                orders.user_id,
-                orders.total_amount,
-                orders.status,
-                orders.shipping_name,
-                orders.shipping_phone,
-                orders.shipping_address,
-                orders.created_at,
+        try:
 
-                users.username AS customer_name,
-                users.email AS customer_email
+            order = connection.execute(
+                """
+                SELECT
+                    orders.id,
+                    orders.user_id,
+                    orders.total_amount,
+                    orders.status,
+                    orders.shipping_name,
+                    orders.shipping_phone,
+                    orders.shipping_address,
+                    orders.created_at,
 
-            FROM orders
+                    users.username AS customer_name,
+                    users.email AS customer_email
 
-            LEFT JOIN users
-                ON orders.user_id = users.id
+                FROM orders
 
-            WHERE orders.id = ?
-            """,
-            (order_id,)
-        ).fetchone()
+                LEFT JOIN users
+                    ON orders.user_id = users.id
+
+                WHERE orders.id = ?
+                """,
+                (order_id,)
+            ).fetchone()
 
 
-        if not order:
+            if not order:
+
+                return None
+
+
+            # =================================================
+            # GET ORDER ITEMS
+            # =================================================
+
+            items = connection.execute(
+                """
+                SELECT
+                    order_items.id,
+                    order_items.order_id,
+                    order_items.product_id,
+                    order_items.quantity,
+                    order_items.price,
+
+                    products.name AS product_name,
+                    products.image AS product_image
+
+                FROM order_items
+
+                LEFT JOIN products
+                    ON order_items.product_id = products.id
+
+                WHERE order_items.order_id = ?
+
+                ORDER BY order_items.id ASC
+                """,
+                (order_id,)
+            ).fetchall()
+
+
+            # =================================================
+            # CONVERT ORDER TO DICTIONARY
+            # =================================================
+
+            order_data = dict(order)
+
+
+            # =================================================
+            # ADD ITEMS
+            # =================================================
+
+            order_data["items"] = items
+
+
+            # =================================================
+            # CUSTOMER INFORMATION
+            # =================================================
+
+            order_data["customer_name"] = (
+                order_data.get("shipping_name")
+                or order_data.get("customer_name")
+                or "Customer"
+            )
+
+
+            order_data["customer_phone"] = (
+                order_data.get("shipping_phone")
+                or "Not provided"
+            )
+
+
+            order_data["customer_address"] = (
+                order_data.get("shipping_address")
+                or "Not provided"
+            )
+
+
+            order_data["customer_email"] = (
+                order_data.get("customer_email")
+                or "Not available"
+            )
+
+
+            # =================================================
+            # FIRST PRODUCT
+            # =================================================
+
+            if items:
+
+                first_item = items[0]
+
+                order_data["product_name"] = (
+                    first_item["product_name"]
+                    if first_item["product_name"]
+                    else "Product"
+                )
+
+                order_data["product_image"] = (
+                    first_item["product_image"]
+                    if first_item["product_image"]
+                    else None
+                )
+
+                order_data["quantity"] = (
+                    first_item["quantity"]
+                    if first_item["quantity"] is not None
+                    else 1
+                )
+
+                order_data["price"] = (
+                    first_item["price"]
+                    if first_item["price"] is not None
+                    else 0
+                )
+
+            else:
+
+                order_data["product_name"] = "No Product"
+
+                order_data["product_image"] = None
+
+                order_data["quantity"] = 0
+
+                order_data["price"] = 0
+
+
+            # =================================================
+            # ORDER DATE
+            # =================================================
+
+            order_data["date"] = (
+                order_data.get("created_at")
+                or "Not available"
+            )
+
+
+            return order_data
+
+
+        finally:
 
             connection.close()
-
-            return None
-
-
-        # =====================================================
-        # GET ALL ORDER ITEMS
-        # =====================================================
-
-        items = connection.execute(
-            """
-            SELECT
-                order_items.id,
-                order_items.order_id,
-                order_items.product_id,
-                order_items.quantity,
-                order_items.price,
-
-                products.name AS product_name,
-                products.image AS product_image
-
-            FROM order_items
-
-            LEFT JOIN products
-                ON order_items.product_id = products.id
-
-            WHERE order_items.order_id = ?
-
-            ORDER BY order_items.id ASC
-            """,
-            (order_id,)
-        ).fetchall()
-
-
-        connection.close()
-
-
-        # =====================================================
-        # CONVERT SQLITE ROW TO DICTIONARY
-        # =====================================================
-
-        order_data = dict(order)
-
-
-        # =====================================================
-        # ADD ORDER ITEMS
-        # =====================================================
-
-        order_data["items"] = items
-
-
-        # =====================================================
-        # FIRST PRODUCT
-        #
-        # These values keep compatibility with the existing
-        # admin order detail page.
-        # =====================================================
-
-        if items:
-
-            first_item = items[0]
-
-
-            order_data["product_name"] = (
-                first_item["product_name"]
-                if first_item["product_name"]
-                else "Product"
-            )
-
-
-            order_data["product_image"] = (
-                first_item["product_image"]
-                if first_item["product_image"]
-                else None
-            )
-
-
-            order_data["quantity"] = (
-                first_item["quantity"]
-                if first_item["quantity"]
-                else 1
-            )
-
-
-            order_data["price"] = (
-                first_item["price"]
-                if first_item["price"] is not None
-                else 0
-            )
-
-
-        else:
-
-            order_data["product_name"] = "No Product"
-
-            order_data["product_image"] = None
-
-            order_data["quantity"] = 0
-
-            order_data["price"] = 0
-
-
-        # =====================================================
-        # CUSTOMER INFORMATION
-        #
-        # Use shipping information from the actual order.
-        # =====================================================
-
-        order_data["customer_name"] = (
-            order_data.get("shipping_name")
-            or order_data.get("customer_name")
-            or "Customer"
-        )
-
-
-        order_data["customer_phone"] = (
-            order_data.get("shipping_phone")
-            or "Not provided"
-        )
-
-
-        order_data["customer_address"] = (
-            order_data.get("shipping_address")
-            or "Not provided"
-        )
-
-
-        order_data["customer_email"] = (
-            order_data.get("customer_email")
-            or "Not available"
-        )
-
-
-        # =====================================================
-        # ORDER DATE
-        # =====================================================
-
-        order_data["date"] = (
-            order_data.get("created_at")
-            or "Not available"
-        )
-
-
-        return order_data
 
 
     # =========================================================
@@ -223,9 +244,7 @@ class OrderService:
             "cancelled"
         ]
 
-
         status = str(status).lower().strip()
-
 
         if status not in allowed_statuses:
 
@@ -233,7 +252,6 @@ class OrderService:
 
 
         connection = get_db_connection()
-
 
         try:
 
@@ -251,14 +269,17 @@ class OrderService:
                 )
             )
 
-
             connection.commit()
-
 
             return cursor.rowcount > 0
 
 
-        except Exception:
+        except Exception as e:
+
+            print(
+                "Error updating order status:",
+                repr(e)
+            )
 
             connection.rollback()
 
@@ -279,11 +300,10 @@ class OrderService:
 
         connection = get_db_connection()
 
-
         try:
 
             # -------------------------------------------------
-            # DELETE ORDER ITEMS FIRST
+            # DELETE ORDER ITEMS
             # -------------------------------------------------
 
             connection.execute(
@@ -297,7 +317,7 @@ class OrderService:
 
 
             # -------------------------------------------------
-            # DELETE MAIN ORDER
+            # DELETE ORDER
             # -------------------------------------------------
 
             cursor = connection.execute(
@@ -312,11 +332,15 @@ class OrderService:
 
             connection.commit()
 
-
             return cursor.rowcount > 0
 
 
-        except Exception:
+        except Exception as e:
+
+            print(
+                "Error deleting order:",
+                repr(e)
+            )
 
             connection.rollback()
 
