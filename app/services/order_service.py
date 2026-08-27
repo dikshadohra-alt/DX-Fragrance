@@ -26,8 +26,16 @@ class OrderService:
                     orders.shipping_address,
                     orders.created_at,
 
-                    users.username AS customer_name,
-                    users.email AS customer_email
+                    COALESCE(
+                        NULLIF(users.username, ''),
+                        NULLIF(orders.shipping_name, ''),
+                        'Unknown Customer'
+                    ) AS customer_name,
+
+                    COALESCE(
+                        NULLIF(users.email, ''),
+                        'N/A'
+                    ) AS customer_email
 
                 FROM orders
 
@@ -77,8 +85,16 @@ class OrderService:
                     orders.shipping_address,
                     orders.created_at,
 
-                    users.username AS customer_name,
-                    users.email AS customer_email
+                    COALESCE(
+                        NULLIF(users.username, ''),
+                        NULLIF(orders.shipping_name, ''),
+                        'Customer'
+                    ) AS customer_name,
+
+                    COALESCE(
+                        NULLIF(users.email, ''),
+                        'Not available'
+                    ) AS customer_email
 
                 FROM orders
 
@@ -133,7 +149,7 @@ class OrderService:
 
 
             # =================================================
-            # ADD ITEMS
+            # ADD ORDER ITEMS
             # =================================================
 
             order_data["items"] = items
@@ -176,11 +192,13 @@ class OrderService:
 
                 first_item = items[0]
 
+
                 order_data["product_name"] = (
                     first_item["product_name"]
                     if first_item["product_name"]
                     else "Product"
                 )
+
 
                 order_data["product_image"] = (
                     first_item["product_image"]
@@ -188,17 +206,20 @@ class OrderService:
                     else None
                 )
 
+
                 order_data["quantity"] = (
                     first_item["quantity"]
                     if first_item["quantity"] is not None
                     else 1
                 )
 
+
                 order_data["price"] = (
                     first_item["price"]
                     if first_item["price"] is not None
                     else 0
                 )
+
 
             else:
 
@@ -244,7 +265,9 @@ class OrderService:
             "cancelled"
         ]
 
+
         status = str(status).lower().strip()
+
 
         if status not in allowed_statuses:
 
@@ -252,6 +275,7 @@ class OrderService:
 
 
         connection = get_db_connection()
+
 
         try:
 
@@ -269,7 +293,9 @@ class OrderService:
                 )
             )
 
+
             connection.commit()
+
 
             return cursor.rowcount > 0
 
@@ -281,7 +307,9 @@ class OrderService:
                 repr(e)
             )
 
+
             connection.rollback()
+
 
             return False
 
@@ -300,10 +328,11 @@ class OrderService:
 
         connection = get_db_connection()
 
+
         try:
 
             # -------------------------------------------------
-            # DELETE ORDER ITEMS
+            # DELETE ORDER ITEMS FIRST
             # -------------------------------------------------
 
             connection.execute(
@@ -317,7 +346,7 @@ class OrderService:
 
 
             # -------------------------------------------------
-            # DELETE ORDER
+            # DELETE MAIN ORDER
             # -------------------------------------------------
 
             cursor = connection.execute(
@@ -332,6 +361,7 @@ class OrderService:
 
             connection.commit()
 
+
             return cursor.rowcount > 0
 
 
@@ -342,7 +372,9 @@ class OrderService:
                 repr(e)
             )
 
+
             connection.rollback()
+
 
             return False
 
