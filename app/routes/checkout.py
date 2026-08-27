@@ -424,7 +424,7 @@ def checkout():
                     """
                     INSERT INTO orders (
                         user_id,
-                        total_price,
+                        total_amount,
                         status,
                         shipping_name,
                         shipping_phone,
@@ -765,7 +765,7 @@ def payment_success():
             """
             INSERT INTO orders (
                 user_id,
-                total_price,
+                total_amount,
                 status,
                 shipping_name,
                 shipping_phone,
