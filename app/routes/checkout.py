@@ -23,7 +23,7 @@ from flask import (
     jsonify
 )
 
-from config.database import get_db_connection
+from config.database import get_db_connection, DATABASE_URL
 
 
 checkout_bp = Blueprint("checkout", __name__)
@@ -383,19 +383,34 @@ def checkout():
             connection = get_db_connection()
 
             # Safety Check for order_items table
-            connection.execute(
-                """
-                CREATE TABLE IF NOT EXISTS order_items (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    order_id INTEGER NOT NULL,
-                    product_id INTEGER NOT NULL,
-                    quantity INTEGER NOT NULL,
-                    price REAL NOT NULL,
-                    FOREIGN KEY (order_id) REFERENCES orders (id),
-                    FOREIGN KEY (product_id) REFERENCES products (id)
+            if DATABASE_URL:
+                connection.execute(
+                    """
+                    CREATE TABLE IF NOT EXISTS order_items (
+                        id SERIAL PRIMARY KEY,
+                        order_id INTEGER NOT NULL,
+                        product_id INTEGER NOT NULL,
+                        quantity INTEGER NOT NULL,
+                        price REAL NOT NULL,
+                        FOREIGN KEY (order_id) REFERENCES orders(id),
+                        FOREIGN KEY (product_id) REFERENCES products(id)
+                    )
+                    """
                 )
-                """
-            )
+            else:
+                connection.execute(
+                    """
+                    CREATE TABLE IF NOT EXISTS order_items (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        order_id INTEGER NOT NULL,
+                        product_id INTEGER NOT NULL,
+                        quantity INTEGER NOT NULL,
+                        price REAL NOT NULL,
+                        FOREIGN KEY (order_id) REFERENCES orders(id),
+                        FOREIGN KEY (product_id) REFERENCES products(id)
+                    )
+                    """
+                )
             connection.commit()
 
 
@@ -685,19 +700,34 @@ def payment_success():
     connection = get_db_connection()
 
     # Safety Check for order_items table
-    connection.execute(
-        """
-        CREATE TABLE IF NOT EXISTS order_items (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            order_id INTEGER NOT NULL,
-            product_id INTEGER NOT NULL,
-            quantity INTEGER NOT NULL,
-            price REAL NOT NULL,
-            FOREIGN KEY (order_id) REFERENCES orders (id),
-            FOREIGN KEY (product_id) REFERENCES products (id)
+    if DATABASE_URL:
+        connection.execute(
+            """
+            CREATE TABLE IF NOT EXISTS order_items (
+                id SERIAL PRIMARY KEY,
+                order_id INTEGER NOT NULL,
+                product_id INTEGER NOT NULL,
+                quantity INTEGER NOT NULL,
+                price REAL NOT NULL,
+                FOREIGN KEY (order_id) REFERENCES orders(id),
+                FOREIGN KEY (product_id) REFERENCES products(id)
+            )
+            """
         )
-        """
-    )
+    else:
+        connection.execute(
+            """
+            CREATE TABLE IF NOT EXISTS order_items (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                order_id INTEGER NOT NULL,
+                product_id INTEGER NOT NULL,
+                quantity INTEGER NOT NULL,
+                price REAL NOT NULL,
+                FOREIGN KEY (order_id) REFERENCES orders(id),
+                FOREIGN KEY (product_id) REFERENCES products(id)
+            )
+            """
+        )
     connection.commit()
 
 
