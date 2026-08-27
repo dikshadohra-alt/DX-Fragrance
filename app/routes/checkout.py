@@ -374,7 +374,7 @@ def checkout():
             
 
 
-        # =====================================================
+                # =====================================================
         # CASH ON DELIVERY
         # =====================================================
 
@@ -382,8 +382,70 @@ def checkout():
 
             connection = get_db_connection()
 
-            # Safety Check for order_items table
+            # =====================================================
+            # MAKE SURE ORDERS TABLE HAS SHIPPING COLUMNS
+            # =====================================================
+
             if DATABASE_URL:
+
+                connection.execute(
+                    """
+                    ALTER TABLE orders
+                    ADD COLUMN IF NOT EXISTS shipping_name TEXT
+                    """
+                )
+
+                connection.execute(
+                    """
+                    ALTER TABLE orders
+                    ADD COLUMN IF NOT EXISTS shipping_phone TEXT
+                    """
+                )
+
+                connection.execute(
+                    """
+                    ALTER TABLE orders
+                    ADD COLUMN IF NOT EXISTS shipping_address TEXT
+                    """
+                )
+
+            else:
+
+                columns = connection.execute(
+                    "PRAGMA table_info(orders)"
+                ).fetchall()
+
+                column_names = [
+                    column["name"]
+                    for column in columns
+                ]
+
+                if "shipping_name" not in column_names:
+
+                    connection.execute(
+                        "ALTER TABLE orders ADD COLUMN shipping_name TEXT"
+                    )
+
+                if "shipping_phone" not in column_names:
+
+                    connection.execute(
+                        "ALTER TABLE orders ADD COLUMN shipping_phone TEXT"
+                    )
+
+                if "shipping_address" not in column_names:
+
+                    connection.execute(
+                        "ALTER TABLE orders ADD COLUMN shipping_address TEXT"
+                    )
+
+            connection.commit()
+
+            # =====================================================
+            # SAFETY CHECK FOR ORDER_ITEMS TABLE
+            # =====================================================
+
+            if DATABASE_URL:
+
                 connection.execute(
                     """
                     CREATE TABLE IF NOT EXISTS order_items (
@@ -397,7 +459,9 @@ def checkout():
                     )
                     """
                 )
+
             else:
+
                 connection.execute(
                     """
                     CREATE TABLE IF NOT EXISTS order_items (
@@ -411,8 +475,8 @@ def checkout():
                     )
                     """
                 )
-            connection.commit()
 
+            connection.commit()
 
             try:
 
@@ -448,9 +512,7 @@ def checkout():
                     )
                 )
 
-
                 order_id = cursor.lastrowid
-
 
                 # -------------------------------------------------
                 # ORDER ITEMS + STOCK
@@ -461,7 +523,6 @@ def checkout():
                     product = item["product"]
 
                     quantity = item["quantity"]
-
 
                     connection.execute(
                         """
@@ -481,7 +542,6 @@ def checkout():
                         )
                     )
 
-
                     # -------------------------------------------------
                     # DECREASE STOCK
                     # -------------------------------------------------
@@ -497,7 +557,6 @@ def checkout():
                             product["id"]
                         )
                     )
-
 
                 connection.commit()
 
