@@ -9,6 +9,7 @@ from flask import (
     current_app
 )
 
+
 from app.services.admin_service import AdminService
 from app.services.notification_service import NotificationService
 from app.services.sales_service import SalesService
@@ -21,7 +22,6 @@ from app.services.product_service import ProductService
 import os
 
 from werkzeug.utils import secure_filename
-
 from config.config import ALLOWED_IMAGE_EXTENSIONS
 
 
