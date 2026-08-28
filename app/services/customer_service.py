@@ -39,7 +39,7 @@ class CustomerService:
 
 
             column_names = [
-                column["name"]
+                column["column_name"]
                 for column in columns
             ]
 
@@ -153,7 +153,7 @@ class CustomerService:
 
 
             column_names = [
-                column["name"]
+                column["column_name"]
                 for column in columns
             ]
 

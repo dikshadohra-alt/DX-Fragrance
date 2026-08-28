@@ -1084,7 +1084,7 @@ ORDER BY ordinal_position
 """
         ).fetchall()
 
-        column_names = [column["name"] for column in columns]
+        column_names = [column["column_name"] for column in columns]
 
         if "phone" not in column_names:
 
@@ -1383,7 +1383,7 @@ def settings():
 
 
         column_names = [
-            column["name"]
+            column["column_name"]
             for column in columns
         ]
 
