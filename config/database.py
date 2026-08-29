@@ -8,6 +8,10 @@ load_dotenv()
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 
+# =========================================================
+# POSTGRESQL CURSOR WRAPPER
+# =========================================================
+
 class PostgreSQLCursorWrapper:
 
     def __init__(self, conn):
@@ -35,7 +39,7 @@ class PostgreSQLCursorWrapper:
                 + " RETURNING id"
             )
 
-        if params:
+        if params is not None:
             self.cursor_obj.execute(
                 formatted_query,
                 params
@@ -59,9 +63,25 @@ class PostgreSQLCursorWrapper:
 
         return self
 
+    # =====================================================
+    # LAST INSERT ID
+    # =====================================================
+
     @property
     def lastrowid(self):
         return self._lastrowid
+
+    # =====================================================
+    # ROW COUNT
+    # =====================================================
+
+    @property
+    def rowcount(self):
+        return self.cursor_obj.rowcount
+
+    # =====================================================
+    # FETCH
+    # =====================================================
 
     def fetchall(self):
         return self.cursor_obj.fetchall()
@@ -69,12 +89,20 @@ class PostgreSQLCursorWrapper:
     def fetchone(self):
         return self.cursor_obj.fetchone()
 
+    # =====================================================
+    # COMMIT / CLOSE
+    # =====================================================
+
     def commit(self):
         return self.conn.commit()
 
     def close(self):
         return self.cursor_obj.close()
 
+
+# =========================================================
+# POSTGRESQL CONNECTION WRAPPER
+# =========================================================
 
 class PostgreSQLConnectionWrapper:
 
@@ -105,11 +133,15 @@ class PostgreSQLConnectionWrapper:
         return self.conn.close()
 
 
+# =========================================================
+# DATABASE CONNECTION
+# =========================================================
+
 def get_db_connection():
 
-    # ========================================================
+    # =====================================================
     # POSTGRESQL - RENDER / PRODUCTION
-    # ========================================================
+    # =====================================================
 
     if DATABASE_URL:
 
@@ -125,9 +157,9 @@ def get_db_connection():
             conn
         )
 
-    # ========================================================
+    # =====================================================
     # SQLITE - LOCAL DEVELOPMENT
-    # ========================================================
+    # =====================================================
 
     conn = sqlite3.connect(
         "database/dx_fragrance.db"
