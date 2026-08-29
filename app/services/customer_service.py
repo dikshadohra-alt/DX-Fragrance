@@ -151,13 +151,19 @@ class CustomerService:
                     """
                 ).fetchall()
 
+            if DATABASE_URL:
 
-            column_names = [
-                column["column_name"]
-                for column in columns
-            ]
+                column_names = [
+                    column["column_name"]
+                    for column in columns
+                ]
 
+            else:
 
+                column_names = [
+                    column["name"]
+                    for column in columns
+                ]
             # -------------------------------------------------
             # ADD PHONE COLUMN IF MISSING
             # -------------------------------------------------
